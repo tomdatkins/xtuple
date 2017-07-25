@@ -189,7 +189,6 @@ SOURCES = ../pkgscript/databaseInformation.js                         \
 TRANSLATIONS += xtmfg.base.ts       \
                 xtmfg.ar_eg.ts      \
                 xtmfg.bg.ts         \
-                xtmfg.cn.ts         \
                 xtmfg.cs.ts         \
                 xtmfg.de.ts         \
                 xtmfg.de_at.ts      \
@@ -203,7 +202,7 @@ TRANSLATIONS += xtmfg.base.ts       \
                 xtmfg.fr_ca.ts      \
                 xtmfg.hr.ts         \
                 xtmfg.it.ts         \
-                xtmfg.jp.ts         \
+                xtmfg.ja.ts         \
                 xtmfg.nl.ts         \
                 xtmfg.no.ts         \
                 xtmfg.pl.ts         \
@@ -212,6 +211,7 @@ TRANSLATIONS += xtmfg.base.ts       \
                 xtmfg.ru.ts         \
                 xtmfg.sk.ts         \
                 xtmfg.tr.ts         \
-                xtmfg.ua.ts         \
+                xtmfg.uk.ts         \
                 xtmfg.zh_hk.ts      \
+                xtmfg.zh.ts         \
                 xtmfg.zh_tw.ts
