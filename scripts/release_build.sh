@@ -215,16 +215,8 @@ mkdir -p $XTUPLEDIR/scripts/output/dict/manufacturing
 mkdir -p $XTUPLEDIR/scripts/output/dict/distribution
 
 cd ../qt-client
-mv openrpt ../openrpt_tmp
-mv csvimp ../csvimp_tmp
-mv share/dict/reports.base.ts ..
-qmake -project -o ts.pro
-lupdate -no-obsolete ts.pro
-lrelease ts.pro
-rm ts.pro
-mv ../openrpt_tmp openrpt
-mv ../csvimp_tmp csvimp
-mv ../reports.base.ts share/dict
+lupdate -no-obsolete xtuple.pro
+lrelease xtuple.pro
 mv share/dict/*.qm ../xtuple/scripts/output/dict/postbooks
 
 cd ../private-extensions
