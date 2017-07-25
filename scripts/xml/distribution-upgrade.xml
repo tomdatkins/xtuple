@@ -147,7 +147,7 @@
   <loadqm file="xTuple.fr.qm"/>
   <loadqm file="xTuple.hr.qm"/>
   <loadqm file="xTuple.it.qm"/>
-  <loadqm file="xTuple.jp.qm"/>
+  <loadqm file="xTuple.ja.qm"/>
   <loadqm file="xTuple.nl.qm"/>
   <loadqm file="xTuple.no.qm"/>
   <loadqm file="xTuple.pl.qm"/>
@@ -156,13 +156,12 @@
   <loadqm file="xTuple.ru.qm"/>
   <loadqm file="xTuple.sk.qm"/>
   <loadqm file="xTuple.tr.qm"/>
-  <loadqm file="xTuple.ua.qm"/>
+  <loadqm file="xTuple.uk.qm"/>
   <loadqm file="xTuple.zh_hk.qm"/>
   <loadqm file="xTuple.zh.qm"/>
   <loadqm file="xTuple.zh_tw.qm"/>
   <loadqm file="xtcore.ar_eg.qm"/>
   <loadqm file="xtcore.bg.qm"/>
-  <loadqm file="xtcore.cn.qm"/>
   <loadqm file="xtcore.cs.qm"/>
   <loadqm file="xtcore.de_at.qm"/>
   <loadqm file="xtcore.de_ch.qm"/>
@@ -176,7 +175,7 @@
   <loadqm file="xtcore.fr.qm"/>
   <loadqm file="xtcore.hr.qm"/>
   <loadqm file="xtcore.it.qm"/>
-  <loadqm file="xtcore.jp.qm"/>
+  <loadqm file="xtcore.ja.qm"/>
   <loadqm file="xtcore.nl.qm"/>
   <loadqm file="xtcore.no.qm"/>
   <loadqm file="xtcore.pl.qm"/>
@@ -185,12 +184,12 @@
   <loadqm file="xtcore.ru.qm"/>
   <loadqm file="xtcore.sk.qm"/>
   <loadqm file="xtcore.tr.qm"/>
-  <loadqm file="xtcore.ua.qm"/>
+  <loadqm file="xtcore.uk.qm"/>
   <loadqm file="xtcore.zh_hk.qm"/>
+  <loadqm file="xtcore.zh.qm"/>
   <loadqm file="xtcore.zh_tw.qm"/>
   <loadqm file="xwd.ar_eg.qm"/>
   <loadqm file="xwd.bg.qm"/>
-  <loadqm file="xwd.cn.qm"/>
   <loadqm file="xwd.cs.qm"/>
   <loadqm file="xwd.de_at.qm"/>
   <loadqm file="xwd.de_ch.qm"/>
@@ -204,7 +203,7 @@
   <loadqm file="xwd.fr.qm"/>
   <loadqm file="xwd.hr.qm"/>
   <loadqm file="xwd.it.qm"/>
-  <loadqm file="xwd.jp.qm"/>
+  <loadqm file="xwd.ja.qm"/>
   <loadqm file="xwd.nl.qm"/>
   <loadqm file="xwd.no.qm"/>
   <loadqm file="xwd.pl.qm"/>
@@ -213,8 +212,9 @@
   <loadqm file="xwd.ru.qm"/>
   <loadqm file="xwd.sk.qm"/>
   <loadqm file="xwd.tr.qm"/>
-  <loadqm file="xwd.ua.qm"/>
+  <loadqm file="xwd.uk.qm"/>
   <loadqm file="xwd.zh_hk.qm"/>
+  <loadqm file="xwd.zh.qm"/>
   <loadqm file="xwd.zh_tw.qm"/>
 
 </package>

@@ -133,7 +133,7 @@
   <loadqm file="xTuple.fr.qm"/>
   <loadqm file="xTuple.hr.qm"/>
   <loadqm file="xTuple.it.qm"/>
-  <loadqm file="xTuple.jp.qm"/>
+  <loadqm file="xTuple.ja.qm"/>
   <loadqm file="xTuple.nl.qm"/>
   <loadqm file="xTuple.no.qm"/>
   <loadqm file="xTuple.pl.qm"/>
@@ -142,7 +142,7 @@
   <loadqm file="xTuple.ru.qm"/>
   <loadqm file="xTuple.sk.qm"/>
   <loadqm file="xTuple.tr.qm"/>
-  <loadqm file="xTuple.ua.qm"/>
+  <loadqm file="xTuple.uk.qm"/>
   <loadqm file="xTuple.zh_hk.qm"/>
   <loadqm file="xTuple.zh.qm"/>
   <loadqm file="xTuple.zh_tw.qm"/>

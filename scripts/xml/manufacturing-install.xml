@@ -139,7 +139,7 @@
   <loadqm file="xTuple.fr.qm"/>
   <loadqm file="xTuple.hr.qm"/>
   <loadqm file="xTuple.it.qm"/>
-  <loadqm file="xTuple.jp.qm"/>
+  <loadqm file="xTuple.ja.qm"/>
   <loadqm file="xTuple.nl.qm"/>
   <loadqm file="xTuple.no.qm"/>
   <loadqm file="xTuple.pl.qm"/>
@@ -148,13 +148,12 @@
   <loadqm file="xTuple.ru.qm"/>
   <loadqm file="xTuple.sk.qm"/>
   <loadqm file="xTuple.tr.qm"/>
-  <loadqm file="xTuple.ua.qm"/>
+  <loadqm file="xTuple.uk.qm"/>
   <loadqm file="xTuple.zh_hk.qm"/>
   <loadqm file="xTuple.zh.qm"/>
   <loadqm file="xTuple.zh_tw.qm"/>
   <loadqm file="xtcore.ar_eg.qm"/>
   <loadqm file="xtcore.bg.qm"/>
-  <loadqm file="xtcore.cn.qm"/>
   <loadqm file="xtcore.cs.qm"/>
   <loadqm file="xtcore.de_at.qm"/>
   <loadqm file="xtcore.de_ch.qm"/>
@@ -168,7 +167,7 @@
   <loadqm file="xtcore.fr.qm"/>
   <loadqm file="xtcore.hr.qm"/>
   <loadqm file="xtcore.it.qm"/>
-  <loadqm file="xtcore.jp.qm"/>
+  <loadqm file="xtcore.ja.qm"/>
   <loadqm file="xtcore.nl.qm"/>
   <loadqm file="xtcore.no.qm"/>
   <loadqm file="xtcore.pl.qm"/>
@@ -177,12 +176,12 @@
   <loadqm file="xtcore.ru.qm"/>
   <loadqm file="xtcore.sk.qm"/>
   <loadqm file="xtcore.tr.qm"/>
-  <loadqm file="xtcore.ua.qm"/>
+  <loadqm file="xtcore.uk.qm"/>
   <loadqm file="xtcore.zh_hk.qm"/>
+  <loadqm file="xtcore.zh.qm"/>
   <loadqm file="xtcore.zh_tw.qm"/>
   <loadqm file="xtmfg.ar_eg.qm"/>
   <loadqm file="xtmfg.bg.qm"/>
-  <loadqm file="xtmfg.cn.qm"/>
   <loadqm file="xtmfg.cs.qm"/>
   <loadqm file="xtmfg.de_at.qm"/>
   <loadqm file="xtmfg.de_ch.qm"/>
@@ -196,7 +195,7 @@
   <loadqm file="xtmfg.fr.qm"/>
   <loadqm file="xtmfg.hr.qm"/>
   <loadqm file="xtmfg.it.qm"/>
-  <loadqm file="xtmfg.jp.qm"/>
+  <loadqm file="xtmfg.ja.qm"/>
   <loadqm file="xtmfg.nl.qm"/>
   <loadqm file="xtmfg.no.qm"/>
   <loadqm file="xtmfg.pl.qm"/>
@@ -205,8 +204,9 @@
   <loadqm file="xtmfg.ru.qm"/>
   <loadqm file="xtmfg.sk.qm"/>
   <loadqm file="xtmfg.tr.qm"/>
-  <loadqm file="xtmfg.ua.qm"/>
+  <loadqm file="xtmfg.uk.qm"/>
   <loadqm file="xtmfg.zh_hk.qm"/>
+  <loadqm file="xtmfg.zh.qm"/>
   <loadqm file="xtmfg.zh_tw.qm"/>
 
 </package>
