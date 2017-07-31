@@ -15,6 +15,7 @@ var _      = require("underscore"),
                      ],
         bankrec, bankrecimport, metric
         ;
+    this.timeout(20000);
 
     it("needs to save some metrics", function (done) {
      var sql = dblib.getMetricsQry(metricList);
@@ -176,7 +177,7 @@ var _      = require("underscore"),
       });
     });
 
-    it("should succeed with various bankrecimports", function (done) {
+    it.skip("should succeed with various bankrecimports", function (done) {
       var sql  = "select importBankrecCleared($1) as result;",
           i    = 0;
       _.each(bankrecimport, function (row) {
