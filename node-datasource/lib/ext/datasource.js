@@ -27,12 +27,12 @@ Backbone:true, _:true, X:true, __dirname:true, exports:true, module: true */
        * We make use of plv8's `SET plv8.start_proc = 'xt.js_init' feature.
        * This is only called the FIRST time a plv8 function is called for a
        * connection. Because of this, if a connection, when added to the pool
-       * happens to cause an error in the database during its first query, all
-       * of the steps we do for a persistent client connection in
-       * `xt.js_init();` are rolled back. The main thing we setup is the
-       * `search_path`. If an error happens on the first query for this
+       * happens to cause an error in the database during its first transaction
+       * that uses plv8, all of the steps we do for a persistent client
+       * connection in `xt.js_init();` are rolled back. The main thing we setup
+       * is the `search_path`. If an error happens on the first query for this
        * connection, the `search_path` will not be set the next time the pool's
-       * conneciton is used for a query.
+       * connection is used for a query.
        *
        * Because of this, on any emitted errors below in `connected()`, we
        * destroy that client from the pool.
