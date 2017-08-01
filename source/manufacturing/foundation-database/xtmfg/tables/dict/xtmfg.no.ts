@@ -6584,6 +6584,16 @@
         <source>Code:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../pkgscript/operationType.js" line="64"/>
+        <source>Missing Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../pkgscript/operationType.js" line="64"/>
+        <source>Please enter an Operation Type code and Description</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>operationTypes</name>
