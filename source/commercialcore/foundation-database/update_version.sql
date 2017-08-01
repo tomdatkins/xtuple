@@ -12,6 +12,6 @@ $$ LANGUAGE plpgsql;
 UPDATE pkghead SET pkghead_descrip   = 'xTuple Commercial Core package.',
                    pkghead_developer = 'xTuple',
                    pkghead_indev     = false,
-                   pkghead_version   = '4.11.0RC'
+                   pkghead_version   = '4.11.0'
  WHERE pkghead_name = 'xtcore';
 

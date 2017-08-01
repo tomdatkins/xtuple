@@ -5225,6 +5225,14 @@
         <source>Code:</source>
         <translation type="unfinished">コード:</translation>
     </message>
+    <message>
+        <source>Missing Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please enter an Operation Type code and Description</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>operationTypes</name>
