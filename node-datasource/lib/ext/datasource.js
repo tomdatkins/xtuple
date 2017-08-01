@@ -38,6 +38,7 @@ Backbone:true, _:true, X:true, __dirname:true, exports:true, module: true */
        * destroy that client from the pool.
        */
       destroyClientFromPool: function (client) {
+        client.destroying = true;
         X.pg.pools.all[JSON.stringify(this.creds)].destroy(client);
       },
 
@@ -165,6 +166,12 @@ Backbone:true, _:true, X:true, __dirname:true, exports:true, module: true */
           return callback(err);
         }
 
+        // If we got a client that was flagged to be destroyed, try again.
+        if (client.destroying) {
+          this.query(query, options, callback);
+          return;
+        }
+
         var that = this,
           queryCallback,
           errorHandlerCount = EventEmitter.listenerCount(client.connection, 'error'),
@@ -190,8 +197,6 @@ Backbone:true, _:true, X:true, __dirname:true, exports:true, module: true */
               X.err("Database Error! Last query was: ", lastQuery);
               X.err("Database Error! DB name = ", options.database);
             }
-
-            that.destroyClientFromPool(client);
           });
         }
 
@@ -219,6 +224,7 @@ Backbone:true, _:true, X:true, __dirname:true, exports:true, module: true */
           if (err) {
             // Set activeQuery for error event handler above.
             that.activeQuery = client.activeQuery ? client.activeQuery.text : 'unknown. See PostgreSQL log.';
+            that.destroyClientFromPool(client);
           }
 
           if (client.status && client.status.length) {
