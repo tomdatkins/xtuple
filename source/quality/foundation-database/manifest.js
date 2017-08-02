@@ -1,6 +1,6 @@
 {
   "name":          "quality_foundation",
-  "version":       "1.1.0",
+  "version":       "1.1.1",
   "comment":       "Quality Control foundation",
   "loadOrder":     2020,
   "defaultSchema": "xtquality",
