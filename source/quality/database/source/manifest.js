@@ -1,6 +1,6 @@
 {
   "name":         "quality",
-  "version":      "1.1.0",
+  "version":      "1.1.1",
   "comment":      "Quality Control",
   "loadOrder":    2021,
   "dependencies": ["manufacturing"],
