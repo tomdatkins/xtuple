@@ -1096,6 +1096,7 @@
     "public/indexes/voheadtax.sql",
     "public/indexes/voitemtax.sql",
     "public/indexes/womatlpost.sql",
+    "public/indexes/drop_duplicates.sql",
 
     "public/trigger_functions/accnt.sql",
     "public/trigger_functions/addr.sql",

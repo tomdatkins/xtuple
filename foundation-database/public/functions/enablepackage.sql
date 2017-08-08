@@ -1,12 +1,12 @@
 CREATE OR REPLACE FUNCTION enablePackage(TEXT) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   ppkgname  ALIAS FOR $1;
   _i        INTEGER := 0;
   _tabs     TEXT[] := ARRAY['cmd',  'cmdarg', 'image',  'metasql',
                             'priv', 'report', 'script', 'uiform', 'dict'];
-
+  _trigs   RECORD;
 BEGIN
   IF (version() < 'PostgreSQL 8.2') THEN
     RETURN -1;
@@ -17,13 +17,26 @@ BEGIN
             ' INHERIT public.' || _tabs[_i] || ';';
   END LOOP;
 
+-- Also find and ENable package triggers
+  FOR _trigs IN
+     SELECT tgrelid::regclass AS tbl, tgname
+     FROM pg_proc
+      JOIN pg_namespace ON (pronamespace=pg_namespace.oid)
+      JOIN pg_type ON (prorettype=pg_type.oid)
+      JOIN pg_trigger ON (tgfoid=pg_proc.oid)
+     WHERE nspname=ppkgname
+     AND typname = 'trigger'
+  LOOP
+    EXECUTE format('ALTER TABLE %s ENABLE TRIGGER %s', _trigs.tbl, _trigs.tgname);
+  END LOOP;
+
   RETURN 0;
 END;
 $$
 LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION enablePackage(INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   ppkgheadid    ALIAS FOR $1;

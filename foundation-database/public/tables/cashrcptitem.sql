@@ -17,7 +17,16 @@ SELECT
   xt.add_constraint('cashrcptitem', 'cashrcptitem_aropen_aropen_id_fkey',
                     'FOREIGN KEY (cashrcptitem_aropen_id) REFERENCES aropen(aropen_id)', 'public'),
   xt.add_constraint('cashrcptitem', 'cashrcptitem_cashrcpt_cashrcpt_id_fkey',
-                    'FOREIGN KEY (cashrcptitem_cashrcpt_id) REFERENCES cashrcpt(cashrcpt_id)', 'public');
+                    'FOREIGN KEY (cashrcptitem_cashrcpt_id) REFERENCES cashrcpt(cashrcpt_id)', 'public'),
+  xt.add_constraint('cashrcptitem', 'cashrcptitem_cust_id_fkey',
+                    'FOREIGN KEY (cashrcptitem_cust_id) REFERENCES custinfo(cust_id)', 'public');
+
+UPDATE cashrcptitem
+   SET cashrcptitem_cust_id = cashrcpt_cust_id
+  FROM cashrcpt
+ WHERE cashrcpt_id = cashrcptitem_cashrcpt_id
+   AND cashrcpt_cust_id IS NOT NULL
+   AND cashrcptitem_cust_id IS NULL;
 
 ALTER TABLE public.cashrcptitem ENABLE TRIGGER ALL;
 
