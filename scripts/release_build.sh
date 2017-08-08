@@ -305,9 +305,6 @@ git submodule update --init --recursive
 cd openrpt
 qmake
 make
-cd ../csvimp
-qmake
-make
 cd ..
 qmake
 make
