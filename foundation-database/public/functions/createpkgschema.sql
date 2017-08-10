@@ -1,5 +1,6 @@
 drop function if exists createPkgSchema(text, text);
 
+DROP FUNCTION IF EXISTS createPkgSchema(TEXT, TEXT, TEXT, TEXT, TEXT, BOOLEAN);
 CREATE OR REPLACE FUNCTION createPkgSchema(pname      TEXT,
                                            pcomment   TEXT,
                                            pversion   TEXT    default '',
