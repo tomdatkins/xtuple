@@ -209,10 +209,11 @@ DATABASES="empty quickstart demo"
 PACKAGES="inventory commercialcore"
 
 # translations
-mkdir -p $XTUPLEDIR/scripts/output/dict/postbooks
-mkdir -p $XTUPLEDIR/scripts/output/dict/commercialcore
-mkdir -p $XTUPLEDIR/scripts/output/dict/manufacturing
-mkdir -p $XTUPLEDIR/scripts/output/dict/distribution
+for PACKAGE in $EDITIONS $PACKAGES ; do
+  if [ "$PACKAGE" = postbooks -o -d ../private-extensions/source/$PACKAGE/foundation-database/*/tables/dict ] ; then
+    mkdir -p $XTUPLEDIR/scripts/output/dict/$PACKAGE
+  fi
+done
 
 cd ../qt-client
 lupdate -no-obsolete xtuple.pro
@@ -221,10 +222,10 @@ mv share/dict/*.qm ../xtuple/scripts/output/dict/postbooks
 
 cd ../private-extensions
 for PACKAGE in $EDITIONS $PACKAGES ; do
-  if [ "$PACKAGE" != postbooks -a "$PACKAGE" != inventory ] ; then
+  if [ "$PACKAGE" != postbooks -a -d ../xtuple/scripts/output/dict/$PACKAGE ] ; then
     lupdate -no-obsolete source/$PACKAGE/foundation-database/*/tables/dict/*_ts.pro
     lrelease source/$PACKAGE/foundation-database/*/tables/dict/*_ts.pro
-    cp source/$PACKAGE/foundation-database/*/tables/dict/*.qm ../xtuple/scripts/output/dict/$PACKAGE
+    mv source/$PACKAGE/foundation-database/*/tables/dict/*.qm ../xtuple/scripts/output/dict/$PACKAGE
   fi
 done
 
@@ -286,7 +287,7 @@ for EDITION in $EDITIONS enterprise ; do
           fi
         done
 
-        if [ "$SUBPACKAGE" != inventory ] ; then
+        if [ -d scripts/output/dict/$SUBPACKAGE ] ; then
           cp scripts/output/dict/$SUBPACKAGE/*.qm scripts/output/$FULLNAME
         fi
       done
@@ -305,10 +306,10 @@ git submodule update --init --recursive
 cd openrpt
 qmake
 make
-cd ..
+cd ../common
 qmake
 make
-cd ../updater
+cd ../../updater
 qmake
 make
 
