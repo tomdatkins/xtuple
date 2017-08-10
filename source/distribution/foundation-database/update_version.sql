@@ -12,5 +12,5 @@ INSERT INTO pkghead (
 UPDATE pkghead SET pkghead_descrip   = 'xTuple Distribution Edition package.',
                    pkghead_developer = 'xTuple',
                    pkghead_indev     = false,
-                   pkghead_version   = '4.11.0RC'
+                   pkghead_version   = '4.11.1'
  WHERE pkghead_name = 'xwd';

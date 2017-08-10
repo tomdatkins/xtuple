@@ -221,25 +221,25 @@
 <context>
     <name>WorkflowActivity</name>
     <message>
-        <location filename="../../../workflow/scripts/WorkflowActivity.js" line="33"/>
-        <location filename="../../../workflow/scripts/WorkflowActivity.js" line="37"/>
+        <location filename="../../../workflow/scripts/WorkflowActivity.js" line="36"/>
+        <location filename="../../../workflow/scripts/WorkflowActivity.js" line="40"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../workflow/scripts/WorkflowActivity.js" line="34"/>
-        <location filename="../../../workflow/scripts/WorkflowActivity.js" line="38"/>
+        <location filename="../../../workflow/scripts/WorkflowActivity.js" line="37"/>
+        <location filename="../../../workflow/scripts/WorkflowActivity.js" line="41"/>
         <source>Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../workflow/scripts/WorkflowActivity.js" line="35"/>
-        <location filename="../../../workflow/scripts/WorkflowActivity.js" line="39"/>
+        <location filename="../../../workflow/scripts/WorkflowActivity.js" line="38"/>
+        <location filename="../../../workflow/scripts/WorkflowActivity.js" line="42"/>
         <source>Type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../workflow/scripts/WorkflowActivity.js" line="220"/>
+        <location filename="../../../workflow/scripts/WorkflowActivity.js" line="228"/>
         <source>Database Error</source>
         <translation type="unfinished"></translation>
     </message>

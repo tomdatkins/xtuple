@@ -172,6 +172,11 @@ function sGetInfo()
 {
   try
   {
+
+    var crm = toolbox.executeQuery("SELECT crmacct_id FROM crmacct WHERE crmacct_cust_id=<? value('custid') ?>;", {custid: _cust.id()});
+    if (crm.first())
+      _quickItem.setCRMAcctId(crm.value("crmacct_id"));
+
     if (mywindow.modeState() == 1) // new mode
     {
       if (!_insideRepCreated && metrics.boolean("UseInsideRep"))

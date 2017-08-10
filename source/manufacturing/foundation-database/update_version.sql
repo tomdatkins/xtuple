@@ -3,7 +3,7 @@ select createpkgschema('xtmfg', 'This file is part of the xtmfg Package for xTup
 UPDATE pkghead SET pkghead_descrip   = 'xTuple Manufacturing Edition package.',
                    pkghead_developer = 'xTuple',
                    pkghead_indev     = false,
-                   pkghead_version   = '4.11.0RC'
+                   pkghead_version   = '4.11.1'
  WHERE pkghead_name = 'xtmfg';
 
 DELETE FROM xtmfg.pkgscript where script_name = 'databaseInformation';
