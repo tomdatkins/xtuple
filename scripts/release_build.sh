@@ -263,7 +263,7 @@ for EDITION in $EDITIONS enterprise ; do
       fi
       FULLNAME=$NAME-$MAJ$MIN$PAT
       mkdir scripts/output/$FULLNAME
-      cp scripts/xml/$NAME.xml scripts/output/$FULLNAME/package.xml
+      xsltproc -o scripts/output/$FULLNAME/package.xml scripts/xml/build.xsl scripts/xml/$NAME.xml
       SUBPACKAGES=postbooks
       if [ "$EDITION" != postbooks ] ; then
         SUBPACKAGES="$SUBPACKAGES $PACKAGES"
