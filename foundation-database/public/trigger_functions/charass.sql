@@ -97,13 +97,9 @@ CREATE TRIGGER charassHistoryTrigger BEFORE INSERT OR UPDATE OR DELETE ON charas
 
 CREATE OR REPLACE FUNCTION _charassuniquetrigger()
   RETURNS trigger AS $$
--- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
-  IF (NEW.charass_target_type = 'LS') THEN
-  -- Exclusion for Lot/Serial characteristics as they are retained in the system (#27761)
-    RETURN NEW;
-  END IF;
 
   IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND OLD.charass_char_id <> NEW.charass_char_id)) THEN
     IF EXISTS(SELECT true FROM charass
