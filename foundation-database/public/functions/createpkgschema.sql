@@ -13,7 +13,7 @@ CREATE OR REPLACE FUNCTION createPkgSchema(pname      TEXT,
 DECLARE
   _namespaceoid BIGINT := -1;
   _tabs         TEXT[] := ARRAY['cmd',  'cmdarg', 'image',  'metasql',
-                                'priv', 'report', 'script', 'uiform'] ;
+                                'priv', 'report', 'script', 'uiform', 'dict'] ;
   _pkgtab       TEXT;
 
 BEGIN
