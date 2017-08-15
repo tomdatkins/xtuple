@@ -460,7 +460,7 @@ select createDoctype(26, --pDocAssNum
 select createDoctype(27, --pDocAssNum
                      'RA', --pType
                      'RA', --pDocAss
-                     '', --pCharAss
+                     'RA', --pCharAss
                      'Return Authorization', --pFull
                      'rahead', --pTable
                      'rahead_id', --pKey
