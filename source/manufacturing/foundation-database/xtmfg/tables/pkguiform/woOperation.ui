@@ -150,7 +150,7 @@ terms of the EULA.</comment>
         <item row="0" column="0">
          <widget class="XLabel" name="_standardOperLit">
           <property name="text">
-           <string>Standard &amp;Oper.:</string>
+           <string>Standard &amp;Operation:</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -283,6 +283,9 @@ terms of the EULA.</comment>
          <widget class="XLabel" name="_optypeLit">
           <property name="text">
            <string>Operation Type:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
