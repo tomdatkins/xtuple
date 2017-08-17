@@ -136,8 +136,7 @@ BEGIN
     SELECT 'INVI', _invcitemid, charass_char_id, charass_value, charass_default, charass_price
     FROM coitem
       JOIN charass ON charass_target_type = 'SI' AND charass_target_id = coitem_id
-      JOIN char    ON char_id = charass_char_id
-      JOIN charuse ON char_id = charuse_char_id AND charuse_target_type = 'INVI'
+      JOIN charuse ON charass_char_id = charuse_char_id AND charuse_target_type = 'INVI'
     WHERE coitem_id = _r.coitem_id;
 
 --  Find and mark any Lot/Serial invdetail records associated with this bill
