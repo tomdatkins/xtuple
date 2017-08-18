@@ -13,7 +13,7 @@ BEGIN
   END IF;
 
   FOR _i IN ARRAY_LOWER(_tabs,1)..ARRAY_UPPER(_tabs,1) LOOP
-    EXECUTE 'ALTER TABLE ' || ppkgname || '.pkg' || _tabs[_i] ||
+    EXECUTE 'ALTER TABLE IF EXISTS ' || ppkgname || '.pkg' || _tabs[_i] ||
             ' INHERIT public.' || _tabs[_i] || ';';
   END LOOP;
 
@@ -27,7 +27,7 @@ BEGIN
      WHERE nspname=ppkgname
      AND typname = 'trigger'
   LOOP
-    EXECUTE format('ALTER TABLE %s ENABLE TRIGGER %s', _trigs.tbl, _trigs.tgname);
+    EXECUTE format('ALTER TABLE %I ENABLE TRIGGER %I', _trigs.tbl, _trigs.tgname);
   END LOOP;
 
   RETURN 0;
