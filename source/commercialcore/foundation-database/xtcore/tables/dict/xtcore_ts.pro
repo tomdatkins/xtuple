@@ -29,7 +29,6 @@ SOURCES = \
 TRANSLATIONS =  xtcore.base.ts	\
                 xtcore.ar_eg.ts	\
                 xtcore.bg.ts	\
-                xtcore.cn.ts	\
                 xtcore.cs.ts	\
                 xtcore.de.ts	\
                 xtcore.de_at.ts	\
@@ -43,7 +42,7 @@ TRANSLATIONS =  xtcore.base.ts	\
                 xtcore.fr_ca.ts	\
                 xtcore.hr.ts	\
                 xtcore.it.ts	\
-                xtcore.jp.ts	\
+                xtcore.ja.ts	\
                 xtcore.nl.ts	\
                 xtcore.no.ts	\
                 xtcore.pl.ts	\
@@ -52,6 +51,7 @@ TRANSLATIONS =  xtcore.base.ts	\
                 xtcore.ru.ts	\
                 xtcore.sk.ts	\
                 xtcore.tr.ts	\
-                xtcore.ua.ts	\
+                xtcore.uk.ts	\
                 xtcore.zh_hk.ts	\
+                xtcore.zh.ts    \
                 xtcore.zh_tw.ts

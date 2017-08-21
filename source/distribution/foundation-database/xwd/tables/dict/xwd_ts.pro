@@ -64,7 +64,6 @@ SOURCES = \
 TRANSLATIONS =  xwd.base.ts	\
                 xwd.ar_eg.ts	\
                 xwd.bg.ts	\
-                xwd.cn.ts	\
                 xwd.cs.ts	\
                 xwd.de.ts	\
                 xwd.de_at.ts	\
@@ -78,7 +77,7 @@ TRANSLATIONS =  xwd.base.ts	\
                 xwd.fr_ca.ts	\
                 xwd.hr.ts	\
                 xwd.it.ts	\
-                xwd.jp.ts	\
+                xwd.ja.ts	\
                 xwd.nl.ts	\
                 xwd.no.ts	\
                 xwd.pl.ts	\
@@ -87,6 +86,7 @@ TRANSLATIONS =  xwd.base.ts	\
                 xwd.ru.ts	\
                 xwd.sk.ts	\
                 xwd.tr.ts	\
-                xwd.ua.ts	\
+                xwd.uk.ts	\
                 xwd.zh_hk.ts	\
+                xwd.zh.ts       \
                 xwd.zh_tw.ts
