@@ -1876,6 +1876,7 @@
     "public/trigger_functions/charuse.sql",
 
     "public/patches/backupinvbal.sql",
+    "public/patches/clearcntctsel.sql",
     "public/patches/drop_obsolete.sql",
     "public/patches/fixflcol.sql",
     "public/patches/fixflcol2.sql",
