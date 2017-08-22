@@ -315,6 +315,8 @@ make
 
 cd ${XTUPLEDIR}
 
+LD_LIBRARY_PATH=${XTUPLEDIR}/../qt-client/openrpt/lib:${XTUPLEDIR}/../qt-client/lib:$LD_LIBRARY_PATH
+
 for EDITION in $EDITIONS ; do
   for DATABASE in $DATABASES ; do
     if [ "$EDITION" != distribution -o "$DATABASE" != demo ] ; then
