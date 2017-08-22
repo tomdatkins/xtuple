@@ -11,8 +11,8 @@ BEGIN
     SELECT curr_rate INTO _currrate
     FROM curr_rate
     WHERE ( (NEW.apopen_curr_id=curr_id)
-    AND ( NEW.apopen_distdate BETWEEN curr_effective
-                                 AND curr_expires) );
+    AND ( COALESCE(NEW.apopen_distdate, NEW.apopen_docdate) BETWEEN curr_effective
+                                                                AND curr_expires) );
     IF (FOUND) THEN
       NEW.apopen_curr_rate := _currrate;
     ELSE
