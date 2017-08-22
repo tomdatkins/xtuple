@@ -217,14 +217,64 @@ function sOpen()
   }
   else if(params.modcode=='Q')
   {
-    params.qthead_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();
-    window = "qtest";
+    if (params.wftype == 'R')
+    {
+      if(!privileges.value("MaintainWorkOrders"))
+      {
+        priv_warn();
+        return;
+      }
+      var sql = "SELECT wo_id FROM xt.qthead "
+              + "JOIN wo ON (formatwonumber(wo_id) = qthead_ordnumber AND qthead_ordtype = 'WO') "
+              + "WHERE qthead_id = <? value('id') ?>;";
+      var qry = toolbox.executeQuery(sql, {id: _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString()});
+      if (qry.first())
+        params.wo_id = qry.value("wo_id");
+      else
+      {
+        QMessageBox.information(mywindow, qsTr("Rework Error"),
+                   qsTr("This Quality step does not have a valid Rework operation as it is not related to a Work Order"));
+        return;
+      }
+      params.mode = "new";
+      params.opntype = "REWORK";
+      window = "woOperation";
+    }
+    else if(params.wftype == 'S')
+    {
+      if(!privileges.value("CreateScrapTrans"))
+      {
+        priv_warn();
+        return;
+      }
+      var sql = "SELECT qthead_item_id AS item, qthead_warehous_id AS whs "
+            + "FROM xt.qthead "
+            + "WHERE qthead_id = <? value('id') ?>;";
+      var qry = toolbox.executeQuery(sql, {id: _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString()});
+      if (qry.first())
+      {
+        params.item_id = qry.value("item");
+        params.warehous_id = qry.value("whs");
+      }
+      params.mode = "new";
+      window = "scrapTrans";
+    }
+    else
+    {
+      if(!privileges.value("MaintainQualityTests"))
+      {
+        priv_warn();
+        return;
+      }
+      params.qthead_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();
+      window = "qtest";
+    }
   }
 
   if(window != '')
   {
     sAssignUser();
-    if(["issueWoMaterialItem","postProduction","qtest"].indexOf(window) >= 0)
+    if(["issueWoMaterialItem","postProduction","qtest","woOperation"].indexOf(window) >= 0)
     {
       var wnd = toolbox.openWindow(window, mywindow, Qt.ApplicationModal, Qt.Dialog);
       toolbox.lastWindow().set(params);

@@ -9,8 +9,6 @@
   terms of the EULA.
 */
 
-debugger;
-
 var _mode = "new";
 var _wooperid = -1;
 var _captive = false;
@@ -66,7 +64,7 @@ _womatl.addColumn(qsTr("Qty. Issued"),        -1, Qt.AlignRight,  true, "womatl_
 _womatl.addColumn(qsTr("Due Date"),           -1, Qt.AlignCenter, true, "womatl_duedate");
 
 // Populate Operation Type combo
-_optype.populate("SELECT opntype_id, opntype_descrip FROM xtmfg.opntype");
+_optype.populate("SELECT opntype_id, opntype_descrip, opntype_code FROM xtmfg.opntype");
 
 function set(params)
 {
@@ -79,6 +77,9 @@ function set(params)
       _wo.setId(params.wo_id);
       _wo.setReadOnly(true);
     }
+
+    if("opntype" in params)
+      _optype.code = params.opntype;
 
     if("wooper_id" in params)
     {
@@ -95,19 +96,32 @@ function set(params)
         _mode = "new";
         _wrkcnt.type = XComboBox.WorkCentersActive;
         _stdopn.clear;
-        _stdopn.populate("SELECT -1, TEXT('None') AS stdopn_number, TEXT('None') AS stdopn_number2 "
-                        +" UNION "
-                        +"SELECT stdopn_id, stdopn_number, stdopn_number "
-                        +"  FROM xtmfg.stdopn "
-                        +" WHERE (stdopn_active) "
-                        +" ORDER BY stdopn_number" );
-
+        var p = {};
+        if("opntype" in params)
+          p.opntype = params.opntype;
+        var sql = "<? if not exists('opntype') ?> "
+                +"SELECT -1 AS id, TEXT('None') AS stdopn_number, TEXT('None') AS stdopn_number2 "
+                +" UNION "
+                +"<? endif ?>"
+                +"SELECT stdopn_id AS id, stdopn_number, stdopn_number "
+                +"  FROM xtmfg.stdopn "
+                +"  LEFT OUTER JOIN xtmfg.opntype ON stdopn_opntype_id=opntype_id "
+                +" WHERE (stdopn_active) "
+                +" <? if exists('opntype') ?>"
+                +"   AND opntype_code = <? value('opntype') ?>"
+                +"<? endif ?>"
+                +" ORDER BY stdopn_number" ;
+        var qry = toolbox.executeQuery(sql, p);
+        _stdopn.populate(qry);
+        if("opntype" in params)
+          sHandleStdopn(_stdopn.id());
         _setupTimeConsumedLit.enabled = false;
         _setupTimeRemainingLit.enabled = false;
         _setupComplete.enabled = false;
         _runTimeConsumedLit.enabled = false;
         _runTimeRemainingLit.enabled = false;
         _runComplete.enabled = false;
+        
       }
       else if (params.mode == "edit")
       {
