@@ -76,8 +76,7 @@ FORMS += ../pkguiform/bbom.ui                                         \
          ../pkguiform/workOrderOperations.ui                          \
          ../pkguiform/wotc.ui
 
-SOURCES = ../pkgscript/databaseInformation.js                         \
-          ../pkgscript/ParameterGroupUtils.js                         \
+SOURCES = ../pkgscript/ParameterGroupUtils.js                         \
           ../pkgscript/bbom.js                                        \
           ../pkgscript/bbomItem.js                                    \
           ../pkgscript/bboms.js                                       \
@@ -141,7 +140,6 @@ SOURCES = ../pkgscript/databaseInformation.js                         \
           ../pkgscript/employees.js                                   \
           ../pkgscript/initMenu.js                                    \
           ../pkgscript/item.js                                        \
-          ../pkgscript/itemAvailabilityWorkbench.js                   \
           ../pkgscript/itemSite.js                                    \
           ../pkgscript/items.js                                       \
           ../pkgscript/laborRate.js                                   \
