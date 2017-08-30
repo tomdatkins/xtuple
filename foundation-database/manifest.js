@@ -1877,6 +1877,7 @@
 
     "public/patches/backupinvbal.sql",
     "public/patches/clearcntctsel.sql",
+    "public/patches/clearitemlocdist.sql",
     "public/patches/drop_obsolete.sql",
     "public/patches/fixflcol.sql",
     "public/patches/fixflcol2.sql",
