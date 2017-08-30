@@ -147,7 +147,8 @@ BEGIN
           raitem_orig_coitem_id,
           raitem_cos_accnt_id,
           raitem_scheddate,
-          raitem_coitem_itemsite_id)
+          raitem_coitem_itemsite_id,
+          raitem_notes)
         VALUES (
           pRaheadid,
           _newline,
@@ -179,7 +180,8 @@ BEGIN
            _r.shipitemsite_id
          ELSE
            NULL
-         END );
+         END,
+         _r.coitem_memo );
       END IF;
 
     END LOOP;
