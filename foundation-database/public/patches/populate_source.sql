@@ -452,7 +452,7 @@ select createDoctype(26, --pDocAssNum
                      '', --pWidget
                      'join pohead on poitem_pohead_id=pohead_id join vendinfo on pohead_vend_id=vend_id ' ||
                         'join itemsite on poitem_itemsite_id=itemsite_id join item on itemsite_item_id=item_id', --pJoin
-                     '', --pParam
+                     'poitem_id', --pParam
                      '', --pUi
                      '', --pPriv
                      'Purchase' --pModule
@@ -460,7 +460,7 @@ select createDoctype(26, --pDocAssNum
 select createDoctype(27, --pDocAssNum
                      'RA', --pType
                      'RA', --pDocAss
-                     '', --pCharAss
+                     'RA', --pCharAss
                      'Return Authorization', --pFull
                      'rahead', --pTable
                      'rahead_id', --pKey
@@ -522,7 +522,7 @@ select createDoctype(30, --pDocAssNum
                      '', --pWidget
                      'join quhead on quitem_quhead_id=quhead_id join custinfo on quhead_cust_id=cust_id ' ||
                         'join itemsite on quitem_itemsite_id=itemsite_id join item on itemsite_item_id=item_id', --pJoin
-                     '', --pParam
+                     'quitem_id', --pParam
                      '', --pUi
                      '', --pPriv
                      'Sales' --pModule
@@ -557,7 +557,7 @@ select createDoctype(32, --pDocAssNum
                      '', --pWidget
                      'join cohead on coitem_cohead_id=cohead_id join custinfo on cohead_cust_id=cust_id ' ||
                         'join itemsite on coitem_itemsite_id=itemsite_id join item on itemsite_item_id=item_id', --pJoin
-                     '', --pParam
+                     'coitem_id', --pParam
                      '', --pUi
                      '', --pPriv
                      'Sales' --pModule
@@ -706,7 +706,7 @@ select createDoctype(41, --pDocAssNum
                      'W', --pType
                      'W', --pDocAss
                      'W', --pCharAss
-                     'Work Order', --pFull
+                     'Work Order Item', --pFull
                      'wo', --pTable
                      'wo_id', --pKey
                      'formatWonumber(wo_id)', --pNumber
@@ -717,6 +717,23 @@ select createDoctype(41, --pDocAssNum
                      '', --pParam
                      '', --pUi
                      '', --pPriv
+                     'Manufacture' --pModule
+);
+SELECT createDocType(NULL, --pDocAssNum
+                     'WO', --pType
+                     'WO', --pDocAss
+                     'WO', --pCharAss
+                     'Work Order', --pFull
+                     'wo', --pTable
+                     'wo_id', --pKey
+                     'formatWonumber(wo_id)', --pNumber
+                     'formatWonumber(wo_id)', --pName
+                     'formatWonumber(wo_id)', --pDesc
+                     '', --pWidget
+                     '', --pJoin
+                     'wo_id', --pParam
+                     'workOrder', --pUi
+                     '', -- pPriv, set this to 'MaintainWorkOrders' when Incident #28911 is implemented
                      'Manufacture' --pModule
 );
 select createDoctype(42, --pDocAssNum
@@ -845,7 +862,7 @@ select createDoctype(NULL, --pDocAssNum
 SELECT createDoctype(NULL, --pDocAssNum
                      'PR', --pType
                      '', --pDocAss
-                     'PR', --pCharAss
+                     '', --pCharAss
                      'Purchase Request', --pFull
                      'pr', --pTable
                      'pr_id', --pKey
