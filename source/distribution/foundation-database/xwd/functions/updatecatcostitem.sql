@@ -10,19 +10,19 @@ BEGIN
   SELECT catcost_item_id, catcost_wholesale_price, catcost_price_uom, catcost_po_cost,
          catcost_po_uom, catcost_itemsrcp_qtybreak, catcost_vend_number,
          catcost_cost_invvendoruomratio, catcost_warehous_code, catcost_upc
-  INTO _c
+    INTO _c
     FROM xwd.catcost
    WHERE catcost_id=pCatcostId;
 
   IF (NOT FOUND) THEN
-    RAISE EXCEPTION 'Could not find catcost with catcost_id %.'
-                    '[xtuple: updateCatCostItem, -1, %]', pCatcostId, pCatcostId;
+    RAISE EXCEPTION 'Could not find catcost with catcost_id %. [xtuple: updateCatCostItem, -1, %]',
+                    pCatcostId, pCatcostId;
   END IF;
 
-  UPDATE item 
+  UPDATE item
   SET item_listcost=_c.catcost_wholesale_price,
       item_price_uom_id=uom_id
-  FROM uom 
+  FROM uom
   WHERE uom_name = _c.catcost_price_uom
   AND item_id = _c.catcost_item_id;
 
@@ -34,20 +34,24 @@ BEGIN
   FROM vendinfo
   WHERE vend_number = _c.catcost_vend_number
   AND itemsrc_item_id = _c.catcost_item_id;
-  
-  IF _c.catcost_warehous_code = 'ALL' THEN _whsid := -1;
+
+  IF _c.catcost_warehous_code = 'ALL' THEN
+    _whsid := -1;
   ELSE
-  SELECT COALESCE(warehous_id, -1) INTO _whsid FROM whsinfo WHERE warehous_code = _c.catcost_warehous_code;
+    SELECT COALESCE(warehous_id, -1) INTO _whsid
+      FROM whsinfo
+     WHERE warehous_code = _c.catcost_warehous_code;
   END IF;
+
   UPDATE itemsrcp
-  SET itemsrcp_qtybreak=_c.catcost_itemsrcp_qtybreak,
-      itemsrcp_price=_c.catcost_po_cost,
-      itemsrcp_warehous_id= _whsid
-  FROM  itemsrc
-  WHERE  itemsrcp_itemsrc_id = itemsrc_id
-  AND itemsrc_item_id = _c.catcost_item_id;
+     SET itemsrcp_qtybreak=_c.catcost_itemsrcp_qtybreak,
+         itemsrcp_price=_c.catcost_po_cost,
+         itemsrcp_warehous_id= _whsid
+    FROM itemsrc
+   WHERE itemsrcp_itemsrc_id = itemsrc_id
+     AND itemsrc_item_id = _c.catcost_item_id;
 
   RETURN pCatcostId;
 
 END;
-$$ LANGUAGE 'plpgsql';
+$$ LANGUAGE plpgsql;
