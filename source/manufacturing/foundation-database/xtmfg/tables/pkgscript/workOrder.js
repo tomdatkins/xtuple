@@ -16,15 +16,6 @@ var _dueDate    = mywindow.findChild("_dueDate");
 var _startDate  = mywindow.findChild("_startDate");
 var _warehouse  = mywindow.findChild("_warehouse");
 
-// Add W/O specific Characteristics to the Characteristics tab
-_charLayout = toolbox.widgetGetLayout(mywindow.findChild("_itemcharView"));
-_woCharLit = toolbox.createWidget("XLabel", mywindow, "_woCharLit");
-_woCharLit.text = "Work Order Characteristics:";
-_woChar = toolbox.createWidget("CharacteristicsWidget", mywindow, "_woChar");
-_charLayout.addWidget(_woCharLit,0,0);
-_charLayout.addWidget(_woChar,0,0);
-_woChar.setType('WO');
-
 function set(params)
 {
   if("mode" in params)
@@ -249,10 +240,5 @@ function setCal()
   }
 }
 
-function sUpdateWOSettings(woid)
-{
-  _woChar.setId(mywindow.id());
-}
-
 _woIndentedList["populateMenu(QMenu *, QTreeWidgetItem *, int)"].connect(populateMenu);
-mywindow["newId(int)"].connect(sUpdateWOSettings);
+

@@ -13,7 +13,6 @@
     "xt/triggers/wowf_trigger.sql",
     "xtmfg/tables/booitem.sql",
     "xtmfg/tables/stdopn.sql",
-    "xtmfg/tables/wo_chars.sql",
     "xtmfg/tables/wooper.sql",
     "xtmfg/tables/wrkcnt.sql",
     "xtmfg/tables/operationType.sql",
