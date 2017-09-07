@@ -10,7 +10,7 @@
 -- involvement in the development process, this Package is not free software.
 -- By using this software, you agree to be bound by the terms of the EULA.
 --
-SELECT qphead_id,
+SELECT DISTINCT qphead_id,
        qphead_qplantype_id AS plan_type,
        qplantype_code as plantype,
        qphead_code AS code,

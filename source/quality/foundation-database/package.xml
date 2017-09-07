@@ -47,7 +47,8 @@
   <script        file="source/xt/trigger_functions/inv_hist_did_change.sql"   />
   <script        file="source/xt/trigger_functions/inv_detail_did_change.sql"   />
   <script        file="source/xt/trigger_functions/triggerwooperquality.sql"   />
-  <script        file="source/xt/trigger_functions/wo_quality_trigger.sql"   />  
+  <script        file="source/xt/trigger_functions/wo_quality_trigger.sql"   />
+  <script        file="source/xt/trigger_functions/quality_wf_update.sql"   />
   <script        file="source/public/tables/invhist.sql"   />
   <script        file="source/public/tables/invdetail.sql"   />
   <script        file="source/public/tables/wooper.sql"   />
