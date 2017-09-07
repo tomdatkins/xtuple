@@ -27,13 +27,15 @@ COMMENT ON COLUMN xt.wftype.wftype_id_col IS 'The id column of the base table';
 DELETE FROM xt.wftype 
 WHERE (wftype_tblname = 'powf' AND wftype_table = 'pohead')
 OR    (wftype_tblname = 'prjwf' AND wftype_table = 'prj')
-OR    (wftype_tblname = 'coheadwf' AND wftype_table = 'cohead');
+OR    (wftype_tblname = 'coheadwf' AND wftype_table = 'cohead')
+OR    (wftype_tblname = 'wowf');
 
 INSERT INTO xt.wftype (wftype_table, wftype_tblname, wftype_code, wftype_src_tblname, wftype_uuid_col, 
-                       wftype_parentid_col, wftype_id_col, wftype_number_col )
-VALUES ('pohead', 'powf', 'PO', 'potypewf', 'obj_uuid', 'pohead_potype_id', 'pohead_id', 'pohead_number'),
-       ('prj', 'prjwf', 'PRJ', 'prjtypewf', 'obj_uuid', 'prj_prjtype_id', 'prj_id', 'prj_number'),
-       ('cohead', 'coheadwf', 'SO', 'saletypewf', 'obj_uuid', 'cohead_saletype_id', 'cohead_id', 'cohead_number');
+                       wftype_parentid_sql, wftype_parentid_col, wftype_id_col, wftype_number_col )
+VALUES ('pohead', 'powf', 'PO', 'potypewf', 'obj_uuid', NULL, 'pohead_potype_id', 'pohead_id', 'pohead_number'),
+       ('prj', 'prjwf', 'PRJ', 'prjtypewf', 'obj_uuid', NULL, 'prj_prjtype_id', 'prj_id', 'prj_number'),
+       ('cohead', 'coheadwf', 'SO', 'saletypewf', 'obj_uuid', NULL, 'cohead_saletype_id', 'cohead_id', 'cohead_number'),
+       ('wo', 'wowf', 'WO', 'plancodewf', 'obj_uuid', 'SELECT itemsite_plancode_id FROM itemsite WHERE itemsite_id = $1', 'wo_itemsite_id', 'wo_id', 'wo_number');
 
 -- Remove Obsolete Entries
 DELETE FROM xt.wftype WHERE wftype_table IS NULL;

@@ -8,7 +8,6 @@
     "update_version.sql",
     "xt/tables/plancodewf.sql",
     "xt/tables/wowf.sql",
-    "xt/tables/wftype.sql",
     "xt/tables/acttype.sql",
     "xt/triggers/wowf_trigger.sql",
     "xtmfg/tables/booitem.sql",
