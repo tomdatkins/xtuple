@@ -1884,6 +1884,7 @@
     "public/patches/fixflcol2.sql",
     "public/patches/fixacl.sql",
     "public/patches/fixapapply.sql",
+    "public/patches/fixcheckitemcurrrate.sql",
     "public/patches/fixinvhist.sql",
     "public/patches/movedict.sql",
     "public/patches/populate_ccpay_card_type.sql",
