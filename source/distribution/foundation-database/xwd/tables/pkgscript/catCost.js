@@ -1,4 +1,4 @@
-/*
+﻿/*
   This file is part of the xwd Package for xTuple ERP,
   and is Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.  It
   is licensed to you under the xTuple End-User License Agreement ("the
@@ -14,6 +14,7 @@ include("xwdErrors");
 try
 {
   var _item_number                  = mywindow.findChild("_item_number");
+  var _provider                     = mywindow.findChild("_provider");
   var _wholesale_price              = mywindow.findChild("_wholesale_price");
   var _price_uom                    = mywindow.findChild("_price_uom");
   var _po_cost                      = mywindow.findChild("_po_cost");
@@ -77,8 +78,13 @@ function populate()
       _vend_number.setText(data.value("catcost_vend_number"));
       _invvendoruomratio.setDouble(data.value("catcost_cost_invvendoruomratio"));
       _upc.setText(data.value("catcost_upc"));
+<<<<<<< Updated upstream
       _warehous_code.setText(data.value("warehous_code"))
       _provider.setText(data.value("provider"));
+=======
+      _warehous_code.setText(data.value("catcost_warehous_code")); 
+      _provider.setText(data.value("catcost_provider"));     
+>>>>>>> Stashed changes
     }
     else if (data.lastError().type != QSqlError.NoError)
     {
