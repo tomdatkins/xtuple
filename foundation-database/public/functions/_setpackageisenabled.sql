@@ -58,17 +58,17 @@ CREATE OR REPLACE FUNCTION _setPackageIsEnabled(pId INTEGER, pEnabled BOOLEAN)
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  _result INTEGER;
+  _pkgname TEXT;
 
 BEGIN
-  SELECT _setPackageIsEnabled(pkghead_name, pEnabled) INTO _result
+  SELECT pkghead_name INTO _pkgname
     FROM pkghead
    WHERE pkghead_id = pId;
-  IF _result IS NULL THEN
+  IF _pkgname IS NULL THEN
     RAISE EXCEPTION '_setPackageIsEnabled could not find an extension with id % [xtuple: _setPackageIsEnabled, -2, %]',
                     pId, pId;
   END IF;
 
-  RETURN _result;
+  RETURN _setPackageIsEnabled(_pkgname, pEnabled);
 END;
 $$ LANGUAGE plpgsql;
