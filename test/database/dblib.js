@@ -7,9 +7,10 @@
     datasource = require('../../node-datasource/lib/ext/datasource').dataSource,
     config     = require('../../node-datasource/config');
 
-  exports.CHARTEXT = 0; // must match qt-client/guiclient/characteristic.h
+  exports.CHARTEXT = 0; // must match qt-client/widgets/characteristicAssignment.cpp
   exports.CHARLIST = 1;
   exports.CHARDATE = 2;
+  exports.CHARNUMB = 3;
 
   exports.datasource = datasource;
 
