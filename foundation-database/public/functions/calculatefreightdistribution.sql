@@ -1,9 +1,11 @@
+DROP FUNCTION IF EXISTS calculatefreightdistribution(INTEGER, INTEGER, TEXT, NUMERIC, BOOLEAN);
 CREATE OR REPLACE FUNCTION calculatefreightdistribution(
     pVoheadid integer,
     pCostElement integer,
     pDistrType text,
     pFreight numeric,
-    pUpdateCosts boolean DEFAULT FALSE)
+    pUpdateCosts boolean DEFAULT FALSE,
+    pCurrId integer DEFAULT NULL)
   RETURNS SETOF freightdistr AS $$
 -- Copyright (c) 1999-2016 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
@@ -31,7 +33,7 @@ BEGIN
   END IF;
 
   FOR _item IN
-    SELECT vohead_curr_id, vohead_distdate,
+    SELECT COALESCE(pCurrId, vohead_curr_id) AS vohead_curr_id, vohead_distdate,
            itemsite_id, itemsite_costmethod, item_id,
            CASE WHEN itemsite_costmethod = 'A' THEN 
                      costcat_asset_accnt_id
@@ -117,7 +119,7 @@ BEGIN
                               itemcost_posted, itemcost_actcost, itemcost_updated,
                               itemcost_curr_id)
           SELECT _item.item_id, pCostElement, false,
-                 _item.vohead_distdate, (_row.freightdistr_amount / _item.qty), _item.vohead_distdate,
+                 CURRENT_DATE, (_row.freightdistr_amount / _item.qty), CURRENT_DATE,
                  _item.vohead_curr_id
           WHERE NOT EXISTS (SELECT 1 FROM itemcost 
                             WHERE itemcost_item_id = _item.item_id
