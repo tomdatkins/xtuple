@@ -8,8 +8,8 @@ CREATE OR REPLACE FUNCTION public.createimage(
 DECLARE
   _id integer;
 BEGIN
-  INSERT INTO image (image_id, image_name, image_descrip, image_data) 
-             VALUES (nextval('image_image_id_seq'), pTitle, pDescription, pImageData)
+  INSERT INTO image (image_name, image_descrip, image_data) 
+             VALUES (pTitle, pDescription, pImageData)
   RETURNING image_id INTO _id;
   return _id;
 END;

@@ -1,11 +1,11 @@
-DROP FUNCTION IF EXISTS public.importdocument(documentimport) cascade;
-DROP VIEW IF EXISTS documentimport;
+DROP FUNCTION IF EXISTS public.importdocument(documentimport) CASCADE;
+DROP VIEW IF EXISTS public.documentimport;
 
-CREATE OR REPLACE VIEW documentimport AS 
+CREATE OR REPLACE VIEW public.documentimport AS 
 SELECT 'target number'::TEXT AS target_code, 'target type'::TEXT AS target_type, 'title'::TEXT AS doc_title, 'file_data'::BYTEA AS file_data,
        'file location/url'::TEXT AS file_url;
 
-CREATE OR REPLACE VIEW imagesimport AS 
+CREATE OR REPLACE VIEW public.imagesimport AS 
 SELECT 'target number'::TEXT AS target_code, 'target type'::TEXT AS target_type, 'title'::TEXT AS doc_title, 'file_data'::TEXT AS file_data,
        'file location/url'::TEXT AS file_url;
        
