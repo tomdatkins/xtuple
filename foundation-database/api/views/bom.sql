@@ -9,11 +9,13 @@ SELECT dropIfExists('VIEW', 'bom', 'api');
     bomhead_docnum AS document_number,
     bomhead_revisiondate AS revision_date,
     bomhead_batchsize AS batch_size,
-    bomhead_requiredqtyper AS total_qty_per
+    bomhead_requiredqtyper AS total_qty_per,
+    rev_status AS revision_status
   FROM
-    bomhead, item
+    bomhead, item, rev
   WHERE
-    (bomhead_item_id=item_id);
+    (bomhead_item_id=item_id)
+    AND (bomhead_rev_id=rev_id);
 
 
 GRANT ALL ON TABLE api.bom TO xtrole;
@@ -30,7 +32,8 @@ COMMENT ON VIEW api.bom IS 'Bill of Material Header';
      NEW.revision_date,
      NEW.document_number,
      COALESCE(NEW.batch_size,0),
-     NEW.total_qty_per);
+     NEW.total_qty_per,
+     NEW.revision_status);
  
     CREATE OR REPLACE RULE "_UPDATE" AS
     ON UPDATE TO api.bom DO INSTEAD
@@ -41,7 +44,8 @@ COMMENT ON VIEW api.bom IS 'Bill of Material Header';
      NEW.revision_date,
      NEW.document_number,
      COALESCE(NEW.batch_size,0),
-     NEW.total_qty_per);
+     NEW.total_qty_per,
+     NEW.revision_status);
 
     CREATE OR REPLACE RULE "_DELETE" AS
     ON DELETE TO api.bom DO INSTEAD

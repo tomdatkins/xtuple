@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION saveBomHead(integer,text,date,text,numeric,numeric)
+CREATE OR REPLACE FUNCTION saveBomHead(integer,text,date,text,numeric,numeric,text)
   RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
@@ -9,6 +9,7 @@ DECLARE
   pDocumentNumber ALIAS FOR $4;
   pBatchSize ALIAS FOR $5;
   pRequiredQtyPer ALIAS FOR $6;
+  pStatus ALIAS FOR $7;
   _seq INTEGER;
   _p RECORD;
   _revid INTEGER;
@@ -54,7 +55,7 @@ BEGIN
 
     IF (NOT FOUND) THEN  -- This is a new bomhead record
       IF LENGTH(pRevision) > 0 THEN  -- We need to create a revision record   
-        SELECT createbomrev(pItemid, pRevision) INTO _revid;
+        SELECT createbomrev(pItemid, pRevision, pStatus) INTO _revid;
         
         UPDATE bomhead SET
           bomhead_revisiondate		= pRevisiondate,
@@ -95,7 +96,7 @@ BEGIN
         RETURN _p.bomhead_id;
         
       ELSE -- Need a new revision
-        SELECT createbomrev(pItemid, pRevision) INTO _revid;
+        SELECT createbomrev(pItemid, pRevision, pStatus) INTO _revid;
         
         UPDATE bomhead SET
           bomhead_revisiondate		= pRevisiondate,
