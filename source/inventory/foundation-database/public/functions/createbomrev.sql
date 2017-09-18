@@ -1,10 +1,11 @@
 
-CREATE OR REPLACE FUNCTION createBomRev(INTEGER, TEXT) RETURNS NUMERIC AS $$
+CREATE OR REPLACE FUNCTION createBomRev(INTEGER, TEXT, TEXT) RETURNS NUMERIC AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
   pItemid ALIAS FOR $1;
   pRevision ALIAS FOR $2;
+  pStatus ALIAS FOR $3;
   _check INTEGER;
   _oldrevid INTEGER;
   _newrevid INTEGER;
@@ -33,7 +34,8 @@ BEGIN
     UPDATE rev SET rev_status = 'A' WHERE (rev_id=_newrevid);
     SELECT bomhead_id INTO _test
     FROM bomhead
-    WHERE (bomhead_item_id=pItemid);
+    WHERE (bomhead_item_id=pItemid)
+      AND (bomhead_rev_id=-1);
     IF (FOUND) THEN
       UPDATE bomhead SET bomhead_rev_id=_newrevid,bomhead_revision=UPPER(pRevision),bomhead_revisiondate=current_date
       WHERE ((bomhead_item_id=pItemid) AND (bomhead_rev_id=-1));
@@ -90,6 +92,10 @@ BEGIN
       WHERE (bomitemsub_bomitem_id=_r.bomitem_id);
 
     END LOOP;
+  END IF;
+
+  IF pStatus IS NOT NULL THEN
+    UPDATE rev SET rev_status = pStatus WHERE (rev_id=_newrevid);
   END IF;
 
   RETURN _newrevid;
