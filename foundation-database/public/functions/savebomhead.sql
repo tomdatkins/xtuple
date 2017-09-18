@@ -1,15 +1,9 @@
-CREATE OR REPLACE FUNCTION saveBomHead(integer,text,date,text,numeric,numeric,text)
+DROP FUNCTION IF EXISTS saveBomHead(INTEGER, TEXT, DATE, TEXT, NUMERIC, NUMERIC) CASCADE;
+CREATE OR REPLACE FUNCTION saveBomHead(pItemid INTEGER, pRevision TEXT, pRevisionDate DATE, pDocumentNumber TEXT, pBatchSize NUMERIC, pRequiredQtyPer NUMERIC, pStatus TEXT DEFAULT NULL)
   RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
-  pItemid ALIAS FOR $1;
-  pRevision ALIAS FOR $2;
-  pRevisionDate ALIAS FOR $3;
-  pDocumentNumber ALIAS FOR $4;
-  pBatchSize ALIAS FOR $5;
-  pRequiredQtyPer ALIAS FOR $6;
-  pStatus ALIAS FOR $7;
   _seq INTEGER;
   _p RECORD;
   _revid INTEGER;
