@@ -1,11 +1,8 @@
-
-CREATE OR REPLACE FUNCTION createBomRev(INTEGER, TEXT, TEXT) RETURNS NUMERIC AS $$
+DROP FUNCTION IF EXISTS createBomRev(INTEGER, TEXT);
+CREATE OR REPLACE FUNCTION createBomRev(pItemid INTEGER, pRevision TEXT, pStatus TEXT DEFAULT NULL) RETURNS NUMERIC AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/EULA for the full text of the software license.
 DECLARE
-  pItemid ALIAS FOR $1;
-  pRevision ALIAS FOR $2;
-  pStatus ALIAS FOR $3;
   _check INTEGER;
   _oldrevid INTEGER;
   _newrevid INTEGER;
@@ -32,14 +29,10 @@ BEGIN
   --Update/Insert new bom records
   IF (_oldrevid = -1) THEN
     UPDATE rev SET rev_status = 'A' WHERE (rev_id=_newrevid);
-    SELECT bomhead_id INTO _test
-    FROM bomhead
-    WHERE (bomhead_item_id=pItemid)
-      AND (bomhead_rev_id=-1);
-    IF (FOUND) THEN
-      UPDATE bomhead SET bomhead_rev_id=_newrevid,bomhead_revision=UPPER(pRevision),bomhead_revisiondate=current_date
-      WHERE ((bomhead_item_id=pItemid) AND (bomhead_rev_id=-1));
-    ELSE
+    UPDATE bomhead SET bomhead_rev_id=_newrevid,bomhead_revision=UPPER(pRevision),bomhead_revisiondate=current_date
+    WHERE ((bomhead_item_id=pItemid) AND (bomhead_rev_id=-1))
+    RETURNING bomhead_id INTO _test;
+    IF (_test IS NULL) THEN
       INSERT INTO bomhead (bomhead_item_id,bomhead_rev_id,bomhead_revision,bomhead_revisiondate)
         VALUES (pItemid,_newrevid,UPPER(pRevision),current_date);
     END IF;
@@ -94,7 +87,7 @@ BEGIN
     END LOOP;
   END IF;
 
-  IF pStatus IS NOT NULL THEN
+  IF (pStatus IS NOT NULL AND (pStatus!='A' OR _oldrevid=-1)) THEN
     UPDATE rev SET rev_status = pStatus WHERE (rev_id=_newrevid);
   END IF;
 
