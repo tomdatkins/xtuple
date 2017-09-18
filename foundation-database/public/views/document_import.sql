@@ -1,5 +1,4 @@
-DROP FUNCTION IF EXISTS public.importdocument(documentimport) CASCADE;
-DROP VIEW IF EXISTS public.documentimport;
+DROP VIEW IF EXISTS public.documentimport CASCADE;
 
 CREATE OR REPLACE VIEW public.documentimport AS 
 SELECT 'target number'::TEXT AS target_code, 'target type'::TEXT AS target_type, 'title'::TEXT AS doc_title, 'file_data'::BYTEA AS file_data,
