@@ -996,6 +996,7 @@
     "public/tables/aropen.sql",
     "public/tables/asohist.sql",
     "public/tables/atlas.sql",
+    "public/tables/atlasmap.sql",
     "public/tables/bankaccnt.sql",
     "public/tables/bankrecimport.sql",
     "public/tables/bankrecitem.sql",
