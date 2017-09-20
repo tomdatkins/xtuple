@@ -1890,6 +1890,7 @@
     "public/patches/fixcheckitemcurrrate.sql",
     "public/patches/fixinvhist.sql",
     "public/patches/movedict.sql",
+    "public/patches/pkgdict.sql",
     "public/patches/populate_ccpay_card_type.sql",
     "public/patches/populate_source.sql",
     "public/patches/populate_charuse.sql",
