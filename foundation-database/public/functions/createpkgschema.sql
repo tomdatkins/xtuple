@@ -3,7 +3,7 @@ DROP FUNCTION IF EXISTS createPkgSchema(TEXT, TEXT, TEXT, TEXT, TEXT, BOOLEAN);
 
 DROP FUNCTION IF EXISTS createPkgSchema(TEXT, TEXT, TEXT, TEXT, TEXT, BOOLEAN);
 CREATE OR REPLACE FUNCTION createPkgSchema(pname      TEXT,
-                                           pcomment   TEXT,
+                                           pcomment   TEXT    default '',
                                            pversion   TEXT    default '',
                                            pdescrip   TEXT    default '',
                                            pdeveloper TEXT    default '',
@@ -84,7 +84,9 @@ BEGIN
     END IF;
   END LOOP;
 
-  EXECUTE format('COMMENT ON SCHEMA %I IS %L;', pname, pcomment);
+  IF (pcomment != '') THEN
+    EXECUTE format('COMMENT ON SCHEMA %I IS %L;', pname, pcomment);
+  END IF;
 
   IF NOT EXISTS(SELECT 1 FROM pkghead where pkghead_name = pname) THEN
     INSERT INTO pkghead (pkghead_name,      pkghead_descrip, pkghead_version,
