@@ -7,6 +7,7 @@
  * involvement in the development process, this Package is not free software.
  * By using this software, you agree to be bound by the terms of the EULA.
  */
+//debugger;
 include("xtQuality");
 
 mywindow.setWindowTitle(qsTr("Quality Tests"));
@@ -36,6 +37,7 @@ with(_list)
   addColumn(qsTr("Item #"),           -1,  Qt.AlignLeft,  true,  "item_number"   );
   addColumn(qsTr("Reason Code"),      -1,  Qt.AlignLeft,  false, "qtrsncode_code"   );
   addColumn(qsTr("Release Code"),     -1,  Qt.AlignLeft,  false, "qtrlscode_code"   );
+  addColumn(qsTr("Rev Date"),         -1,  Qt.AlignLeft,  false, "qthead_start_date"   );
 }
 mywindow.sFillList();
 
@@ -44,13 +46,22 @@ var _statusSql = "SELECT 1 AS id, '" + xtquality.status["O"] + "' AS code "
             + "UNION SELECT 2, '" + xtquality.status["P"] + "' "
             + "UNION SELECT 3, '" + xtquality.status["F"] + "' "
             + "UNION SELECT 4, '" + xtquality.status["C"] + "' ";
+var _qtrlsSql = "SELECT qtrlscode_id, (qtrlscode_code) AS qtrlscode FROM xt.qtrlscode ORDER BY qtrlscode_code ";
+var _qtrsSql = "SELECT qtrsncode_id, (qtrsncode_code) AS qtrsncode FROM xt.qtrsncode ORDER BY qtrsncode_code  ";
+         
 mywindow.parameterWidget().appendComboBox(qsTr("Test Status"),"testStatus", _statusSql);
 mywindow.parameterWidget().append(qsTr("Show Completed"), "showComplete", ParameterWidget.Exists);
 mywindow.parameterWidget().append(qsTr("Item"), "itemid", ParameterWidget.Item);
+mywindow.parameterWidget().append(qsTr("Sart Date"), "startDate", ParameterWidget.Date);
+mywindow.parameterWidget().append(qsTr("End Date"), "endDate", ParameterWidget.Date);
+mywindow.parameterWidget().appendComboBox(qsTr("Release Code"),"qtrlscode", _qtrlsSql);
+mywindow.parameterWidget().appendComboBox(qsTr("Reason Code"),"qtrsncode", _qtrsSql);
+
 
 function setParams(params)
 {
   newParams = xtquality.extraParams(params);
+
   return newParams;
 }  
 
@@ -170,5 +181,3 @@ function sPopulateMenu(pMenu, selected)
 _list["populateMenu(QMenu*,XTreeWidgetItem*,int)"].connect(sPopulateMenu);
 _list["doubleClicked(QModelIndex)"].connect(sEdit);
 _new.triggered.connect(sNew);
-
-
