@@ -122,6 +122,7 @@
     "public/views/orderhead.sql",
     "public/views/orderitem.sql",
     "xt/views/ordhead.sql",
+    "api/views/bom.sql",
     "api/views/itemtransformation.sql",
     "api/views/lotserial.sql",
     "api/views/lotserialchar.sql",
