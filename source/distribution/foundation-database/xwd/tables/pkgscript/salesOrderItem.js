@@ -9,32 +9,20 @@
   terms of the EULA.
 */
 
-debugger;
 try
 {
-  // change the screen name
   mywindow.setWindowTitle(qsTr("Sales Order Item Detail"));
 
-  // permissions
   var _tabs = mywindow.findChild("_tabs");
   var _costsTab = mywindow.findChild("_costsTab");
-  _tabs.setCurrentIndex(toolbox.tabTabIndex(_tabs,_costsTab));
-  var _costsTabEnabled = toolbox.tabSetTabEnabled(_tabs,toolbox.tabTabIndex(_tabs,_costsTab),privileges.value("ViewSOItemDetailTab"));
+  _tabs.setTabEnabled(_costsTab, privileges.value("ViewSOItemDetailTab"));
+
   if(!privileges.check("ViewSOItemUnitCost"))
   {
     mywindow.findChild("_unitCostLit").visible=false;
     mywindow.findChild("_unitCost").visible=false;
   }
-//  if(!privileges.check("ViewSOItemListCost"))
-//  {
-//    mywindow.findChild("_listPriceLit").visible=false;
-//    mywindow.findChild("_listPrice").visible=false;
-//  }
-//  if(!privileges.check("ViewSOItemAvgCost"))
-//  {
-//    mywindow.findChild("_avgCostLit").visible=false;
-//    mywindow.findChild("_avgCost").visible=false;
-//  }
+
   if(!privileges.check("ViewSOItemHistoryCost"))
   {
     mywindow.findChild("_historyCostsButton").visible=false;
@@ -98,49 +86,61 @@ try
   _spec.clicked.connect(sSpec);
 
   var _nbrOrdersLit = toolbox.createWidget("QLabel", mywindow, "_nbrOrdersLit");
-  _nbrOrdersLit.alignment = 130; // Qt::AlignRight(2) + Qt::AlignVCenter (128)
+  _nbrOrdersLit.alignment = Qt.AlignRight + Qt.AlignVCenter;
   _nbrOrdersLit.text = "Orders:";
   _layout2.insertWidget(3, _nbrOrdersLit);
 
   var _nbrOrders = toolbox.createWidget("QLabel", mywindow, "_nbrOrders");
-  _nbrOrders.alignment = 130; // Qt::AlignRight(2) + Qt::AlignVCenter (128)
+  _nbrOrders.alignment = Qt.AlignRight + Qt.AlignVCenter;
   _nbrOrders.text = "data";
   _layout2.insertWidget(4, _nbrOrders);
 
   var _qtyPerOrderLit = toolbox.createWidget("QLabel", mywindow, "_qtyPerOrderLit");
-  _qtyPerOrderLit.alignment = 130; // Qt::AlignRight(2) + Qt::AlignVCenter (128)
+  _qtyPerOrderLit.alignment = Qt.AlignRight + Qt.AlignVCenter;
   _qtyPerOrderLit.text = "Qty. per Order:";
   _layout2.insertWidget(5, _qtyPerOrderLit);
 
   var _qtyPerOrder = toolbox.createWidget("QLabel", mywindow, "_qtyPerOrder");
-  _qtyPerOrder.alignment = 130; // Qt::AlignRight(2) + Qt::AlignVCenter (128)
+  _qtyPerOrder.alignment = Qt.AlignRight + Qt.AlignVCenter;
   _qtyPerOrder.text = "data";
   _layout2.insertWidget(6, _qtyPerOrder);
 
   var _onhanduom = toolbox.createWidget("XLabel", mywindow, "_onhanduom");
-  _onhanduom.alignment = 130; // Qt::AlignRight(2) + Qt::AlignVCenter (128)
+  _onhanduom.alignment = Qt.AlignRight + Qt.AlignVCenter;
   _onhanduom.setPrecision(mainwindow.qtyVal());
   _layout3.addWidget(_onhanduom, 0, 2);
 
   var _allocateduom = toolbox.createWidget("XLabel", mywindow, "_allocateduom");
-  _allocateduom.alignment = 130; // Qt::AlignRight(2) + Qt::AlignVCenter (128)
+  _allocateduom.alignment = Qt.AlignRight + Qt.AlignVCenter;
   _allocateduom.setPrecision(mainwindow.qtyVal());
   _layout3.addWidget(_allocateduom, 1, 2);
 
   var _unallocateduom = toolbox.createWidget("XLabel", mywindow, "_unallocateduom");
-  _unallocateduom.alignment = 130; // Qt::AlignRight(2) + Qt::AlignVCenter (128)
+  _unallocateduom.alignment = Qt.AlignRight + Qt.AlignVCenter;
   _unallocateduom.setPrecision(mainwindow.qtyVal());
   _layout3.addWidget(_unallocateduom, 2, 2);
 
   var _onorderuom = toolbox.createWidget("XLabel", mywindow, "_onorderuom");
-  _onorderuom.alignment = 130; // Qt::AlignRight(2) + Qt::AlignVCenter (128)
+  _onorderuom.alignment = Qt.AlignRight + Qt.AlignVCenter;
   _onorderuom.setPrecision(mainwindow.qtyVal());
   _layout3.addWidget(_onorderuom, 3, 2);
 
   var _availableuom = toolbox.createWidget("XLabel", mywindow, "_availableuom");
-  _availableuom.alignment = 130; // Qt::AlignRight(2) + Qt::AlignVCenter (128)
+  _availableuom.alignment = Qt.AlignRight + Qt.AlignVCenter;
   _availableuom.setPrecision(mainwindow.qtyVal());
   _layout3.addWidget(_availableuom, 4, 2);
+
+  var _costsTabIsDefault = new XCheckBox(qsTr("Make this the default tab"), mywindow);
+  _costsTabIsDefault.objectName = "_costsTabIsDefault";
+  _costsTabIsDefault.forgetful  = true;
+  _costsTabIsDefault.checked    = preferences.boolean("salesOrderItem/costsTabIsDefault");
+
+  var _layoutCostsTab = toolbox.widgetGetLayout(mywindow.findChild("_costGroup"));
+  if (_layoutCostsTab)
+    _layoutCostsTab.addWidget(_costsTabIsDefault, _layoutCostsTab.rowCount(), 0);
+
+  if (_costsTabIsDefault.checked)
+    _tabs.setCurrentIndex(_tabs.indexOf(_costsTab));
 
   _item.newId.connect(sHandleButtons);
   _item.newId.connect(sPopulateHistory);
@@ -151,6 +151,7 @@ try
   _prev.clicked.connect(sId);
   _cancel.clicked.connect(sLostSale);
   _qtyUOM.newID.connect(sAvailabilityUOM);
+  _costsTabIsDefault.toggled.connect(sSaveCostsTabIsDefault);
 }
 catch (e)
 {
@@ -161,6 +162,11 @@ catch (e)
 function sId()
 {
   _id = mywindow.id();
+}
+
+function sSaveCostsTabIsDefault()
+{
+  preferences.set("salesOrderItem/costsTabIsDefault", _costsTabIsDefault.checked);
 }
 
 function sHandleButtons()
@@ -258,8 +264,6 @@ function sItemAliasSearch()
     var newdlg = toolbox.openWindow("itemAliasList", mywindow, Qt.ApplicationModal, Qt.Dialog);
     toolbox.lastWindow().set(params);
     var result = newdlg.exec();
-//    QMessageBox.critical(mywindow, "salesOrderItem",
-//                         qsTr("result=") + result);
     if (result != 0)
     {
       if (result > 0)
@@ -438,8 +442,6 @@ function sGetInfo()
 {
   try
   {
-//    QMessageBox.critical(mywindow, "Debug", ("modeType=" + mywindow.modeType()));
-//    QMessageBox.critical(mywindow, "Debug", ("mode=" + mywindow.mode()));
     if (_custid == -1)
     {
       _custid = mywindow.custid();
