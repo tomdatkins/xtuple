@@ -16,7 +16,7 @@ SELECT
 ALTER TABLE public.rev DROP CONSTRAINT IF EXISTS rev_check;
 
 SELECT 
-  xt.add_constraint('rev', 'rev_pkey',             'PRIMARY_KEY (rev_id)', 'public'),
+  xt.add_constraint('rev', 'rev_pkey',             'PRIMARY KEY (rev_id)', 'public'),
   xt.add_constraint('rev', 'rev_rev_number_check', $$CHECK(rev_number <> '')$$, 'public'),
   xt.add_constraint('rev', 'rev_rev_number_key',   'UNIQUE (rev_number, rev_target_type, rev_target_id)', 'public'),
   xt.add_constraint('rev', 'rev_check',            $$CHECK ((rev_status = 'P' OR rev_status = 'A' OR rev_status = 'I' OR rev_status = 'S') AND (rev_target_type = 'BOM' OR rev_target_type = 'BOO'))$$, 'public');
