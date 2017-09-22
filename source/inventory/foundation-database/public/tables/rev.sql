@@ -23,7 +23,6 @@ SELECT
 
 ALTER TABLE public.rev ENABLE TRIGGER ALL;
 
+SELECT xt.add_index('rev', 'rev_target_id, rev_target_type', 'rev_rev_target_id_rev_target_type_idx', 'btree', 'public');
+
 COMMENT ON TABLE rev IS 'Used to track document revision information';
-
-CREATE INDEX IF NOT EXISTS rev_target ON rev USING btree (rev_target_type, rev_target_id);
-
