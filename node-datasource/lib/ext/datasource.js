@@ -270,6 +270,14 @@ Backbone:true, _:true, X:true, __dirname:true, exports:true, module: true */
             client.destroying = true;
 
             done(err);
+
+            // Now that the client has been destroyed, for the pool to function
+            // correctly, we need to add one back to take it's place.
+            // @see: https://github.com/brianc/node-postgres/issues/1460
+            X.pg.pools.all[JSON.stringify(that.creds)].acquire(function (err, newClient) {
+              // But we don't actually need it, so release it back to the pool.
+              X.pg.pools.all[JSON.stringify(that.creds)].release(newClient);
+            });
           } else {
             done();
           }
