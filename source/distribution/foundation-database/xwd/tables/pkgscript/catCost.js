@@ -78,13 +78,8 @@ function populate()
       _vend_number.setText(data.value("catcost_vend_number"));
       _invvendoruomratio.setDouble(data.value("catcost_cost_invvendoruomratio"));
       _upc.setText(data.value("catcost_upc"));
-<<<<<<< Updated upstream
       _warehous_code.setText(data.value("warehous_code"))
       _provider.setText(data.value("provider"));
-=======
-      _warehous_code.setText(data.value("catcost_warehous_code")); 
-      _provider.setText(data.value("catcost_provider"));     
->>>>>>> Stashed changes
     }
     else if (data.lastError().type != QSqlError.NoError)
     {
