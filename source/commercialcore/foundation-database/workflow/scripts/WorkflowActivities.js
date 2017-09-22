@@ -267,6 +267,7 @@ function sOpen()
         return;
       }
       params.qthead_id = _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString();
+      params.mode = "edit";
       window = "qtest";
     }
   }
