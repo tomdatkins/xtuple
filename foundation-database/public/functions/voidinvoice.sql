@@ -1,7 +1,9 @@
 DROP FUNCTION IF EXISTS voidInvoice(INTEGER);
-CREATE OR REPLACE FUNCTION voidInvoice(pInvcheadid INTEGER,
-                                       pItemlocSeries INTEGER DEFAULT NULL,
-                                       pPreDistributed BOOLEAN DEFAULT FALSE) RETURNS INTEGER AS $$
+DROP FUNCTION IF EXISTS voidInvoice(pInvcheadid INTEGER, pItemlocSeries INTEGER, pPreDistributed BOOLEAN);
+CREATE OR REPLACE FUNCTION voidInvoice(pInvcheadid     INTEGER,
+                                       pItemlocSeries  INTEGER DEFAULT NULL,
+                                       pPreDistributed BOOLEAN DEFAULT FALSE,
+                                       pDistDate       DATE    DEFAULT NULL) RETURNS INTEGER AS $$
 -- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
@@ -79,7 +81,7 @@ BEGIN
   SELECT fetchGLSequence() INTO _glSequence;
   SELECT fetchJournalNumber('AR-IN') INTO _glJournal;
 
-  _glDate := COALESCE(_p.invchead_gldistdate, _p.invchead_invcdate);
+  _glDate := COALESCE(pDistDate, _p.invchead_gldistdate, _p.invchead_invcdate);
 
 -- the 1st MC iteration used the cohead_orderdate so we could get curr exch
 -- gain/loss between the sales and invoice dates, but see issue 3892.  leave
