@@ -90,12 +90,15 @@ function sDelete()
 
 function sPopulateMenu(pMenu, selected)
 {
-  var item = selected.text(1);
+  var item   = selected.text(1);
   var menuItem;
-      menuItem = pMenu.addAction(qsTr("Edit..."));
-      menuItem.triggered.connect(sEdit);
-      menuItem = pMenu.addAction(qsTr("Mark Inactive..."));
-      menuItem.triggered.connect(sDelete);
+
+  menuItem = pMenu.addAction(qsTr("Edit"));
+  menuItem.triggered.connect(sEdit);
+
+  menuItem = pMenu.addAction(qsTr("Mark Inactive"));
+  menuItem.triggered.connect(sDelete);
+  menuItem.enabled = selected.rawValue("qspec_active");
 }
 
 _list["populateMenu(QMenu*,XTreeWidgetItem*,int)"].connect(sPopulateMenu);
