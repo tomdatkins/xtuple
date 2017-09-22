@@ -374,7 +374,8 @@ BEGIN
 			      _p.vohead_distdate) AS vodist_amount_base,
 		   vodist_amount,
 		   vodist_accnt_id, vodist_expcat_id, vodist_costelem_id,
-		   vodist_freight_vohead_id, vodist_freight_dist_method, vohead_curr_id
+		   vodist_freight_vohead_id, vodist_freight_dist_method,
+                   vohead_curr_id, vohead_distdate
             FROM vodist
             JOIN vohead ON vodist_vohead_id=vohead_id
             WHERE ( (vohead_id=pVoheadid)
@@ -395,7 +396,7 @@ BEGIN
                 SUM(freightdistr_amount) AS freightdistr_amount
          FROM calculatefreightdistribution(_d.vodist_freight_vohead_id, _d.vodist_costelem_id,
                                            _d.vodist_freight_dist_method, _d.vodist_amount, true,
-                                           _d.vohead_curr_id)
+                                           _d.vohead_curr_id, _d.vohead_distdate)
         GROUP BY freightdistr_accnt_id 
       LOOP
         PERFORM insertIntoGLSeries( _sequence, 'A/P', 'VO', text(_p.vohead_number),
