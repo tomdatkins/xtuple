@@ -34,6 +34,7 @@ with(_list)
   addColumn(qsTr("Test Status"),      50,  Qt.AlignLeft,  true,  "status"   );
   addColumn(qsTr("Quality Plan"),    100,  Qt.AlignLeft,  true,  "qphead_code"   );
   addColumn(qsTr("Item #"),           -1,  Qt.AlignLeft,  true,  "item_number"   );
+  addColumn(qsTr("Lot/Serial#"),      -1,  Qt.AlignLeft,  true,  "ls_number"   );
   addColumn(qsTr("Reason Code"),      -1,  Qt.AlignLeft,  false, "qtrsncode_code"   );
   addColumn(qsTr("Release Code"),     -1,  Qt.AlignLeft,  false, "qtrlscode_code"   );
 }
