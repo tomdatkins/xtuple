@@ -15,7 +15,7 @@ qtrsncode_code, qtrlscode_code,
 qphead_id, qphead_code, qphead_rev_number, 
 qthead_item_id, item_number, 
 qthead_warehous_id, warehous_code AS site, 
-ls_number
+ls_number, qthead_start_date
 FROM xt.qthead
 LEFT JOIN xt.qphead ON qthead_qphead_id = qphead_id
 LEFT JOIN xt.qtrlscode ON qthead_rlscode_id = qtrlscode_id
@@ -45,5 +45,16 @@ WHERE ((true)
 <? if exists("itemid") ?>
   AND (qthead_item_id = <? value("itemid") ?>)
 <? endif ?>
+<? if exists("startDate") ?>
+  AND (qthead_start_date >= <? value("startDate") ?>)
+<? endif ?>
+<? if exists("endDate") ?>
+  AND (qthead_start_date <= <? value("endDate") ?>)
+<? endif ?>
+<? if exists("qtrlscode") ?>
+ AND (qtrlscode_id = <? value("qtrlscode") ?>)
+<? endif ?>
+<? if exists("qtrsncode" ?>
+ AND (qtrsncode_id = <? value("qtrsncode") ?>)
+<? endif ?>
 );
-
