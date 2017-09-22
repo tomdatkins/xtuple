@@ -23,7 +23,6 @@
     "frozen/tables/rahist.sql",
     "frozen/tables/raitem.sql",
     "frozen/tables/raitemls.sql",
-    "frozen/tables/rev.sql",
     "frozen/tables/shipitemlocrsrv.sql",
     "frozen/tables/shipitemrsrv.sql",
     "frozen/tables/createreserve.sql",

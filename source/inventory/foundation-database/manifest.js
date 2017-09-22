@@ -7,6 +7,7 @@
     "search_path.sql",
     "public/tables/lsdetail.sql",
     "public/tables/rahead.sql",
+    "public/tables/rev.sql",
     "public/tables/tohead.sql",
     "xt/tables/towf.sql",
     "xt/tables/wftype.sql",
