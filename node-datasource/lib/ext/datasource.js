@@ -272,18 +272,22 @@ Backbone:true, _:true, X:true, __dirname:true, exports:true, module: true */
             done(err);
 
             // Now that the client has been destroyed, for the pool to function
-            // correctly, we need to add one back to take it's place.
+            // correctly, we need to add one back to take its place.
             // @see: https://github.com/brianc/node-postgres/issues/1460
-            X.pg.pools.all[JSON.stringify(that.creds)].acquire(function (err, newClient) {
+            X.pg.pools.all[JSON.stringify(that.creds)].acquire(function (newErr, newClient) {
               // But we don't actually need it, so release it back to the pool.
               X.pg.pools.all[JSON.stringify(that.creds)].release(newClient);
+
+              // Once the client has been added to the pool, call the callback.
+              callback(err, result);
             });
           } else {
             done();
+
+            // Call the callback.
+            callback(err, result);
           }
 
-          // Call the call back.
-          callback(err, result);
         };
 
         // node-postgres supports parameters as a second argument. These will be options.parameters
