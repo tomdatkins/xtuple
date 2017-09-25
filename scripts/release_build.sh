@@ -25,7 +25,7 @@ declare -a CONFIG=(\
   "private-extensions skip    skip     skip  not-needed"                                  \
   "qt-client          skip    skip     skip  not-needed"                                  \
   "updater            default skip     skip  not-needed"                                  \
-  "xtdesktop          skip    [demp]   true  not-yet-used"                                \
+  "xtdesktop          skip    [demp]   skip  resources"                                   \
   "xtte               skip    [demp]   true  extensions/time_expense/foundation-database" \
   "nodejsshim         skip    [dem]    true  foundation-database"                         \
   "xtdash             skip    [dem]    true  foundation-database"                         \
@@ -326,7 +326,6 @@ make
 cd ../../updater
 qmake
 make
-
 cd ${XTUPLEDIR}
 
 export LD_LIBRARY_PATH=${XTUPLEDIR}/../qt-client/openrpt/lib:${XTUPLEDIR}/../qt-client/lib:$LD_LIBRARY_PATH
