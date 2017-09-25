@@ -1,5 +1,11 @@
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:stylesheet version="1.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:fn="http://www.w3.org/2005/xpath-functions"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema">
  <xsl:output omit-xml-declaration="yes"/>
+
+ <xsl:param name="no-translations" as="xs:boolean" select="false()"/>
+
  <xsl:template match="@*|node()">
   <xsl:copy>
    <xsl:apply-templates select="@*|node()"/>
@@ -20,6 +26,38 @@
  <xsl:template match="add-prerequisites">
   <xsl:apply-templates select="document('shared.xml')/shared/prerequisites/add"/>
  </xsl:template>
+
+ <xsl:template match="@updater">
+   <xsl:choose>
+     <xsl:when test = "$no-translations">
+       <xsl:copy><xsl:apply-templates select="@*|node()"/></xsl:copy>
+     </xsl:when>
+     <!-- xsltproc can't use fn:replace yet
+     <xsl:when test = "fn:replace(../@updater, '^([0-9]+\.[0-9]+).*', '$1') >= 2.5">
+       <xsl:copy><xsl:apply-templates select="@*|node()"/></xsl:copy>
+     </xsl:when>
+     -->
+     <xsl:otherwise>
+       <xsl:attribute name="updater">2.5.0Beta</xsl:attribute>
+     </xsl:otherwise>
+   </xsl:choose>
+ </xsl:template>
+
+ <!-- (if not not including translations) == (if including translations) -->
+ <xsl:template match="loadqm">
+   <!--
+   <xsl:if test = "not($no-translations)" >
+     <xsl:copy><xsl:apply-templates select="@*|node()"/></xsl:copy>
+   </xsl:if>
+   -->
+   <xsl:choose>
+     <xsl:when test = "$no-translations"> </xsl:when>
+     <xsl:otherwise>
+       <xsl:copy><xsl:apply-templates select="@*|node()"/></xsl:copy>
+     </xsl:otherwise>
+   </xsl:choose>
+ </xsl:template>
+
  <xsl:template match="xTuple-translations">
   <xsl:apply-templates select="document('shared.xml')/shared/translations/xTuple"/>
  </xsl:template>
@@ -59,4 +97,5 @@
  <xsl:template match="xtmfg">
   <xsl:apply-templates select="node()"/>
  </xsl:template>
+
 </xsl:stylesheet>

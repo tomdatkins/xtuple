@@ -12,7 +12,6 @@ select xt.add_column('dict', 'dict_created', 'TIMESTAMP WITH TIME ZONE', 'NOT NU
 
 select xt.add_constraint('dict', 'dict_lang_id_fkey', 'FOREIGN KEY (dict_lang_id) REFERENCES lang (lang_id)', 'public');
 select xt.add_constraint('dict', 'dict_country_id_fkey', 'FOREIGN KEY (dict_country_id) REFERENCES country (country_id)', 'public');
-select xt.add_constraint('dict', 'dict_dict_lang_id_country_id_key', 'UNIQUE (tableoid, dict_lang_id, dict_country_id)', 'public');
 select xt.add_constraint('dict', 'dict_dict_version_check', $$CHECK (trim(dict_version) != '')$$, 'public');
 
 ALTER TABLE public.dict ENABLE TRIGGER ALL;

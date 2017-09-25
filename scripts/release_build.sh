@@ -10,6 +10,7 @@ HOST=localhost
 MAJ=
 MIN=
 PAT=
+TRANSLATIONS=false
 
 XTUPLEDIR=$(pwd)
 
@@ -20,11 +21,11 @@ XTUPLEDIR=$(pwd)
 #                     |       |        |     path for build_app -e, relative to repo root
 #  module             tag     edition  build source
 declare -a CONFIG=(\
-  "xtuple             ARGS    skip     skip  not-needed"                                  \
-  "private-extensions ARGS    skip     skip  not-needed"                                  \
-  "qt-client          ARGS    skip     skip  not-needed"                                  \
+  "xtuple             skip    skip     skip  not-needed"                                  \
+  "private-extensions skip    skip     skip  not-needed"                                  \
+  "qt-client          skip    skip     skip  not-needed"                                  \
   "updater            default skip     skip  not-needed"                                  \
-  "xtdesktop          skip    [demp]   false not-yet-used"                                \
+  "xtdesktop          skip    [demp]   skip  resources"                                   \
   "xtte               skip    [demp]   true  extensions/time_expense/foundation-database" \
   "nodejsshim         skip    [dem]    true  foundation-database"                         \
   "xtdash             skip    [dem]    true  foundation-database"                         \
@@ -33,9 +34,11 @@ declare -a CONFIG=(\
 usage() {
   local CNT=0
   cat <<EOUSAGE
-$PROG [ -x ] [ -h hostname ] [ -p port ] [ -U username ] [ -W password ] [ --XXX=tag ... ] [ Major Minor Patch ]
+$PROG [ -x ] [ -h hostname ] [ -p port ] [ -U username ] [ -W password ] [ --XXX=tag ... ] [ -t | +t ] [ Major Minor Patch ]
 
 -h, -p, -U, and -W describe database server connection information
+-t              do not include translations in the updater packages
++t              include translations in the updater packages
 -x              turns on debugging
 --XXX=tag       "tag" is the commit-ish to check out the XXX repository
 EOUSAGE
@@ -134,6 +137,10 @@ while [[ $1 =~ ^- ]] ; do
     -p) PORT=$2
         shift
         ;;
+    -t) TRANSLATIONS=false
+        ;;
+    +t) TRANSLATIONS=true
+        ;;
     -U) ADMIN=$2
         shift
         ;;
@@ -208,26 +215,27 @@ EDITIONS="postbooks manufacturing distribution"
 DATABASES="empty quickstart demo"
 PACKAGES="inventory commercialcore"
 
-# translations
-for PACKAGE in $EDITIONS $PACKAGES ; do
-  if [ "$PACKAGE" = postbooks -o -d ../private-extensions/source/$PACKAGE/foundation-database/*/tables/dict ] ; then
-    mkdir -p $XTUPLEDIR/scripts/output/dict/$PACKAGE
-  fi
-done
+if $TRANSLATIONS ; then
+  for PACKAGE in $EDITIONS $PACKAGES ; do
+    if [ "$PACKAGE" = postbooks -o -d ../private-extensions/source/$PACKAGE/foundation-database/*/tables/dict ] ; then
+      mkdir -p $XTUPLEDIR/scripts/output/dict/$PACKAGE
+    fi
+  done
 
-cd ../qt-client
-lupdate -no-obsolete xtuple.pro
-lrelease xtuple.pro
-mv share/dict/*.qm ../xtuple/scripts/output/dict/postbooks
+  cd ../qt-client
+  lupdate -no-obsolete xtuple.pro
+  lrelease xtuple.pro
+  mv share/dict/*.qm ../xtuple/scripts/output/dict/postbooks
 
-cd ../private-extensions
-for PACKAGE in $EDITIONS $PACKAGES ; do
-  if [ "$PACKAGE" != postbooks -a -d ../xtuple/scripts/output/dict/$PACKAGE ] ; then
-    lupdate -no-obsolete source/$PACKAGE/foundation-database/*/tables/dict/*_ts.pro
-    lrelease source/$PACKAGE/foundation-database/*/tables/dict/*_ts.pro
-    mv source/$PACKAGE/foundation-database/*/tables/dict/*.qm ../xtuple/scripts/output/dict/$PACKAGE
-  fi
-done
+  cd ../private-extensions
+  for PACKAGE in $EDITIONS $PACKAGES ; do
+    if [ "$PACKAGE" != postbooks -a -d ../xtuple/scripts/output/dict/$PACKAGE ] ; then
+      lupdate -no-obsolete source/$PACKAGE/foundation-database/*/tables/dict/*_ts.pro
+      lrelease source/$PACKAGE/foundation-database/*/tables/dict/*_ts.pro
+      mv source/$PACKAGE/foundation-database/*/tables/dict/*.qm ../xtuple/scripts/output/dict/$PACKAGE
+    fi
+  done
+fi
 
 cd $XTUPLEDIR
 
@@ -249,6 +257,12 @@ for MODE in $MODES ; do
   done
 done
 
+if $TRANSLATIONS ; then
+  NO_TRANSLATIONS="--param no-translations false()"
+else
+  NO_TRANSLATIONS="--param no-translations true()"
+fi
+
 for EDITION in $EDITIONS enterprise ; do
   if [ "$EDITION" = manufacturing ] ; then
     MODES="$MODES add"
@@ -263,7 +277,7 @@ for EDITION in $EDITIONS enterprise ; do
       fi
       FULLNAME=$NAME-$MAJ$MIN$PAT
       mkdir scripts/output/$FULLNAME
-      xsltproc -o scripts/output/$FULLNAME/package.xml scripts/xml/build.xsl scripts/xml/$NAME.xml
+      xsltproc $NO_TRANSLATIONS -o scripts/output/$FULLNAME/package.xml scripts/xml/build.xsl scripts/xml/$NAME.xml
       SUBPACKAGES=postbooks
       if [ "$EDITION" != postbooks ] ; then
         SUBPACKAGES="$SUBPACKAGES $PACKAGES"
@@ -312,7 +326,6 @@ make
 cd ../../updater
 qmake
 make
-
 cd ${XTUPLEDIR}
 
 export LD_LIBRARY_PATH=${XTUPLEDIR}/../qt-client/openrpt/lib:${XTUPLEDIR}/../qt-client/lib:$LD_LIBRARY_PATH
