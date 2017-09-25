@@ -467,7 +467,7 @@ select createDoctype(27, --pDocAssNum
                      'rahead_number', --pNumber
                      'cust_name', --pName
                      'firstline(rahead_notes)', --pDesc
-                     '', --pWidget
+                     'core', --pWidget
                      'join custinfo on rahead_cust_id = cust_id', --pJoin
                      'rahead_id', --pParam
                      'returnAuthorization', --pUi
@@ -502,7 +502,7 @@ select createDoctype(29, --pDocAssNum
                      'quhead_number', --pNumber
                      'cust_name', --pName
                      'firstline(quhead_ordercomments)', --pDesc
-                     '', --pWidget
+                     'core', --pWidget
                      'join custinfo on quhead_cust_id = cust_id', --pJoin
                      'quhead_id', --pParam
                      'salesOrder', --pUi
