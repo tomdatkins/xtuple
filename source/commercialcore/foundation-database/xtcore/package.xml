@@ -3,7 +3,7 @@
          developer="xTuple"
          descrip="xTuple Commercial Core package."
          version="4.11.1"
-         updater="2.5.0">
+         updater="2.4.0">
   <pkgnotes> This package creates the required database tables and functions for xTuple Commercial Core and Workflow. </pkgnotes>
 
   <prerequisite type="license">
@@ -20,11 +20,6 @@
   <prerequisite type="query" name="Looking for plv8">
     <query>select exists (select 1 from pg_extension where extname = 'plv8');</query>
     <message>The database extension PLv8 must be installed before you can install the xTuple Commercial Core.</message>
-  </prerequisite>
-
-  <prerequisite type="Query" name="Checking for prior installation">
-    <query>SELECT COUNT(*)=0 FROM pkghead WHERE pkghead_name = 'xtcore';</query>
-    <message>The xTuple Commercial Core extension package is already installed in this database. Either remove the installed package and try again or use an upgrade script instead of a fresh installation script.</message>
   </prerequisite>
 
   <loadpriv      name="MaintainWorkflow" module="System">
@@ -99,14 +94,14 @@
   <loadappscript file="tables/pkgscript/workflowProfile.js"    name="workflowProfile"    notes="Workflow Email Profile"   order="0">xTuple Core</loadappscript>
   <loadappscript file="tables/pkgscript/workflowProfiles.js"   name="workflowProfiles"   notes="Workflow Email Profiles"  order="0">xTuple Core</loadappscript>
 
-  <loadappui     file="tables/pkguiform/configureWF.ui"      name="configureWF"      notes="Workflow Activation" >xTuple Core</loadappscript>
-  <loadappui     file="tables/pkguiform/printer.ui"          name="printer"          notes="Printer Info" >xTuple Core</loadappscript>
-  <loadappui     file="tables/pkguiform/printers.ui"         name="printers"         notes="List of Printers" >xTuple Core</loadappscript>
-  <loadappui     file="tables/pkguiform/Workflow.ui"         name="Workflow"         notes="Workflow List" >xTuple Core</loadappscript>
-  <loadappui     file="tables/pkguiform/WorkflowActivity.ui" name="WorkflowActivity" notes="Workflow Activity" >xTuple Core</loadappscript>
-  <loadappui     file="tables/pkguiform/WorkflowItem.ui"     name="WorkflowItem"     notes="Workflow Item" >xTuple Core</loadappscript>
-  <loadappui     file="tables/pkguiform/workflowProfile.ui"  name="workflowProfile"  notes="Workflow Email profile" >xTuple Core</loadappscript>
-  <loadappui     file="tables/pkguiform/workflowProfiles.ui" name="workflowProfiles" notes="Workflow Email profiles" >xTuple Core</loadappscript>
+  <loadappui     file="tables/pkguiform/configureWF.ui"      name="configureWF"      notes="Workflow Activation" >xTuple Core</loadappui>
+  <loadappui     file="tables/pkguiform/printer.ui"          name="printer"          notes="Printer Info" >xTuple Core</loadappui>
+  <loadappui     file="tables/pkguiform/printers.ui"         name="printers"         notes="List of Printers" >xTuple Core</loadappui>
+  <loadappui     file="tables/pkguiform/Workflow.ui"         name="Workflow"         notes="Workflow List" >xTuple Core</loadappui>
+  <loadappui     file="tables/pkguiform/WorkflowActivity.ui" name="WorkflowActivity" notes="Workflow Activity" >xTuple Core</loadappui>
+  <loadappui     file="tables/pkguiform/WorkflowItem.ui"     name="WorkflowItem"     notes="Workflow Item" >xTuple Core</loadappui>
+  <loadappui     file="tables/pkguiform/workflowProfile.ui"  name="workflowProfile"  notes="Workflow Email profile" >xTuple Core</loadappui>
+  <loadappui     file="tables/pkguiform/workflowProfiles.ui" name="workflowProfiles" notes="Workflow Email profiles" >xTuple Core</loadappui>
 
   <finalscript   file="patches/remove_databaseinformation_script.sql" />
 
