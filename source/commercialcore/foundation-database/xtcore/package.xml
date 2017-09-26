@@ -3,8 +3,8 @@
          developer="xTuple"
          descrip="xTuple Commercial Core package."
          version="4.11.1"
-         updater="2.2.2">
-  <pkgnotes> This package creates the required database tables and functions for xTuple Commercial Core. </pkgnotes>
+         updater="2.5.0">
+  <pkgnotes> This package creates the required database tables and functions for xTuple Commercial Core and Workflow. </pkgnotes>
 
   <prerequisite type="license">
     <message>
@@ -27,12 +27,87 @@
     <message>The xTuple Commercial Core extension package is already installed in this database. Either remove the installed package and try again or use an upgrade script instead of a fresh installation script.</message>
   </prerequisite>
 
-  <script file="tables/emlprofile.sql"                            name="emlprofile" />
+  <loadpriv      name="MaintainWorkflow" module="System">
+    Can maintain Workflow Templates
+  </loadpriv>
 
-  <script file="tables/poemlprofile.sql"                          name="poemlprofile" />
+<!-- xtCore -->
+  <script file="create_xtcore_schema.sql" />
+  <script file="privs.sql" />
 
+  <script file="tables/obj.sql" />
+
+  <script file="functions/co_schedule_date.sql" />
+  <script file="functions/po_schedule_date.sql" />
+  <script file="tables/pkgscript/_obsolete.sql" />
+
+  <loadappscript file="tables/pkgscript/itemGroup.js"             name="itemGroup">xTuple Core</loadappscript>
   <loadappscript file="tables/pkgscript/ParameterGroupUtils.js"   name="ParameterGroupUtils">xTuple Core</loadappscript>
   <loadappscript file="tables/pkgscript/xtCore.js"                name="xtCore">xTuple Core</loadappscript>
   <loadappscript file="tables/pkgscript/xtCoreErrors.js"          name="xtCoreErrors">xTuple Core</loadappscript>
+
+<!-- Workflow -->
+  <script        file="add_uuid.sql" />
+  <script        file="acttype.sql" />
+  <script        file="update_metric.sql" />
+
+  <script        file="tables/wf.sql" />
+  <script        file="tables/wfsrc.sql" />
+  <script        file="tables/wftype.sql" />
+  <script        file="tables/printer.sql" />
+  <script        file="tables/emlprofile.sql" />
+  <script        file="tables/wf_parentinfo.sql" />
+  <script        file="tables/coheadwf.sql" />
+  <script        file="tables/potypewf.sql" />
+  <script        file="tables/powf.sql" />
+  <script        file="tables/prjtypewf.sql" />
+  <script        file="tables/prjwf.sql" />
+  <script        file="tables/saletypewf.sql" />
+  <script        file="tables/sitetypewf.sql" />
+  <script        file="tables/recv.sql" />
+  <script        file="tables/shiphead.sql" />
+  <script        file="tables/shipitem.sql" />
+
+  <script        file="views/ordhead.sql" />
+  <script        file="views/orditem.sql" />
+
+  <script        file="functions/createwf.sql" />
+  <script        file="functions/copychars.sql" />
+  <script        file="functions/workflow_inheritsource.sql" />
+  <script        file="functions/workflow_notify.sql" />
+
+  <script        file="trigger_functions/createwf_triggers.sql" />
+  <script        file="trigger_functions/workflow_update_successors.sql" />
+  <script        file="trigger_functions/updatewf_triggers.sql" />
+  <script        file="trigger_functions/recv_item_did_change.sql" />
+  <script        file="trigger_functions/ship_head_did_change.sql" />
+  <script        file="trigger_functions/ship_item_did_change.sql" />
+
+  <loadmetasql   file="tables/pkgmetasql/WorkflowActivities-detail.mql" />
+  <loadmetasql   file="tables/pkgmetasql/WorkflowList-detail.mql" />
+
+  <loadappscript file="tables/pkgscript/configureWF.js"  name="configureWF" notes="Workflow activation and configuration" order="0">xTuple Core</loadappscript>
+  <loadappscript file="tables/pkgscript/initMenu.js"     name="initMenu"    notes="Add Workflow Activities to CRM menu"   order="0">xTuple Core</loadappscript>
+  <loadappscript file="tables/pkgscript/printer.js"      name="printer"     notes="Add a printer"                         order="0">xTuple Core</loadappscript>
+  <loadappscript file="tables/pkgscript/printers.js"     name="printers"    notes="List of printers"                      order="0">xTuple Core</loadappscript>
+  <loadappscript file="tables/pkgscript/setup.js"        name="setup"       notes="Maintain Workflow Items"               order="0">xTuple Core</loadappscript>
+  <loadappscript file="tables/pkgscript/sharedwf.js"     name="sharedwf"    notes="data shared by wf scripts"             order="0">xTuple Core</loadappscript>
+  <loadappscript file="tables/pkgscript/Workflow.js"     name="Workflow"    notes="List Workflow items in setup"          order="0">xTuple Core</loadappscript>
+  <loadappscript file="tables/pkgscript/WorkflowActivities.js" name="WorkflowActivities" notes="List Workflow Activities" order="0">xTuple Core</loadappscript>
+  <loadappscript file="tables/pkgscript/WorkflowActivity.js"   name="WorkflowActivity"   notes="Edit Workflow Activity"   order="0">xTuple Core</loadappscript>
+  <loadappscript file="tables/pkgscript/WorkflowItem.js"       name="WorkflowItem"       notes="Workflow Item"            order="0">xTuple Core</loadappscript>
+  <loadappscript file="tables/pkgscript/workflowProfile.js"    name="workflowProfile"    notes="Workflow Email Profile"   order="0">xTuple Core</loadappscript>
+  <loadappscript file="tables/pkgscript/workflowProfiles.js"   name="workflowProfiles"   notes="Workflow Email Profiles"  order="0">xTuple Core</loadappscript>
+
+  <loadappui     file="tables/pkguiform/configureWF.ui"      name="configureWF"      notes="Workflow Activation" >xTuple Core</loadappscript>
+  <loadappui     file="tables/pkguiform/printer.ui"          name="printer"          notes="Printer Info" >xTuple Core</loadappscript>
+  <loadappui     file="tables/pkguiform/printers.ui"         name="printers"         notes="List of Printers" >xTuple Core</loadappscript>
+  <loadappui     file="tables/pkguiform/Workflow.ui"         name="Workflow"         notes="Workflow List" >xTuple Core</loadappscript>
+  <loadappui     file="tables/pkguiform/WorkflowActivity.ui" name="WorkflowActivity" notes="Workflow Activity" >xTuple Core</loadappscript>
+  <loadappui     file="tables/pkguiform/WorkflowItem.ui"     name="WorkflowItem"     notes="Workflow Item" >xTuple Core</loadappscript>
+  <loadappui     file="tables/pkguiform/workflowProfile.ui"  name="workflowProfile"  notes="Workflow Email profile" >xTuple Core</loadappscript>
+  <loadappui     file="tables/pkguiform/workflowProfiles.ui" name="workflowProfiles" notes="Workflow Email profiles" >xTuple Core</loadappscript>
+
+  <finalscript   file="patches/remove_databaseinformation_script.sql" />
 
 </package>
