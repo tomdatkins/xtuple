@@ -170,12 +170,16 @@ CREATE TRIGGER invcheadtrigger
 
 CREATE OR REPLACE FUNCTION _invcheadaftertrigger()
   RETURNS trigger AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple.
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple.
 -- See www.xtuple.com/CPAL for the full text of the software license.
   DECLARE
     _cohead_id INTEGER;
 
   BEGIN
+    IF (TG_OP = 'INSERT') THEN
+      PERFORM postComment('ChangeLog', 'INV', NEW.invchead_id, 'Created');
+    END IF;
+
 --  Create a comment entry when on a Sales Order when an Invoice is Posted for that order
     IF (TG_OP = 'UPDATE') THEN
       IF ((OLD.invchead_posted != NEW.invchead_posted) AND NEW.invchead_posted) THEN

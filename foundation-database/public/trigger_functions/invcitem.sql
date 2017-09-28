@@ -45,14 +45,14 @@ CREATE TRIGGER invcitemBeforeTrigger
   FOR EACH ROW
   EXECUTE PROCEDURE _invcitemBeforeTrigger();
 
-CREATE OR REPLACE FUNCTION _invcitemTrigger() RETURNS "trigger" AS '
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+CREATE OR REPLACE FUNCTION _invcitemTrigger() RETURNS trigger AS $$
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _r RECORD;
 
 BEGIN
-  IF (TG_OP = ''DELETE'') THEN
+  IF (TG_OP = 'DELETE') THEN
     RETURN OLD;
   END IF;
 
@@ -61,14 +61,14 @@ BEGIN
   FROM invchead
   WHERE (invchead_id=NEW.invcitem_invchead_id);
   IF (NOT FOUND) THEN
-    RAISE EXCEPTION ''Invoice head not found'';
+    RAISE EXCEPTION 'Invoice head not found';
   END IF;
 
 -- Insert new row
-  IF (TG_OP = ''INSERT'') THEN
-
+  IF (TG_OP = 'INSERT') THEN
+      PERFORM postComment('ChangeLog', 'INVI', NEW.invcitem_id, 'Created');
   -- Calculate Tax
-      PERFORM calculateTaxHist( ''invcitemtax'',
+      PERFORM calculateTaxHist( 'invcitemtax',
                                 NEW.invcitem_id,
                                 COALESCE(_r.invchead_taxzone_id, -1),
                                 NEW.invcitem_taxtype_id,
@@ -79,7 +79,7 @@ BEGIN
   END IF;
 
 -- Update row
-  IF (TG_OP = ''UPDATE'') THEN
+  IF (TG_OP = 'UPDATE') THEN
 
   -- Calculate Tax
     IF ( (NEW.invcitem_billed <> OLD.invcitem_billed) OR
@@ -87,7 +87,7 @@ BEGIN
          (NEW.invcitem_price <> OLD.invcitem_price) OR
          (NEW.invcitem_price_invuomratio <> OLD.invcitem_price_invuomratio) OR
          (COALESCE(NEW.invcitem_taxtype_id, -1) <> COALESCE(OLD.invcitem_taxtype_id, -1)) ) THEN
-      PERFORM calculateTaxHist( ''invcitemtax'',
+      PERFORM calculateTaxHist( 'invcitemtax',
                                 NEW.invcitem_id,
                                 COALESCE(_r.invchead_taxzone_id, -1),
                                 NEW.invcitem_taxtype_id,
@@ -100,7 +100,7 @@ BEGIN
 
   RETURN NEW;
 END;
-' LANGUAGE 'plpgsql';
+$$ LANGUAGE 'plpgsql';
 
 SELECT dropIfExists('TRIGGER', 'invcitemtrigger');
 CREATE TRIGGER invcitemtrigger
