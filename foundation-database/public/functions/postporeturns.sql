@@ -25,7 +25,7 @@ BEGIN
     _itemlocSeries := NEXTVAL('itemloc_series_seq');
   END IF;
 
-  FOR _p IN SELECT pohead_number,
+  FOR _p IN SELECT pohead_number, pohead_id,
               pohead_curr_id, poreject_id, poitem_prj_id,
 		          poreject_poitem_id, poitem_id, poitem_expcat_id, poitem_linenumber,
 		          currToBase(COALESCE(recv_purchcost_curr_id, pohead_curr_id), 
@@ -80,7 +80,8 @@ BEGIN
       SELECT postInvTrans( itemsite_id, 'RP', (_p.totalqty * _p.poitem_invvenduomratio * -1),
                            'S/R', 'PO', (_p.pohead_number || '-' || _p.poitem_linenumber::TEXT), '', 'Return Inventory to P/O',
                            costcat_asset_accnt_id, costcat_liability_accnt_id, _itemlocSeries, CURRENT_TIMESTAMP,
-                           NULL, NULL, NULL, pPreDistributed) INTO _returnval
+                           NULL, NULL, NULL, pPreDistributed,
+                           pOrdHeadId := _p.pohead_id, pOrdItemId := _p.poitem_id) INTO _returnval
       FROM itemsite, costcat
       WHERE ( (itemsite_costcat_id=costcat_id)
        AND (itemsite_id=_p.itemsiteid) );

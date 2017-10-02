@@ -181,7 +181,7 @@ BEGIN
       RETURN -6;
     END IF;
 
-    FOR _ti IN SELECT toitem_id, toitem_qty_received,
+    FOR _ti IN SELECT toitem_tohead_id, toitem_id, toitem_qty_received,
                       sis.itemsite_id AS src_itemsite_id,
                       tis.itemsite_id AS trns_itemsite_id,
                       dis.itemsite_id AS dest_itemsite_id,
@@ -209,7 +209,8 @@ BEGIN
 			  _ti.trns_asset_accnt_id,
 			  _ti.src_shipasset_accnt_id,
 			  _itemlocSeries, _timestamp,
-                          (_ti.trns_cost * _ti.recall_qty * -1.0)) INTO _invhistid;
+                          (_ti.trns_cost * _ti.recall_qty * -1.0),
+        pOrdHeadId := _ti.toitem_tohead_id, pOrdItemId := _ti.toitem_id) INTO _invhistid;
 
       IF (_invhistid < 0) THEN
 	RETURN _invhistid;
@@ -238,7 +239,8 @@ BEGIN
   			  _ti.trns_asset_accnt_id,
   			  _ti.trns_asset_accnt_id,
   			  _itemlocSeries, _timestamp,
-                            (_ti.trns_cost * _qtyFromDest * -1.0)) INTO _invhistid;
+                            (_ti.trns_cost * _qtyFromDest * -1.0),
+          pOrdHeadId := _ti.toitem_tohead_id, pOrdItemId := _ti.toitem_id) INTO _invhistid;
 
         IF (_invhistid < 0) THEN
 	  RETURN _invhistid;
@@ -255,7 +257,8 @@ BEGIN
   			  _ti.trns_asset_accnt_id,
   			  _ti.trns_asset_accnt_id,
   			  _itemlocSeries, _timestamp,
-                            (_ti.trns_cost * _qtyFromTransit * -1.0)) INTO _invhistid;
+                            (_ti.trns_cost * _qtyFromTransit * -1.0),
+          pOrdHeadId := _ti.toitem_tohead_id, pOrdItemId := _ti.toitem_id) INTO _invhistid;
 
         IF (_invhistid < 0) THEN
 	  RETURN _invhistid;
