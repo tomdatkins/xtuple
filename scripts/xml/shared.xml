@@ -16,13 +16,6 @@
   </prerequisite>
 
   <prerequisite type = "query"
-               name = "Checking if plv8 extension is installed" >
-    <query>SELECT exists(SELECT 1 FROM pg_catalog.pg_extension WHERE extname = 'plv8');</query>
-    <message>The PostgreSQL extension, plv8, must be installed on your database. See: https://github.com/xtuple/xtuple/wiki/Installing-PLv8
-    </message>
-  </prerequisite>
-
-  <prerequisite type = "query"
                name = "Checking for plv8 setup in postgresql.conf" >
     <query>
       DO $$
