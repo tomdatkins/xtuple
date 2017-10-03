@@ -1,4 +1,4 @@
-<package id        = "distribution-upgrade-4111"
+<package id        = "distribution-upgrade-4.11.1"
          version   = "4.11.1"
          developer = "xTuple"
          descrip   = "load PostBooks resources"

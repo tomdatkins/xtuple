@@ -275,7 +275,7 @@ for EDITION in $EDITIONS enterprise ; do
       else
         NAME=$EDITION-$MODE
       fi
-      FULLNAME=$NAME-$MAJ$MIN$PAT
+      FULLNAME=$NAME-$MAJ.$MIN.$PAT
       mkdir scripts/output/$FULLNAME
       xsltproc $NO_TRANSLATIONS -o scripts/output/$FULLNAME/package.xml scripts/xml/build.xsl scripts/xml/$NAME.xml
       SUBPACKAGES=postbooks
@@ -341,7 +341,7 @@ for EDITION in $EDITIONS ; do
       fi
 
       ../updater/bin/updater -h $HOST -U $ADMIN -p $PORT -d $EDITION"_"$DATABASE \
-                             -f scripts/output/$EDITION-upgrade-$MAJ$MIN$PAT.gz -autorun
+                             -f scripts/output/$EDITION-upgrade-$MAJ.$MIN.$PAT.gz -autorun
     fi
   done
 done
@@ -387,10 +387,10 @@ done
 for EDITION in $EDITIONS enterprise ; do
   for MODE in $MODES ; do
     if [ $EDITION != postbooks -o $MODE != install ] ; then
-      rm -rf scripts/output/$EDITION-$MODE-$MAJ$MIN$PAT/
+      rm -rf scripts/output/$EDITION-$MODE-$MAJ.$MIN.$PAT/
     fi
   done
 done
-rm -rf scripts/output/add-manufacturing-to-distribution-$MAJ$MIN$PAT/
+rm -rf scripts/output/add-manufacturing-to-distribution-$MAJ.$MIN.$PAT/
 rm -rf scripts/output/config.js
 rm -rf scripts/output/dict
