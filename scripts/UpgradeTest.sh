@@ -53,25 +53,28 @@ applyUpdate() {
   $RUN $UPDATER -h $PGHOST -p $PGPORT -d $DB -U $PGUSER -passwd=$PGPASS -D -autorun -f $FILE
 }
 
+getValueArg() {
+  local KEY="$1"
+  local VALUE="$2"
+  if [ -n "$KEY" -a -n "$VALUE" ] ; then
+    eval $KEY="$VALUE"
+    return 0
+  fi
+  return 1
+}
+
+# -h is handled as either --host if it has an arg or --help if not
 while [ $# -gt 0 ] ; do
   case "$1" in
-    --help)         usage              ; exit 0 ;;
-    -h|--host)
-      if [ -n "$2" ] ; then
-        PGHOST=$2
-        shift
-      else
-        usage
-        exit 0
-      fi
-      ;;
-    -p|--port)      PGPORT=$2          ; shift  ;;
-    -U|--user)      PGUSER=$2          ; shift  ;;
-    --pass*)        PGPASSWORD=$2      ; shift  ;;
-    -u|--updater)   UPDATER="$2"       ; shift  ;;
-    -n|--no-run)    RUN=echo           ; shift  ;;
-    -P|--public)    PUBLICDIR=$2       ; shift  ;;
-    *)              usage              ; exit 1 ;;
+    --help)       usage ; exit 0 ;;
+    -n|--no-run)  RUN=echo       ;;
+    -h|--host)    if getValueArg PGHOST     $2 ; then shift ; else usage ; exit 0 ; fi ;;
+    -p|--port)    if getValueArg PGPORT     $2 ; then shift ; else usage ; exit 1 ; fi ;;
+    -U|--user)    if getValueArg PGUSER     $2 ; then shift ; else usage ; exit 1 ; fi ;;
+    --pass*)      if getValueArg PGPASSWORD $2 ; then shift ; else usage ; exit 1 ; fi ;;
+    -u|--updater) if getValueArg UPDATER    $2 ; then shift ; else usage ; exit 1 ; fi ;;
+    -P|--public)  if getValueArg PUBLICDIR  $2 ; then shift ; else usage ; exit 1 ; fi ;;
+    *)            usage ; exit 1 ;;
   esac
   shift
 done
@@ -79,11 +82,7 @@ done
 ls ${PUBLICDIR}/[1-9].[0-9].[0-9]/*.backup ${PUBLICDIR}/[1-9].[0-9][0-9].[0-9]/*.backup
 for FILE in $(ls ${PUBLICDIR}/[1-9].[0-9].[0-9]/*.backup ${PUBLICDIR}/[1-9].[0-9][0-9].[0-9]/*.backup) ; do
     STARTVER=$(basename $(dirname $FILE))
-    if [ -e ${PUBLICDIR}/$STARTVER/masterref*${STARTVER}*.backup ] ; then
-      DB=$(basename $FILE -${STARTVER}.backup)_to${DESTVER}
-    else
-      DB=$(basename $FILE -${STARTVER/./}.backup)_to${DESTVER}
-    fi
+    DB=$(basename $FILE -${STARTVER}.backup)_to${DESTVER}
     echo $DB from $STARTVER ============================================
     case $DB in
       dist*|stand*)
@@ -118,12 +117,11 @@ for FILE in $(ls ${PUBLICDIR}/[1-9].[0-9].[0-9]/*.backup ${PUBLICDIR}/[1-9].[0-9
     $RUN psql -t -d $DB -c "SELECT COUNT(*) = 0 OR BOOL_AND(pkghead_version = '$DESTVER') \
                            FROM pkghead WHERE pkghead_name in ('xtcore', 'xtmfg', 'xwd');" | tee $TMPDIR/$PROG.$$
     [ -n "$RUN" -o "$(tr -d [:space:] < $TMPDIR/$PROG.$$)" = 't' ] || logErr Core extensions in $DB do not match $DESTVER
+    applyUpdate $DB $GZ || logErr error reapplying upgrade to $DESTVER for $DB = $FILE using $GZ
 
     echo =========================================================================
 done
 
-applyUpdate mfg_quickstart_to${DESTVER}       $SCRIPTDIR/manufacturing-upgrade-*.gz || logErr error reapplying manufacturing upgrade
-applyUpdate postbooks_quickstart_to${DESTVER} $SCRIPTDIR/postbooks-upgrade-*.gz     || logErr error reapplying postbooks upgrade
 applyUpdate distquickstart_to${DESTVER}       $SCRIPTDIR/add-manufacturing-to-distribution-*.gz || logErr error upgrading distribution to enterprise
 
 if [ -n "$ERRS" ] ; then
