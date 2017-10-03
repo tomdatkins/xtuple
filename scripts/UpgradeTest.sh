@@ -118,11 +118,14 @@ for FILE in $(ls ${PUBLICDIR}/[1-9].[0-9].[0-9]/*.backup ${PUBLICDIR}/[1-9].[0-9
                            FROM pkghead WHERE pkghead_name in ('xtcore', 'xtmfg', 'xwd');" | tee $TMPDIR/$PROG.$$
     [ -n "$RUN" -o "$(tr -d [:space:] < $TMPDIR/$PROG.$$)" = 't' ] || logErr Core extensions in $DB do not match $DESTVER
     applyUpdate $DB $GZ || logErr error reapplying upgrade to $DESTVER for $DB = $FILE using $GZ
+    case $DB in
+      dist*|stand*)
+        applyUpdate $DB $SCRIPTDIR/add-manufacturing-to-distribution-*.gz || logErr error upgrading $DB to enterprise
+        ;;
+    esac
 
     echo =========================================================================
 done
-
-applyUpdate distquickstart_to${DESTVER}       $SCRIPTDIR/add-manufacturing-to-distribution-*.gz || logErr error upgrading distribution to enterprise
 
 if [ -n "$ERRS" ] ; then
   echo "$ERRS"
