@@ -15,10 +15,9 @@ SELECT
 
 
 DELETE FROM imageass
-WHERE imageass_image_id IN (SELECT imageass_image_id
-                            FROM imageass 
-                            LEFT OUTER JOIN image ON (imageass_image_id=image_id)
-                            WHERE image_id IS NULL);
+WHERE NOT EXISTS(SELECT 1
+                   FROM image
+                  WHERE image_id = imageass_image_id);
 
 SELECT
   xt.add_constraint('imageass', 'imageass_image_id_fk', 'FOREIGN KEY (imageass_image_id)
