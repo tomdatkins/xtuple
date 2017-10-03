@@ -347,6 +347,11 @@ BEGIN
   WHERE charass_target_type = 'INCDT'
     AND charass_target_id = OLD.incdt_id;
 
+  DELETE
+  FROM docass
+  WHERE docass_source_type = 'INCDT'
+    AND docass_source_id = OLD.incdt_id;
+
   RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
