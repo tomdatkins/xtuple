@@ -41,7 +41,7 @@ BEGIN
               LEFT OUTER JOIN itemsite ON (poitem_itemsite_id=itemsite_id)
               LEFT OUTER JOIN recv ON (recv_id=poreject_recv_id)
             WHERE (pohead_id=pPoheadid)
-            GROUP BY poreject_id, pohead_number, poreject_poitem_id, poitem_id, poitem_prj_id,
+            GROUP BY poreject_id, pohead_id, pohead_number, poreject_poitem_id, poitem_id, poitem_prj_id,
 		          poitem_expcat_id, poitem_linenumber, poitem_unitprice, pohead_curr_id,
 		          pohead_orderdate, itemsite_id, poitem_invvenduomratio, itemsite_controlmethod, recv_date,
               recv_purchcost_curr_id, recv_purchcost 

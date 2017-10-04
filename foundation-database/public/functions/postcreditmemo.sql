@@ -528,7 +528,7 @@ BEGIN
             WHERE ( (cmitem_qtyreturned <> 0)
              AND (cmitem_updateinv)
              AND (cmhead_id=pCmheadid) )
-            GROUP BY itemsite_id, itemsite_costmethod,
+            GROUP BY cmhead_id, cmitem_id, itemsite_id, itemsite_costmethod,
                      item_number, item_id,
                      costcat_asset_accnt_id 
             ORDER BY itemsite_id LOOP

@@ -196,7 +196,7 @@ BEGIN
                              JOIN costcat scc ON (scc.costcat_id=sis.itemsite_costcat_id)
                              JOIN costcat tcc ON (tcc.costcat_id=tis.itemsite_costcat_id)
                WHERE (shipitem_shiphead_id=pshipheadid)
-               GROUP BY toitem_id, toitem_qty_received, sis.itemsite_id, tis.itemsite_id, dis.itemsite_id,
+               GROUP BY toitem_tohead_id, toitem_id, toitem_qty_received, sis.itemsite_id, tis.itemsite_id, dis.itemsite_id,
                         scc.costcat_shipasset_accnt_id, tcc.costcat_asset_accnt_id
     LOOP
 
