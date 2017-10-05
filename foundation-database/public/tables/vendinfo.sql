@@ -44,6 +44,7 @@ SELECT
   xt.add_column('vendinfo', 'vend_accnt_id',         'INTEGER', NULL,                            'public'),
   xt.add_column('vendinfo', 'vend_expcat_id',        'INTEGER', 'DEFAULT (-1)',                  'public'),
   xt.add_column('vendinfo', 'vend_tax_id',           'INTEGER', 'DEFAULT (-1)',                  'public'),
+  xt.add_column('vendinfo', 'vend_taxtype_id',       'INTEGER', 'DEFAULT (-1)',                  'public'),
   xt.add_column('vendinfo', 'vend_potype_id',        'INTEGER', NULL,                            'public'),
   xt.add_column('vendinfo', 'vend_created',      'TIMESTAMP WITH TIME ZONE', NULL, 'public'),
   xt.add_column('vendinfo', 'vend_lastupdated',  'TIMESTAMP WITH TIME ZONE', NULL, 'public');
@@ -99,3 +100,4 @@ COMMENT ON TABLE vendinfo IS 'Vendor information';
 
 COMMENT ON COLUMN vendinfo.vend_ach_accnttype IS 'Type of bank account: K = checKing, C = Cash = savings. These values were chosen to be consistent with bankaccnt_type.';
 COMMENT ON COLUMN vendinfo.vend_potype_id     IS 'Vendor default PO type';
+COMMENT ON COLUMN vendinfo.vend_taxtype_id    IS 'Vendor default tax type for miscellaneous distributions';
