@@ -897,3 +897,15 @@ SELECT createDoctype(97, --pDocAssNum
                      '', --pPriv
                      'Sales' --pModule
 );
+
+SELECT createDocType(NULL,
+                     'JE',
+                     'JE',
+                     '',
+                     'G/L Journal',
+                     'gltrans',
+                     'gltrans_id',
+                     'gltrans_journalnumber',
+                     'gltrans_docnumber',
+                     'firstline(gltrans__notes)'
+);
