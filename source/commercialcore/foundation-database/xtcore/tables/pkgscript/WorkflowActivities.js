@@ -217,7 +217,7 @@ function sOpen()
   }
   else if(params.modcode=='Q')
   {
-    if (params.wftype == 'R')
+    if (params.wftype == 'R')  // Rework Items (create rework operation)
     {
       if(!privileges.value("MaintainWorkOrders"))
       {
@@ -240,7 +240,7 @@ function sOpen()
       params.opntype = "REWORK";
       window = "woOperation";
     }
-    else if(params.wftype == 'S')
+    else if(params.wftype == 'S')  // Scrap item(s)
     {
       if(!privileges.value("CreateScrapTrans"))
       {
@@ -259,6 +259,44 @@ function sOpen()
       params.mode = "new";
       window = "scrapTrans";
     }
+    else if(params.wftype == 'Q')  // Quarantine (Relocate to non-netable location or whs)
+    {
+      var multiwhs, loccntrl;
+      var sql = "select itemsite_id, itemsite_loccntrl, fetchmetricbool('MultiWhs') as multiwhs "
+            + "FROM xt.qthead "
+            + "JOIN itemsite ON (qthead_item_id=itemsite_item_id AND qthead_warehous_id=itemsite_warehous_id)"
+            + "WHERE qthead_id = <? value('id') ?>;";
+      var qry = toolbox.executeQuery(sql, {id: _list.currentItem().data(_list.column('order_number'), Xt.IdRole).toString()});
+      if (qry.first())
+      {
+        multiwhs = qry.value("multiwhs");
+        loccntrl = qry.value("itemsite_loccntrl");
+        params.itemsite_id = qry.value("itemsite_id");
+      }
+      if (loccntrl)
+      {
+        window = "relocateInventory";
+        if(!privileges.value("RelocateInventory"))
+        {
+          priv_warn();
+          return;
+        }
+      }
+      else if (multiwhs)
+      {
+        window = "transferTrans";
+        if(!privileges.value("CreateInterWarehouseTrans"))
+        {
+          priv_warn();
+          return;
+        }
+      }
+      else
+      {
+        QMessageBox.warning(mywindow,qsTr("Invalid Item Settings"), qsTr("You cannot quarantine this item as it is either not location controlled or your system is not multi-Warehouse enabled"));
+        return;
+      }
+    }
     else
     {
       if(!privileges.value("MaintainQualityTests"))
@@ -275,7 +313,7 @@ function sOpen()
   if(window != '')
   {
     sAssignUser();
-    if(["issueWoMaterialItem","postProduction","qtest","woOperation"].indexOf(window) >= 0)
+    if(["issueWoMaterialItem","postProduction","qtest","woOperation", "relocateInventory"].indexOf(window) >= 0)
     {
       var wnd = toolbox.openWindow(window, mywindow, Qt.ApplicationModal, Qt.Dialog);
       toolbox.lastWindow().set(params);
@@ -371,6 +409,25 @@ function sPopulateMenu(pMenu, selected)
       menuItem.enabled = (privileges.check("PostProduction"));
       menuItem.triggered.connect(sOpen);
   }
+  if(module == 'Q' && wftype == 'R')
+  {
+      menuItem = pMenu.addAction(qsTr("Manufacturing Rework"));
+      menuItem.enabled = (privileges.check("MaintainWorkOrders"));
+      menuItem.triggered.connect(sOpen);
+  }
+  if(module == 'Q' && wftype == 'S')
+  {
+      menuItem = pMenu.addAction(qsTr("Scrap Item"));
+      menuItem.enabled = (privileges.check("CreateScrapTrans"));
+      menuItem.triggered.connect(sOpen);
+  }
+  if(module == 'Q' && wftype == 'Q')
+  {
+      menuItem = pMenu.addAction(qsTr("Quarantine"));
+      menuItem.enabled = (privileges.check("RelocateInventory"));
+      menuItem.triggered.connect(sOpen);
+  }
+
   menuItem = pMenu.addAction(qsTr("Edit Activity"));
   if(privileges.check("MaintainAllWorkflows MaintainWorkflowsSelf"))
     menuItem.enabled = true;
