@@ -1499,6 +1499,7 @@
     "public/tables/metasql/pricingFreight-detail.mql",
     "public/tables/metasql/pricingScheduleAssignment-detail.mql",
     "public/tables/metasql/pricingSchedules-detail.mql",
+    "public/tables/metasql/processes-detail.mql",
     "public/tables/metasql/projectTasks-detail.mql",
     "public/tables/metasql/projects-detail_nohierarchy.mql",
     "public/tables/metasql/projects-detail.mql",
