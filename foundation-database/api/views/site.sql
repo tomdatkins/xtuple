@@ -1,6 +1,10 @@
 -- View: api.site
 
+<<<<<<< HEAD
 SELECT dropIfExists('VIEW', 'site', 'api');
+=======
+-- DROP VIEW api.site;
+>>>>>>> 198b7e0af38c88f1a6075b682c0bed0b9ed88aa3
 
 CREATE OR REPLACE VIEW api.site AS 
  SELECT whsinfo.warehous_code::character varying AS code,
@@ -30,7 +34,14 @@ CREATE OR REPLACE VIEW api.site AS
     formatglaccount(a.accnt_id) AS post_unassigned_transactions_to,
     a.accnt_descrip AS post_unassigned_transactions_to_description,
     whsinfo.warehous_transit AS transit_type,
+<<<<<<< HEAD
     COALESCE(NOT warehous_transit, true) AS inventory_type,
+=======
+        CASE
+            WHEN whsinfo.warehous_transit THEN false
+            ELSE true
+        END AS inventory_type,
+>>>>>>> 198b7e0af38c88f1a6075b682c0bed0b9ed88aa3
         CASE
             WHEN whsinfo.warehous_transit THEN ''::text
             ELSE whsinfo.warehous_bol_prefix
@@ -136,6 +147,7 @@ CREATE OR REPLACE VIEW api.site AS
             ELSE false
         END AS location_allow_alpha_characters
    FROM whsinfo
+<<<<<<< HEAD
      LEFT JOIN addr m ON whsinfo.warehous_addr_id=m.addr_id
      LEFT JOIN cntct c ON whsinfo.warehous_cntct_id=c.cntct_id
      LEFT JOIN accnt a ON whsinfo.warehous_default_accnt_id=a.accnt_id
@@ -144,6 +156,16 @@ CREATE OR REPLACE VIEW api.site AS
      LEFT JOIN shipform f ON whsinfo.warehous_shipform_id=f.shipform_id
      LEFT JOIN costcat cc ON whsinfo.warehous_costcat_id=cc.costcat_id
      LEFT JOIN sitetype st ON whsinfo.warehous_sitetype_id=st.sitetype_id
+=======
+     LEFT JOIN addr m ON whsinfo.warehous_addr_id = m.addr_id
+     LEFT JOIN cntct c ON whsinfo.warehous_cntct_id = c.cntct_id
+     LEFT JOIN accnt a ON whsinfo.warehous_default_accnt_id = a.accnt_id
+     LEFT JOIN taxzone t ON whsinfo.warehous_taxzone_id = t.taxzone_id
+     LEFT JOIN shipvia s ON whsinfo.warehous_shipvia_id = s.shipvia_id
+     LEFT JOIN shipform f ON whsinfo.warehous_shipform_id = f.shipform_id
+     LEFT JOIN costcat cc ON whsinfo.warehous_costcat_id = cc.costcat_id
+     LEFT JOIN sitetype st ON whsinfo.warehous_sitetype_id = st.sitetype_id
+>>>>>>> 198b7e0af38c88f1a6075b682c0bed0b9ed88aa3
   ORDER BY whsinfo.warehous_code;
 
 ALTER TABLE api.site
@@ -270,6 +292,7 @@ CREATE OR REPLACE RULE "_INSERT" AS
 -- DROP RULE "_UPDATE" ON api.site;
 
 CREATE OR REPLACE RULE "_UPDATE" AS
+<<<<<<< HEAD
     ON UPDATE TO api.site DO INSTEAD  UPDATE whsinfo SET warehous_descrip=new.description, 
 	warehous_fob=CASE  WHEN new.inventory_type THEN new.default_fob
 					   ELSE NULL::text
@@ -351,4 +374,105 @@ CREATE OR REPLACE RULE "_UPDATE" AS
 						END, 
 	warehous_sitetype_id=getsitetypeid(new.type), warehous_sequence=new.scheduling_sequence
   WHERE whsinfo.warehous_id=getwarehousid(old.code::text, 'ALL'::text);
+=======
+    ON UPDATE TO api.site DO INSTEAD  UPDATE whsinfo SET warehous_descrip = new.description, warehous_fob =
+        CASE
+            WHEN new.inventory_type THEN new.default_fob
+            ELSE NULL::text
+        END, warehous_active = new.active, warehous_counttag_prefix =
+        CASE
+            WHEN new.inventory_type THEN new.next_count_tag_prefix
+            ELSE NULL::text
+        END, warehous_counttag_number =
+        CASE
+            WHEN new.inventory_type THEN new.next_count_tag_number
+            ELSE NULL::integer
+        END, warehous_bol_prefix =
+        CASE
+            WHEN new.inventory_type THEN new.next_bill_of_lading_prefix
+            ELSE NULL::text
+        END, warehous_bol_number =
+        CASE
+            WHEN new.inventory_type THEN new.next_bill_of_lading_number
+            ELSE NULL::integer
+        END, warehous_shipping =
+        CASE
+            WHEN new.inventory_type THEN new.shipping_site
+            ELSE NULL::boolean
+        END, warehous_useslips =
+        CASE
+            WHEN new.inventory_type THEN new.force_the_use_of_count_slips
+            ELSE NULL::boolean
+        END, warehous_usezones =
+        CASE
+            WHEN new.inventory_type THEN new.force_the_use_of_zones
+            ELSE NULL::boolean
+        END, warehous_aislesize =
+        CASE
+            WHEN new.inventory_type THEN new.aisle_size
+            ELSE NULL::integer
+        END, warehous_aislealpha =
+        CASE
+            WHEN new.inventory_type THEN new.aisle_allow_alpha_characters
+            ELSE NULL::boolean
+        END, warehous_racksize =
+        CASE
+            WHEN new.inventory_type THEN new.rack_size
+            ELSE NULL::integer
+        END, warehous_rackalpha =
+        CASE
+            WHEN new.inventory_type THEN new.rack_allow_alpha_characters
+            ELSE NULL::boolean
+        END, warehous_binsize =
+        CASE
+            WHEN new.inventory_type THEN new.bin_size
+            ELSE NULL::integer
+        END, warehous_binalpha =
+        CASE
+            WHEN new.inventory_type THEN new.bin_allow_alpha_characters
+            ELSE NULL::boolean
+        END, warehous_locationsize =
+        CASE
+            WHEN new.inventory_type THEN new.location_size
+            ELSE NULL::integer
+        END, warehous_locationalpha =
+        CASE
+            WHEN new.inventory_type THEN new.location_allow_alpha_characters
+            ELSE NULL::boolean
+        END, warehous_enforcearbl =
+        CASE
+            WHEN new.inventory_type THEN new.enforce_arbl_naming_convention
+            ELSE NULL::boolean
+        END, warehous_default_accnt_id = getglaccntid(new.post_unassigned_transactions_to), warehous_shipping_commission =
+        CASE
+            WHEN new.inventory_type THEN new.shipping_commission * 0.01
+            ELSE NULL::numeric
+        END, warehous_cntct_id = savecntct(getcntctid(new.contact_number), new.contact_number, NULL::integer, new.honorific, new.first, new.middle, new.last, new.suffix, new.phone, NULL::text, new.fax, new.email, NULL::text, new.job_title, new.contact_change), warehous_addr_id = saveaddr(getaddrid(new.address_number), new.address_number, new.address1, new.address2, new.address3, new.city, new.state, new.postal_code, new.country, new.address_change), warehous_taxzone_id =
+        CASE
+            WHEN new.inventory_type THEN gettaxzoneid(new.tax_zone)
+            ELSE NULL::integer
+        END, warehous_transit =
+        CASE
+            WHEN new.inventory_type THEN false
+            WHEN new.transit_type THEN true
+            ELSE NULL::boolean
+        END, warehous_shipform_id =
+        CASE
+            WHEN new.transit_type THEN getshipformid(new.default_shipping_form)
+            ELSE NULL::integer
+        END, warehous_shipvia_id =
+        CASE
+            WHEN new.transit_type THEN getshipviaid(new.default_ship_via)
+            ELSE NULL::integer
+        END, warehous_shipcomments =
+        CASE
+            WHEN new.transit_type THEN new.shipping_comments
+            ELSE NULL::text
+        END, warehous_costcat_id =
+        CASE
+            WHEN new.transit_type THEN getcostcatid(new.default_cost_category)
+            ELSE NULL::integer
+        END, warehous_sitetype_id = getsitetypeid(new.type), warehous_sequence = new.scheduling_sequence
+  WHERE whsinfo.warehous_id = getwarehousid(old.code::text, 'ALL'::text);
+>>>>>>> 198b7e0af38c88f1a6075b682c0bed0b9ed88aa3
 
