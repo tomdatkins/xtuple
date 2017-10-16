@@ -1,3 +1,4 @@
+DROP FUNCTION IF EXISTS updatememotax(text, text, integer, integer, date, integer, numeric);
 DROP FUNCTION IF EXISTS updatememotax(text, text, integer, integer, date, integer, numeric, numeric);
 
 CREATE OR REPLACE FUNCTION updatememotax(
