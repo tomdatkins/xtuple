@@ -3,10 +3,8 @@ CREATE OR REPLACE FUNCTION addrUseCount(pAddrId INTEGER) RETURNS integer STABLE 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _fk    RECORD;
-  _r     RECORD;
   _col   TEXT;
   _count INTEGER := 0;
-  _tmp   INTEGER := 0;
 
 BEGIN
   -- Determine where this address is used by analyzing foreign key linkages
@@ -21,10 +19,9 @@ BEGIN
     WHERE f.relname = 'addr'
       AND con.relname NOT IN ('pohead') -- exception(s) where address key doesn't actually drive document information
   LOOP
-    -- Validate
     IF (ARRAY_UPPER(_fk.seq,1) > 1) THEN
       RAISE EXCEPTION 'Checks to tables where the address is one of multiple foreign key columns is not supported. Error on Table: %.% [xtuple: addrusecount, -1, %]',
-        pg_namespace.nspname || '.' || con.relname, pAddrId;
+        _fk.schemaname, _fk.tablename, pAddrId;
     END IF;
     
     -- Get the specific column name
@@ -34,14 +31,11 @@ BEGIN
      WHERE pg_class.oid = _fk.class_id
        AND attnum       = _fk.seq[1];
 
-    -- See if there are dependencies
-    EXECUTE format('SELECT COUNT(*) AS count FROM %I.%I WHERE %I = %L;',
-                   _fk.schemaname, _fk.tablename, _col, pAddrId) INTO _tmp;
-
-    _count := _count + _tmp;
+    EXECUTE format('SELECT COUNT(*) + %L AS count FROM %I.%I WHERE %I = %L;',
+                   _count, _fk.schemaname, _fk.tablename, _col, pAddrId)
+       INTO _count;
   END LOOP;
 
   RETURN _count;
-
 END;
 $$ LANGUAGE plpgsql;

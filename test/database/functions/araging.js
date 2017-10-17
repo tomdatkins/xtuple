@@ -50,6 +50,11 @@ var _      = require("underscore"),
       datasource.query(sql, adminCred, function (err, res) {
         assert.isNull(err);
         assert.operator(res.rowCount, ">", 0);
+        _.each(res.rows, function (row) {
+          assert.equal(row.araging_cur_val   + row.araging_thirty_val +
+                       row.araging_sixty_val + row.araging_ninety_val +
+                       row.araging_plus_val, row.araging_total_val);
+        });
         agingData = res.rows;
         done();
       });
@@ -66,6 +71,9 @@ var _      = require("underscore"),
               return;
             assert.equal(field, agingData[i][name]);
           });
+          assert.equal(row.araging_cur_val   + row.araging_thirty_val +
+                       row.araging_sixty_val + row.araging_ninety_val +
+                       row.araging_plus_val, row.araging_total_val);
         });
         done();
       });
@@ -81,10 +89,14 @@ var _      = require("underscore"),
         _.each(res.rows, function (row, i) {
           bool_and_date = bool_and_date && (row.aropen_docdate == row.aropen_distdate);
           _.each(row, function (field, name) {
+            assert.isNotNull(field, name);
             if (name.indexOf('date') >=0)
               return;
             bool_and_val = bool_and_val && (field == agingData[i][name]);
           });
+          assert.equal(row.araging_cur_val   + row.araging_thirty_val +
+                       row.araging_sixty_val + row.araging_ninety_val +
+                       row.araging_plus_val, row.araging_total_val);
         });
         if (bool_and_date)
           assert.isTrue(bool_and_val);
@@ -106,6 +118,9 @@ var _      = require("underscore"),
               return;
             bool_and = bool_and && (field == agingData[i][name]);
           });
+          assert.equal(row.araging_cur_val   + row.araging_thirty_val +
+                       row.araging_sixty_val + row.araging_ninety_val +
+                       row.araging_plus_val, row.araging_total_val);
         });
         if (nonbaseCust)
           assert.isFalse(bool_and);
@@ -132,11 +147,14 @@ var _      = require("underscore"),
           });
           assert.isFalse(bool_and_val);
         }
+        _.each(res.rows, function (row, i) {
+          assert.equal(row.araging_cur_val   + row.araging_thirty_val +
+                       row.araging_sixty_val + row.araging_ninety_val +
+                       row.araging_plus_val, row.araging_total_val);
+        });
         done();
       });
     });
-
-    it.skip("should determine that the correct values are returned!");
 
   });
 

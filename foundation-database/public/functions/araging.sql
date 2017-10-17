@@ -8,22 +8,22 @@ CREATE OR REPLACE FUNCTION araging(pAsOfDate DATE, pUseDocDate BOOLEAN, pConvBas
 --                      if false then convert to the customer's currency using aropen_docdate to ensure the same exchange rate
 DECLARE
   _row       araging%ROWTYPE;
-  _x         RECORD;
   _asOfDate  DATE := COALESCE(pAsOfDate,current_date);
 BEGIN
 
   FOR _row IN
-    SELECT aropen_docdate  AS aropen_docdate,
-           aropen_duedate  AS aropen_duedate,
-           aropen_ponumber AS araging_ponumber,
+    SELECT aropen_docdate   AS araging_docdate,
+           aropen_duedate   AS araging_duedate,
+           aropen_ponumber  AS araging_ponumber,
            aropen_docnumber AS araging_docnumber,
            aropen_doctype   AS araging_doctype,
-           cust_id AS araging_cust_id,
-           cust_name AS araging_cust_name,
-           cust_number AS araging_cust_name,
+           cust_id          AS araging_cust_id,
+           cust_number      AS araging_cust_number,
+           cust_name        AS araging_cust_name,
            cust_custtype_id AS araging_cust_custtype_id,
            custtype_code    AS araging_custtype_code,
            terms_descrip    AS araging_terms_descrip,
+           aropen_amount    AS araging_aropen_amount,
 
            --today and greater:
            CASE WHEN((aropen_duedate >= DATE(_asOfDate))) THEN balance
@@ -47,9 +47,7 @@ BEGIN
 
            --total amount:
            CASE WHEN((aropen_duedate > DATE(_asOfDate)-10000)) THEN balance
-                ELSE 0.0 END AS araging_total_val,
-
-           aropen_amount AS araging_aropen_amount
+                ELSE 0.0 END AS araging_total_val
 
       FROM (SELECT
           (((aropen_amount - aropen_paid + COALESCE(SUM(arapply_target_paid),0))) /
