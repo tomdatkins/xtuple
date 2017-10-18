@@ -1904,6 +1904,7 @@
     "public/patches/populate_evnttype.sql",
     "public/patches/rebuildinvbal.sql",
     "public/patches/remove_other_credit_card_fundstype.sql",
+    "public/patches/migrateccpay.sql",
     "public/patches/updatetrialbal.sql",
     "public/patches/deleteinvalidcntcteml.sql",
 
