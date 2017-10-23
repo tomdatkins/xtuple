@@ -351,7 +351,7 @@ BEGIN
                          getPrjAccntId(_r.prj_id, resolveCOSAccount(itemsite_id, _r.cust_id, _r.saletype_id, _r.shipzone_id)),
                          costcat_asset_accnt_id, _itemlocSeries, _glDate,
                          (_p.cohist_unitcost * _r.qty), NULL, NULL, pPreDistributed,
-                         pOrdHeadId := _r.invchead_id, pOrdItemId := _r.invcitem_id) INTO _invhistid
+                         _r.invchead_id, _r.invcitem_id) INTO _invhistid
     FROM itemsite JOIN costcat ON (itemsite_costcat_id=costcat_id)
     WHERE (itemsite_id=_r.itemsite_id);
 

@@ -81,7 +81,7 @@ BEGIN
                            'S/R', 'PO', (_p.pohead_number || '-' || _p.poitem_linenumber::TEXT), '', 'Return Inventory to P/O',
                            costcat_asset_accnt_id, costcat_liability_accnt_id, _itemlocSeries, CURRENT_TIMESTAMP,
                            NULL, NULL, NULL, pPreDistributed,
-                           pOrdHeadId := _p.pohead_id, pOrdItemId := _p.poitem_id) INTO _returnval
+                           _p.pohead_id, _p.poitem_id) INTO _returnval
       FROM itemsite, costcat
       WHERE ( (itemsite_costcat_id=costcat_id)
        AND (itemsite_id=_p.itemsiteid) );

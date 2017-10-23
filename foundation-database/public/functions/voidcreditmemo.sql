@@ -234,7 +234,7 @@ BEGIN
                          costcat_asset_accnt_id,
                          getPrjAccntId(_r.prj_id, resolveCOSAccount(itemsite_id, _r.cust_id, _r.saletype_id, _r.shipzone_id)),  
                          _itemlocSeries, _glDate, NULL, NULL, NULL, pPreDistributed,
-                         pOrdHeadId := _r.cmhead_id, pOrdItemId := _r.cmitem_id) INTO _invhistid
+                         _r.cmhead_id, _r.cmitem_id) INTO _invhistid
     FROM itemsite, costcat
     WHERE ( (itemsite_costcat_id=costcat_id)
      AND (itemsite_id=_r.itemsite_id) );

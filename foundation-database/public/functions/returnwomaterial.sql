@@ -82,7 +82,7 @@ BEGIN
                        getPrjAccntId(wo_prj_id, pc.costcat_wip_accnt_id), cc.costcat_asset_accnt_id, _itemlocSeries, pGlDistTS,
                        -- Cost will be ignored by Standard Cost items sites
                        _cost, pInvhistId,
-                       pOrdHeadId := wo_id, pOrdItemId := womatl_id) INTO _invhistid
+                       wo_id, womatl_id) INTO _invhistid
     FROM womatl, wo,
          itemsite AS ci, costcat AS cc,
          itemsite AS pi, costcat AS pc,
@@ -213,7 +213,7 @@ BEGIN
                        getPrjAccntId(wo_prj_id, pc.costcat_wip_accnt_id), cc.costcat_asset_accnt_id, _itemlocSeries, pGlDistTS,
                        -- Cost will be ignored by Standard Cost items sites
                        _cost, NULL, NULL, pPreDistributed,
-                       pOrdHeadId := wo_id, pOrdItemId := womatl_id),
+                       wo_id, womatl_id),
         isControlledItemsite(ci.itemsite_id) AS controlled INTO _invhistid, _hasControlledItem
     FROM womatl, wo,
          itemsite AS ci, costcat AS cc,

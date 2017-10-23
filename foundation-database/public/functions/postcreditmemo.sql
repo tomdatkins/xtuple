@@ -545,7 +545,7 @@ BEGIN
                          ('Credit Return ' || _r.item_number),
                          _r.costcat_asset_accnt_id,
                          getPrjAccntId(_p.cmhead_prj_id, resolveCOSAccount(_r.itemsite_id, _p.cmhead_cust_id, _p.cmhead_saletype_id, _p.cmhead_shipzone_id)), 
-                         _itemlocSeries, _glDate, (_r.std_cost * _r.qty), NULL, NULL, pPreDistributed, pOrdHeadId := _r.cmhead_id, pOrdItemId := _r.cmitem_id) INTO _invhistid;
+                         _itemlocSeries, _glDate, (_r.std_cost * _r.qty), NULL, NULL, pPreDistributed, _r.cmhead_id, _r.cmitem_id) INTO _invhistid;
     ELSE
       RAISE DEBUG 'postCreditMemo(%, %, %) tried to postInvTrans a %-costed item',
                   pCmheadid, pJournalNumber, pItemlocSeries,

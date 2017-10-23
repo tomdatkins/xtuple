@@ -149,7 +149,7 @@ BEGIN
         		     _itemlocSeries, pEffective,
                  ROUND(_recvcost * _qty, 2), -- alway passing since it is ignored if not average costed item
                  NULL, NULL, pPreDistributed,
-                 pOrdHeadId := _o.orderhead_id, pOrdItemId := _o.orderitem_id) INTO _tmp
+                 _o.orderhead_id, _o.orderitem_id) INTO _tmp
         FROM itemsite, costcat
         WHERE ((itemsite_costcat_id=costcat_id)
           AND  (itemsite_id=_r.itemsiteid) );

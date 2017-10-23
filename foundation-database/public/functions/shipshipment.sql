@@ -259,7 +259,7 @@ BEGIN
 			  tc.costcat_asset_accnt_id,
 			  sc.costcat_shipasset_accnt_id,
 			  _itemlocSeries, _timestamp, _ti.value,
-        pOrdHeadId := _ti.toitem_tohead_id, pOrdItemId := _ti.toitem_id) INTO _invhistid
+        _ti.toitem_tohead_id, _ti.toitem_id) INTO _invhistid
       FROM itemsite AS ti, costcat AS tc,
 	   itemsite AS si, costcat AS sc
       WHERE ( (ti.itemsite_costcat_id=tc.costcat_id)
@@ -291,7 +291,7 @@ BEGIN
 			  tc.costcat_asset_accnt_id,
 			  _itemlocSeries, _timestamp, 
 			  _ti.value,
-        pOrdHeadId := _ti.toitem_tohead_id, pOrdItemId := _ti.toitem_id) INTO _invhistid
+        _ti.toitem_tohead_id, _ti.toitem_id) INTO _invhistid
       FROM itemsite AS ti, costcat AS tc
       WHERE ((ti.itemsite_costcat_id=tc.costcat_id)
         AND  (ti.itemsite_item_id=_ti.toitem_item_id)

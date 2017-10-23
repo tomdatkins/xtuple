@@ -136,7 +136,7 @@ BEGIN
                       ('Material ' || item_number || ' Issue to Work Order'),
                       getPrjAccntId(_p.wo_prj_id, pc.costcat_wip_accnt_id),
                       cc.costcat_asset_accnt_id, _itemlocSeries, pGlDistTS,
-                      NULL, pInvhistid, pPrevQty, pPreDistributed, pOrdHeadId := _p.womatl_wo_id, pOrdItemId := _p.womatl_id ) INTO _invhistid
+                      NULL, pInvhistid, pPrevQty, pPreDistributed, _p.womatl_wo_id, _p.womatl_id ) INTO _invhistid
   FROM itemsite AS ci, itemsite AS pi,
        costcat AS cc, costcat AS pc,
        item

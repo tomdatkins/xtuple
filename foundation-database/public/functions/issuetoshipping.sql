@@ -168,7 +168,7 @@ BEGIN
 			   formatSoNumber(coitem_id), shiphead_number,
                            ('Issue ' || item_number || ' to Shipping for customer ' || cohead_billtoname),
 			   getPrjAccntId(cohead_prj_id, costcat_shipasset_accnt_id), costcat_asset_accnt_id,
-			   _itemlocSeries, _timestamp, NULL, pinvhistid, NULL, pPreDistributed, pOrdHeadId := _ordheadid, pOrdItemId := _orditemid ) INTO _invhistid
+			   _itemlocSeries, _timestamp, NULL, pinvhistid, NULL, pPreDistributed, _ordheadid, _orditemid ) INTO _invhistid
     FROM coitem, cohead, itemsite, item, costcat, shiphead
     WHERE ( (coitem_cohead_id=cohead_id)
      AND (coitem_itemsite_id=itemsite_id)
@@ -244,7 +244,7 @@ BEGIN
     SELECT postInvTrans( itemsite_id, 'SH', pQty, 'S/R',
 			 pordertype, formatToNumber(toitem_id), '', 'Issue to Shipping',
 			 costcat_shipasset_accnt_id, costcat_asset_accnt_id,
-			 _itemlocSeries, _timestamp, NULL, NULL, NULL, pPreDistributed, pOrdHeadId := _ordheadid, pOrdItemId := _orditemid) INTO _invhistid
+			 _itemlocSeries, _timestamp, NULL, NULL, NULL, pPreDistributed, _ordheadid, _orditemid) INTO _invhistid
     FROM tohead, toitem, itemsite, costcat
     WHERE ((tohead_id=toitem_tohead_id)
       AND  (itemsite_item_id=toitem_item_id)
