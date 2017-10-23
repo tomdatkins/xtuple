@@ -204,6 +204,7 @@ BEGIN
     (costelem_id = itemcost_costelem_id) AND
     (itemcost_item_id = itemsite_item_id) AND
     (itemsite_costcat_id = costcat_id) AND
+    (NOT itemcost_lowlevel) AND
     (costelem_exp_accnt_id) IS NOT NULL  AND
     (costelem_sys = false));
 
