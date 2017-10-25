@@ -37,8 +37,7 @@ BEGIN
     _itemlocSeries := NEXTVAL('itemloc_series_seq');
   END IF;
 
-  SELECT recv_qty, recv_date::DATE AS recv_date, recv_freight_curr_id,
-	  recv_orderhead_id, recv_orderitem_id,
+  SELECT recv_qty, recv_date::DATE AS recv_date, recv_freight_curr_id, recv_orderitem_id,
     round(currToCurr(recv_freight_curr_id, COALESCE(_currid, recv_freight_curr_id),
       recv_freight, recv_date::DATE),2) AS recv_freight,
     recv_posted, recv_order_type, COALESCE(itemsite_id, -1) AS itemsiteid,
@@ -71,6 +70,7 @@ BEGIN
 	 orderhead_number, orderitem_linenumber,
 	 orderhead_curr_id AS freight_curr_id,
 	 orderitem_orderhead_type,
+   orderitem_unitcost,
 	 orderitem_qty_invuomratio, orderhead_id, orderitem_id INTO _o
   FROM orderhead, orderitem
   WHERE ((orderhead_id=orderitem_orderhead_id)
