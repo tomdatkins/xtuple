@@ -81,7 +81,8 @@ BEGIN
       FROM shipitem
         JOIN shiphead ON (shiphead_id=shipitem_shiphead_id)
         JOIN toitem ON (shipitem_orderitem_id=toitem_id)
-        JOIN itemsite ON (itemsite_id=coitem_itemsite_id)
+        JOIN tohead ON toitem_tohead_id=tohead_id
+        JOIN itemsite ON (itemsite_item_id=toitem_item_id AND itemsite_warehous_id=tohead_src_warehous_id)
       WHERE ((NOT shiphead_shipped)
         AND  (shipitem_id=pShipitemId)
         AND  (shiphead_order_type = 'TO'));
