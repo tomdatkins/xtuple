@@ -8,7 +8,7 @@
     datasource = dblib.datasource,
     adminCred = dblib.generateCreds();
 
-  describe("postInvoice(integer)", function () {
+  describe("postCreditMemo(integer, integer)", function () {
     this.timeout(10 * 1000);
 
     var params = {
@@ -34,37 +34,39 @@
       });
     });
 
-    // Create an Invoice
-    it("needs an invoice to post", function (done) {
+    // Create a Credit Memo
+    it("should create a credit memo", function (done) {
      var callback = function (result) {
-        params.invcheadId = result;
+        assert.isNotNull(result);
+        params.cmheadId = result;
         
         if (DEBUG)
-          console.log("createInvoice callback result: ", result);
+          console.log("createCreditMemo callback result: ", result);
 
         done();
       };
  
-      dblib.createInvoice(callback);
+      dblib.createCreditMemo(callback);
     });
 
-    // Create a Invoice Line Item
-    it("the invoice needs a line item", function (done) {
+    // Create a Credit Memo Line Item
+    it("should create a credit memo line item", function (done) {
      var callback = function (result) {
-        params.invcitemId = result;
+        assert.isNotNull(result);
+        params.cmitemId = result;
         
         if (DEBUG)
-          console.log("createInvoiceLineItem callback result: ", result);
+          console.log("createCreditMemoLineItem callback result: ", result);
 
         done();
       };
 
-      dblib.createInvoiceLineItem(params, callback);
+      dblib.createCreditMemoLineItem(params, callback);
     });
 
-    it("postInvoice() should succeed", function (done) {
-      var sql = "SELECT postInvoice($1) AS result; ",
-        options = _.extend({}, adminCred, { parameters: [ params.invcheadId ]});
+    it("should post a credit memo", function (done) {
+      var sql = "SELECT postCreditMemo($1, NULL) AS result;",
+        options = _.extend({}, adminCred, { parameters: [ params.cmheadId ]});
         
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
@@ -77,7 +79,7 @@
 
     // Note: Don't handle distribution detail here, that will be done in private-extensions/test/manufacturing
 
-    it.skip("should have updated qoh", function (done) {
+    it("should have updated qoh", function (done) {
       var sql = "SELECT itemsite_qtyonhand AS result FROM itemsite WHERE itemsite_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
         

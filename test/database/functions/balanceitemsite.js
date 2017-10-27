@@ -54,6 +54,7 @@ var _      = require('underscore'),
     });
 
     it("should run without error", function (done) {
+      console.log("itemsitesucceed: ", itemsitesucceed);
       var sql = "SELECT balanceItemsite($1) AS result;",
           cred = _.extend({}, adminCred,
                           { parameters: [ itemsitesucceed ] });

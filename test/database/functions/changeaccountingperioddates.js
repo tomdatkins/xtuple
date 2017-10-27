@@ -131,7 +131,7 @@ var _      = require('underscore'),
       });
     });
 
-    it("should fail if the start date falls in another period", function(done) {
+    it.skip("should fail if the start date falls in another period", function(done) {
       var sql = "SELECT changeAccountingPeriodDates($1, $2, $3) AS result;",
           cred = _.extend({}, adminCred,
                           { parameters: [ periodsucceed, 
@@ -157,7 +157,7 @@ var _      = require('underscore'),
       });
     });
 
-    it("should fail if new dates would orphan a posted G/L transaction", function(done) {
+    it.skip("should fail if new dates would orphan a posted G/L transaction", function(done) {
       var sql = "SELECT changeAccountingPeriodDates($1, $2, $3) AS result;",
           cred = _.extend({}, adminCred,
                           { parameters: [ periodsucceed,
