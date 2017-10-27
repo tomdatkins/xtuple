@@ -10,15 +10,8 @@
 
   <prerequisite type = "query"
                 name = "Checking for too-new xTuple ERP database version" >
-    <query>SELECT compareVersion(fetchMetricText('ServerVersion'), '4.11.1') &lt;= 0;</query>
-    <message>This package may not be applied to a database newer than 4.11.1.
-    </message>
-  </prerequisite>
-
-  <prerequisite type = "query"
-               name = "Checking if plv8 extension is installed" >
-    <query>SELECT exists(SELECT 1 FROM pg_catalog.pg_extension WHERE extname = 'plv8');</query>
-    <message>The PostgreSQL extension, plv8, must be installed on your database. See: https://github.com/xtuple/xtuple/wiki/Installing-PLv8
+    <query>SELECT compareVersion(fetchMetricText('ServerVersion'), '4.11.2') &lt;= 0;</query>
+    <message>This package may not be applied to a database newer than 4.11.2.
     </message>
   </prerequisite>
 

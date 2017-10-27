@@ -467,7 +467,7 @@ select createDoctype(27, --pDocAssNum
                      'rahead_number', --pNumber
                      'cust_name', --pName
                      'firstline(rahead_notes)', --pDesc
-                     '', --pWidget
+                     'core', --pWidget
                      'join custinfo on rahead_cust_id = cust_id', --pJoin
                      'rahead_id', --pParam
                      'returnAuthorization', --pUi
@@ -502,7 +502,7 @@ select createDoctype(29, --pDocAssNum
                      'quhead_number', --pNumber
                      'cust_name', --pName
                      'firstline(quhead_ordercomments)', --pDesc
-                     '', --pWidget
+                     'core', --pWidget
                      'join custinfo on quhead_cust_id = cust_id', --pJoin
                      'quhead_id', --pParam
                      'salesOrder', --pUi
@@ -896,4 +896,16 @@ SELECT createDoctype(97, --pDocAssNum
                      'rentalItem', --pUi
                      '', --pPriv
                      'Sales' --pModule
+);
+
+SELECT createDocType(NULL,
+                     'JE',
+                     'JE',
+                     '',
+                     'G/L Journal',
+                     'gltrans',
+                     'gltrans_id',
+                     'gltrans_journalnumber',
+                     'gltrans_docnumber',
+                     'firstline(gltrans_notes)'
 );
