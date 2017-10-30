@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION recallShipment(INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 BEGIN
   RETURN recallShipment($1, CURRENT_TIMESTAMP);
@@ -7,7 +7,7 @@ END;
 $$ LANGUAGE 'plpgsql';
 
 CREATE OR REPLACE FUNCTION recallShipment(INTEGER, TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   pshipheadid		ALIAS FOR $1;
@@ -20,7 +20,7 @@ DECLARE
   _h			RECORD;
   _result               INTEGER;
   _invhistid		INTEGER;
-  _itemlocSeries	INTEGER;
+  _itemlocSeries INTEGER := NEXTVAL('itemloc_series_seq');
   _qty			NUMERIC;
   _qtyFromDest		NUMERIC;
   _qtyFromTransit	NUMERIC;
@@ -199,8 +199,6 @@ BEGIN
                GROUP BY toitem_tohead_id, toitem_id, toitem_qty_received, sis.itemsite_id, tis.itemsite_id, dis.itemsite_id,
                         scc.costcat_shipasset_accnt_id, tcc.costcat_asset_accnt_id
     LOOP
-
-      _itemlocSeries := NEXTVAL('itemloc_series_seq');
       
       SELECT postInvTrans(_ti.src_itemsite_id, 'TS', (_ti.recall_qty * -1.0), 'I/M',
 			  _shiphead.shiphead_order_type, formatToNumber(_ti.toitem_id),

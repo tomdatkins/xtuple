@@ -1,12 +1,12 @@
 CREATE OR REPLACE FUNCTION shipShipment(INTEGER) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
   SELECT shipShipment($1, CURRENT_TIMESTAMP);
 $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION shipShipment(pshipheadid INTEGER,
                                         ptimestamp TIMESTAMP WITH TIME ZONE) RETURNS INTEGER AS $$
--- Copyright (c) 1999-2014 by OpenMFG LLC, d/b/a xTuple. 
+-- Copyright (c) 1999-2017 by OpenMFG LLC, d/b/a xTuple. 
 -- See www.xtuple.com/CPAL for the full text of the software license.
 DECLARE
   _timestamp		TIMESTAMP WITH TIME ZONE;
@@ -15,7 +15,7 @@ DECLARE
   _coholdtype		TEXT;
   _gldate		DATE;
   _invhistid		INTEGER;
-  _itemlocSeries	INTEGER;
+  _itemlocSeries INTEGER := NEXTVAL('itemloc_series_seq');
   _lineitemsToClose     INTEGER[];
   _newQty		NUMERIC;
   _result		INTEGER;
@@ -249,8 +249,6 @@ BEGIN
 		     )) THEN
 	RETURN -6;
       END IF;
-
-      _itemlocSeries := NEXTVAL('itemloc_series_seq');
 
       SELECT postInvTrans(si.itemsite_id, 'TS', _ti.qty,
                           'I/M', _shiphead.shiphead_order_type,
