@@ -9,7 +9,7 @@
     adminCred = dblib.generateCreds();
 
   // TODO - write unit tests for the other version of correctPoReceipt
-  
+
   describe("correctPoReceipt(integer, numeric, numeric, integer)", function () {
     this.timeout(10 * 1000);
 
@@ -27,7 +27,7 @@
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.operator(res.rows[0].itemsite_id, ">", 0);
-        
+
         params.itemsiteId = res.rows[0].itemsite_id;
         params.qohBefore = res.rows[0].itemsite_qtyonhand;
         done();
@@ -42,7 +42,7 @@
         params.poheadId = result;
         done();
       };
- 
+
       dblib.createPurchaseOrder(callback);
     });
 
@@ -61,7 +61,7 @@
     it("should enter a receipt", function (done) {
       var sql = "SELECT enterPoReceipt($1, $2) AS result;",
         options = _.extend({}, adminCred, { parameters: [ params.poitemId, params.qty ]});
-        
+
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
@@ -75,7 +75,7 @@
     it("should post a receipt", function (done) {
       var sql = "SELECT postPoReceipts($1) AS result;",
         options = _.extend({}, adminCred, { parameters: [ params.poheadId ]});
-        
+
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
@@ -105,9 +105,9 @@
     // Note: Don't handle distribution detail here, that will be done in private-extensions/test/manufacturing
 
     it("correctreceipt() should succeed", function (done) {
-      var sql = "SELECT correctPoReceipt($1::integer, $2::numeric, NULL, NULL) AS result;",
+      var sql = "SELECT correctPoReceipt($1::integer, $2::numeric, NULL::numeric, NULL::integer) AS result;",
         options = _.extend({}, adminCred, { parameters: [ params.recvId, params.qty ]});
-        
+
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
@@ -119,7 +119,7 @@
     it.skip("should have updated qoh", function (done) {
       var sql = "SELECT itemsite_qtyonhand AS result FROM itemsite WHERE itemsite_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
-        
+
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
@@ -155,6 +155,6 @@
         done();
       });
     });
-  }); 
+  });
 }());
 

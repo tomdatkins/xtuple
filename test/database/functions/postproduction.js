@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var DEBUG = true,
+  var DEBUG = false,
     _      = require("underscore"),
     assert = require('chai').assert,
     dblib  = require('../dblib'),
@@ -43,7 +43,7 @@
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.operator(res.rows[0].itemsite_id, ">", 0);
-        
+
         params.itemsiteId = res.rows[0].itemsite_id;
         params.qohBefore = res.rows[0].itemsite_qtyonhand;
 
@@ -65,9 +65,11 @@
 
     it("explodeWo() should succeed", function (done) {
       var sql = "SELECT explodeWo($1::integer, false) AS result;",
-        options = _.extend({}, adminCred, { parameters: [ woParams.woId ]});
+        options = _.extend({}, adminCred, { parameters: [ params.woId ]});
 
       datasource.query(sql, options, function (err, res) {
+        if (DEBUG)
+          console.log("postProduction explodeWo result: ", res.rows[0].result);
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.operator(res.rows[0].result, ">", 0);
@@ -92,32 +94,28 @@
     it("postProduction() without backflush should succeed", function (done) {
       var sql = "SELECT postProduction($1, $2, FALSE, NULL, now(), false, true) AS result;",
         options = _.extend({}, adminCred, { parameters: [ params.woId, params.qty ]});
-        
+
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.isNotNull(res.rows[0].result);
+        assert.operator(res.rows[0].result, ">", 0);
+        done();
+      });
+    });
+
+    it("should have updated wo_qtyrcv", function (done) {
+      var sql = "SELECT wo_qtyrcv AS result FROM wo WHERE wo_id=$1::integer;",
+        options = _.extend({}, adminCred, { parameters: [ params.woId ]});
+
+      datasource.query(sql, options, function (err, res) {
+        assert.isNull(err);
+        assert.equal(res.rowCount, 1);
+        assert.equal(res.rows[0].result, params.qty);
 
         done();
       });
     });
- 
-    it("should have updated qoh", function (done) {
-      var sql = "SELECT itemsite_qtyonhand AS result FROM itemsite WHERE itemsite_id=$1::integer;",
-        options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
-        
-      datasource.query(sql, options, function (err, res) {
-        assert.isNull(err);
-        assert.equal(res.rowCount, 1);
-        assert.equal((+params.qohBefore + +params.qty), res.rows[0].result);
-
-        done();
-      }); 
-    });
-
-    it.skip("should check that the inventory posted correctly", function (done) {
-      // TODO
-    });
-  }); 
+  });
 }());
 

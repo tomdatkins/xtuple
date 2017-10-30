@@ -1,6 +1,7 @@
-var _      = require("underscore"),
-    assert = require('chai').assert,
-    dblib  = require('../dblib');
+var DEBUG = false,
+  _      = require("underscore"),
+  assert = require('chai').assert,
+  dblib  = require('../dblib');
 
 (function () {
   "use strict";
@@ -14,6 +15,12 @@ var _      = require("underscore"),
         poitem,
         recv
         ;
+
+    var params = {
+      itemNumber: "BTRUCK1",
+      whCode: "WH1",
+      qty: 10
+    };
 
     it("should fail with missing pr and no itemlocseries", function (done) {
       var sql = "select postReceipt(-1, NULL) as result;";
@@ -33,6 +40,46 @@ var _      = require("underscore"),
       });
     });
 
+    it("should get the itemsite_id and qoh",function (done) {
+      var sql = "SELECT itemsite_qtyonhand, itemsite_id FROM itemsite WHERE itemsite_id = getitemsiteid($1, $2);",
+        options = _.extend({}, adminCred, { parameters: [ params.whCode, params.itemNumber ]});
+
+      datasource.query(sql, options, function (err, res) {
+        assert.isNull(err);
+        assert.equal(res.rowCount, 1);
+        assert.operator(res.rows[0].itemsite_id, ">", 0);
+
+        params.itemsiteId = res.rows[0].itemsite_id;
+        params.qohBefore = res.rows[0].itemsite_qtyonhand;
+        done();
+      });
+    });
+
+    // Create a Purchase Order
+    it("should create a purchase order", function (done) {
+     var callback = function (result) {
+        if (DEBUG)
+          console.log("createPurchaseOrder callback result: ", result);
+        params.poheadId = result;
+        done();
+      };
+
+      dblib.createPurchaseOrder(callback);
+    });
+
+    // Create a Purchase Order Line Item
+    it("should create a purchase order line item", function (done) {
+     var callback = function (result) {
+        if (DEBUG)
+          console.log("createPurchaseOrderLineItem callback result: ", result);
+        params.poitemId = result;
+        done();
+      };
+
+      dblib.createPurchaseOrderLineItem(params, callback);
+    });
+
+    /*
     it("needs a P/O to receive against", function (done) {
       var sql = "insert into pohead ("                                  +
                 "  pohead_status, pohead_number, pohead_orderdate,"     +
@@ -88,6 +135,7 @@ var _      = require("underscore"),
         done();
       }
     });
+    */
 
     // just P/O for now
     it("needs a receipt", function (done) {
@@ -102,7 +150,7 @@ var _      = require("underscore"),
                  "     0, current_date"                                         +
                  "  from pohead join poitem on pohead_id = poitem_pohead_id"    +
                  " where poitem_id = $1 returning *;",
-          cred = _.extend({}, adminCred, { parameters: [ poitem.poitem_id ] });
+          cred = _.extend({}, adminCred, { parameters: [ params.poitemId ] });
       datasource.query(sql, cred, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
@@ -164,7 +212,7 @@ var _      = require("underscore"),
 
     it("should have updated the poitem", function (done) {
       var sql = "select poitem_qty_received from poitem where poitem_id = $1;",
-         cred = _.extend({}, adminCred, { parameters: [ poitem.poitem_id ]});
+         cred = _.extend({}, adminCred, { parameters: [ params.poitemId ]});
       datasource.query(sql, cred, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);

@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var DEBUG = true,
+  var DEBUG = false,
     _      = require("underscore"),
     assert = require('chai').assert,
     dblib  = require('../dblib'),
@@ -23,7 +23,7 @@
     };
 
     var womatlParams = {
-      itemNumber: "RBUMP1",
+      itemNumber: "TBODY1",
       whCode: "WH1",
       qty: 1
     };
@@ -52,7 +52,7 @@
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.operator(res.rows[0].itemsite_id, ">", 0);
-        
+
         woParams.itemsiteId = res.rows[0].itemsite_id;
         woParams.qohBefore = res.rows[0].itemsite_qtyonhand;
 
@@ -63,26 +63,39 @@
     // Create a Work Order
     it("should create a work order", function (done) {
       var callback = function (result) {
-        woParams.woId = result;
-        
         if (DEBUG)
           console.log("createWorkOrder callback result: ", result);
 
+        woParams.woId = result;
         done();
       };
 
       dblib.createWorkOrder(woParams, callback);
     });
 
+    it("explodeWo() should succeed", function (done) {
+      var sql = "SELECT explodeWo($1::integer, false) AS result;",
+        options = _.extend({}, adminCred, { parameters: [ woParams.woId ]});
+
+      datasource.query(sql, options, function (err, res) {
+        if (DEBUG)
+          console.log("returnWoMaterial explodeWo result: ", res.rows[0].result);
+        assert.isNull(err);
+        assert.equal(res.rowCount, 1);
+        assert.operator(res.rows[0].result, ">", 0);
+        done();
+      });
+    });
+
     // Note: Don't handle distribution detail here, that will be done in private-extensions/test/manufacturing
 
     it("issueWoMaterial() should succeed", function (done) {
-      var sql = "SELECT issueWoMaterial(womatl_id, $1::numeric, NULL, NOW(), NULL, NULL) AS result " +
+      var sql = "SELECT issueWoMaterial(womatl_id, $1::numeric, NULL::integer, NOW(), NULL::integer, NULL::numeric, false, true) AS result " +
                 "FROM womatl " +
                 "WHERE womatl_wo_id = $2::integer " +
                 " AND womatl_itemsite_id = $3::integer;",
         options = _.extend({}, adminCred, { parameters: [ womatlParams.qty, woParams.woId, womatlParams.itemsiteId ]});
-        
+
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
@@ -91,17 +104,17 @@
         done();
       });
     });
- 
+
     it.skip("should have updated qoh", function (done) {
       var sql = "SELECT itemsite_qtyonhand AS result FROM itemsite WHERE itemsite_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ womatlParams.itemsiteId ]});
-        
+
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.equal((+womatlParams.qohBefore - +womatlParams.qty), res.rows[0].result);
         done();
-      }); 
+      });
     });
 
     it.skip("should check that the inventory posted correctly", function (done) {
@@ -114,22 +127,13 @@
 
     // Note: Don't handle distribution detail here, that will be done in private-extensions/test/manufacturing
 
-    /*
-    pWomatlid INTEGER,
-    pQty NUMERIC,
-    pItemlocSeries INTEGER,
-    pGlDistTS TIMESTAMP WITH TIME ZONE,
-    pReqStdCost BOOLEAN DEFAULT FALSE,
-    pPreDistributed BOOLEAN DEFAULT FALSE,
-    pPostDistDetail BOOLEAN DEFAULT TRUE
-    */
     it("returnWoMaterial(integer, qty, integer, tiemstamp with time zone, boolean, boolean, boolean) should succeed", function (done) {
       var sql = "SELECT returnWoMaterial(womatl_id, $1::numeric, NULL::integer, NOW(), FALSE, FALSE, TRUE) AS result " +
                 "FROM womatl " +
                 "WHERE womatl_wo_id = $2::integer " +
                 " AND womatl_itemsite_id = $3::integer;",
         options = _.extend({}, adminCred, { parameters: [ womatlParams.qty, woParams.woId, womatlParams.itemsiteId ]});
-        
+
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
@@ -137,18 +141,18 @@
         done();
       });
     });
- 
+
     it("should have updated qoh", function (done) {
       var sql = "SELECT itemsite_qtyonhand AS result FROM itemsite WHERE itemsite_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ womatlParams.itemsiteId ]});
-        
+
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.equal(+womatlParams.qohBefore, res.rows[0].result);
         done();
-      }); 
-    });    
-  }); 
+      });
+    });
+  });
 }());
 
