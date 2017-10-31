@@ -145,6 +145,18 @@
     it.skip("shipShipment() should have made coitem_status = 'C'", function (done) {
       // TODO
     });
+
+    it("there should be no unposted invhist records", function (done) {
+      var sql = "SELECT true AS result" +
+                "  FROM invhist" +
+                " WHERE invhist_posted = false;";
+
+      datasource.query(sql, adminCred, function (err, res) {
+        assert.isNull(err);
+        assert.equal(res.rowCount, 0);
+        done();
+      });
+    });
   });
 }());
 

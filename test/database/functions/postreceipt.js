@@ -177,7 +177,18 @@ var DEBUG = false,
       });
     });
 
-    it.skip("should post inventory transactions");
+    it("there should be no unposted invhist records", function (done) {
+      var sql = "SELECT true AS result" +
+                "  FROM invhist" +
+                " WHERE invhist_posted = false;";
+
+      datasource.query(sql, adminCred, function (err, res) {
+        assert.isNull(err);
+        assert.equal(res.rowCount, 0);
+        done();
+      });
+    });
+
     it.skip("should update itemloc");
     it.skip("should honor the RecordPPVonReceipt metric");
 

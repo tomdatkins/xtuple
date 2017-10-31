@@ -148,8 +148,7 @@
       });
     });
 
-    // todo - failing
-    it.skip("shipitem_shipped should be false", function (done) {
+    it("shipitem_shipped should be false", function (done) {
       var sql = "SELECT shipitem_shipped AS result" +
                 "  FROM shipitem" +
                 " WHERE shipitem_shiphead_id = $1;",
@@ -159,6 +158,18 @@
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.equal(res.rows[0].result, false);
+        done();
+      });
+    });
+
+    it("there should be no unposted invhist records", function (done) {
+      var sql = "SELECT true AS result" +
+                "  FROM invhist" +
+                " WHERE invhist_posted = false;";
+
+      datasource.query(sql, adminCred, function (err, res) {
+        assert.isNull(err);
+        assert.equal(res.rowCount, 0);
         done();
       });
     });
