@@ -18,18 +18,18 @@
     };
 
     it("should get the itemsite_id and qoh",function (done) {
-      var sql = "SELECT itemsite_qtyonhand, itemsite_id, itemsite_warehous_id FROM itemsite WHERE itemsite_id = getitemsiteid($1, $2);",
+      var sql = "SELECT itemsite_qtyonhand, itemsite_id, itemsite_warehous_id" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id = getitemsiteid($1, $2);",
         options = _.extend({}, adminCred, { parameters: [ params.whCode, params.itemNumber ]});
 
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.operator(res.rows[0].itemsite_id, ">", 0);
-
         params.qohBefore = res.rows[0].itemsite_qtyonhand;
         params.itemsiteId = res.rows[0].itemsite_id;
         params.whId = res.rows[0].itemsite_warehous_id;
-
         done();
       });
     });
@@ -69,7 +69,9 @@
     });
 
     it.skip("should have updated qoh", function (done) {
-      var sql = "SELECT itemsite_qtyonhand AS result FROM itemsite WHERE itemsite_id=$1::integer;",
+      var sql = "SELECT itemsite_qtyonhand AS result" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
         
       datasource.query(sql, options, function (err, res) {
@@ -105,7 +107,7 @@
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
-        assert.operator(res.rows[0].result, ">", 0); // todo - why is shipShipment returning null?!
+        assert.operator(res.rows[0].result, ">", 0);
         if (DEBUG)
           console.log("shipShipment result: ", res.rows[0].result);
         done();
@@ -117,18 +119,20 @@
         options = _.extend({}, adminCred, { parameters: [ params.shipheadId ]});
         
       datasource.query(sql, options, function (err, res) {
-        assert.isNull(err);
-        assert.equal(res.rowCount, 1);
-        assert.operator(res.rows[0].result, ">", 0); // todo - what is happening with recallShipment function?! it's not returning an integer
-        
         if (DEBUG)
           console.log("recallShipment result: ", res.rows[0].result);
+        
+        assert.isNull(err);
+        assert.equal(res.rowCount, 1);
+        assert.operator(res.rows[0].result, ">", 0);
         done();
       });
     });
 
     it("shiphead_shipped should be false", function (done) {
-      var sql = "SELECT shiphead_shipped AS result FROM shiphead WHERE shiphead_id = $1;",
+      var sql = "SELECT shiphead_shipped AS result" +
+                "  FROM shiphead" +
+                " WHERE shiphead_id = $1;",
         options = _.extend({}, adminCred, { parameters: [ params.shipheadId ]});
         
       datasource.query(sql, options, function (err, res) {

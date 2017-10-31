@@ -24,33 +24,33 @@
     };
 
     it("should get the womatl itemsite_id and qoh",function (done) {
-      var sql = "SELECT itemsite_qtyonhand, itemsite_id FROM itemsite WHERE itemsite_id = getitemsiteid($1, $2);",
+      var sql = "SELECT itemsite_qtyonhand, itemsite_id" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id = getitemsiteid($1, $2);",
         options = _.extend({}, adminCred, { parameters: [ womatlParams.whCode, womatlParams.itemNumber ]});
 
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.operator(res.rows[0].itemsite_id, ">", 0);
-
         womatlParams.itemsiteId = res.rows[0].itemsite_id;
         womatlParams.qohBefore = res.rows[0].itemsite_qtyonhand;
-
         done();
       });
     });
 
     it("should get the wo itemsite_id and qoh",function (done) {
-      var sql = "SELECT itemsite_qtyonhand, itemsite_id FROM itemsite WHERE itemsite_id = getitemsiteid($1, $2);",
+      var sql = "SELECT itemsite_qtyonhand, itemsite_id" + 
+                "  FROM itemsite" +
+                " WHERE itemsite_id = getitemsiteid($1, $2);",
         options = _.extend({}, adminCred, { parameters: [ woParams.whCode, woParams.itemNumber ]});
 
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
-        assert.operator(res.rows[0].itemsite_id, ">", 0);
-        
+        assert.operator(res.rows[0].itemsite_id, ">", 0);  
         woParams.itemsiteId = res.rows[0].itemsite_id;
         woParams.qohBefore = res.rows[0].itemsite_qtyonhand;
-
         done();
       });
     });
@@ -107,9 +107,9 @@
 
     it("issueWoMaterial() should succeed", function (done) {
       var sql = "SELECT issueWoMaterial(womatl_id, womatl_qtyreq, NULL, NOW(), NULL, NULL, false, true) AS result " +
-                "FROM womatl " +
-                "WHERE womatl_wo_id = $1::integer " +
-                " AND womatl_itemsite_id = $2::integer;",
+                "  FROM womatl " +
+                " WHERE womatl_wo_id = $1::integer " +
+                "   AND womatl_itemsite_id = $2::integer;",
         options = _.extend({}, adminCred, { parameters: [ woParams.woId, womatlParams.itemsiteId ]});
         
       datasource.query(sql, options, function (err, res) {
@@ -122,14 +122,15 @@
     });
  
     it.skip("should have updated qoh", function (done) {
-      var sql = "SELECT itemsite_qtyonhand AS result FROM itemsite WHERE itemsite_id=$1::integer;",
+      var sql = "SELECT itemsite_qtyonhand AS result" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ womatlParams.itemsiteId ]});
         
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.equal((+womatlParams.qohBefore - 1), res.rows[0].result);
-
         done();
       }); 
     });

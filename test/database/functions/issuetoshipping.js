@@ -19,7 +19,9 @@
     };
 
     it("should get the itemsite_id and qoh",function (done) {
-      var sql = "SELECT itemsite_qtyonhand, itemsite_id FROM itemsite WHERE itemsite_id = getitemsiteid($1, $2);",
+      var sql = "SELECT itemsite_qtyonhand, itemsite_id" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id = getitemsiteid($1, $2);",
         options = _.extend({}, adminCred, { parameters: [ params.whCode, params.itemNumber ]});
 
       datasource.query(sql, options, function (err, res) {
@@ -27,10 +29,8 @@
         assert.equal(res.rowCount, 1);
         assert.operator(res.rows[0].itemsite_id, ">", 0);
         assert.operator((+res.rows[0].itemsite_qtyonhand + +params.qty), ">", 0);
-        
         params.itemsiteId = res.rows[0].itemsite_id;
         params.qohBefore = res.rows[0].itemsite_qtyonhand;
-
         done();
       });
     });
@@ -38,12 +38,11 @@
     // Create a Sales Order
     it("should create a sales order", function (done) {
      var callback = function (result) {
-        assert.isNotNull(result);
-        params.coheadId = result;
-        
         if (DEBUG)
           console.log("issuetoshipping createSalesOrder callback result: ", result);
 
+        assert.isNotNull(result);
+        params.coheadId = result;
         done();
       };
 
@@ -103,20 +102,20 @@
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.operator(res.rows[0].result, ">", 0);
-
         done();
       });
     });
 
     it("should have updated qoh", function (done) {
-      var sql = "SELECT itemsite_qtyonhand AS result FROM itemsite WHERE itemsite_id=$1::integer;",
+      var sql = "SELECT itemsite_qtyonhand AS result" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
         
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
-        //assert.operator(res.rows[0].result, "=", qohBefore - qty);
-
+        assert.equal(res.rows[0].result, (+params.qohBefore - +params.qty));
         done();
       });
     });

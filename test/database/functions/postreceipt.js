@@ -41,7 +41,9 @@ var DEBUG = false,
     });
 
     it("should get the itemsite_id and qoh",function (done) {
-      var sql = "SELECT itemsite_qtyonhand, itemsite_id FROM itemsite WHERE itemsite_id = getitemsiteid($1, $2);",
+      var sql = "SELECT itemsite_qtyonhand, itemsite_id" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id = getitemsiteid($1, $2);",
         options = _.extend({}, adminCred, { parameters: [ params.whCode, params.itemNumber ]});
 
       datasource.query(sql, options, function (err, res) {
@@ -78,64 +80,6 @@ var DEBUG = false,
 
       dblib.createPurchaseOrderLineItem(params, callback);
     });
-
-    /*
-    it("needs a P/O to receive against", function (done) {
-      var sql = "insert into pohead ("                                  +
-                "  pohead_status, pohead_number, pohead_orderdate,"     +
-                "  pohead_vend_id, pohead_comments, pohead_terms_id,"   +
-                "  pohead_curr_id, pohead_taxzone_id"                   +
-                ") select 'O', fetchPONumber(), current_date,"          +
-                "         vend_id, 'test postreceipt', vend_terms_id,"  +
-                "         basecurrid(), vend_taxzone_id"                +
-                "    from vendinfo where vend_active limit 1"           +
-                " returning *;",
-          cred = _.extend({}, adminCred);
-      datasource.query(sql, cred, function (err, res) {
-        assert.isNull(err);
-        assert.equal(res.rowCount, 1);
-        pohead = res.rows[0];
-        sql  = "insert into poitem ("                                   +
-               "  poitem_status, poitem_pohead_id, poitem_linenumber,"  +
-               "  poitem_duedate, poitem_itemsite_id,"                  +
-               "  poitem_qty_ordered, poitem_unitprice"                 +
-               ") select 'O', $1, 1,"                                   +
-               "         current_date + interval '1 day', itemsite_id," +
-               "         case itemsite_ordertoqty when 0 then 10"       +
-               "              else itemsite_ordertoqty end,"            +
-               "         item_listprice"                                +
-               "    from itemsite"                                      +
-               "    join item on itemsite_item_id = item_id"            +
-               "   where itemsite_sold and item_sold"                   +
-               "     and itemsite_active and item_active"               +
-               "   limit 1"                                             +
-               " returning *;";
-        cred = _.extend(cred, { parameters: [ pohead.pohead_id ] });
-        datasource.query(sql, cred, function (err, res) {
-          assert.isNull(err);
-          assert.equal(res.rowCount, 1);
-          poitem = res.rows[0];
-          done();
-        });
-      });
-    });
-
-    it("needs that PO to be open", function (done) {
-      var sql  = "select releasePurchaseOrder($1) as result;",
-          cred = _.extend({}, adminCred,
-                          { parameters: [ poitem.poitem_pohead_id ] });
-      if (poitem.poitem_status === 'U') {
-        datasource.query(sql, cred, function (err, res) {
-          assert.isNull(err);
-          assert.equal(res.rowCount, 1);
-          assert.equal(res.rows[0].result, 1, "released the PO");
-          done();
-        });
-      } else {
-        done();
-      }
-    });
-    */
 
     // just P/O for now
     it("needs a receipt", function (done) {

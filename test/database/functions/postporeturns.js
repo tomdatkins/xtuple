@@ -21,7 +21,9 @@ var _      = require("underscore"),
     };
 
     it("should get the itemsite_id and qoh",function (done) {
-      var sql = "SELECT itemsite_qtyonhand, itemsite_id FROM itemsite WHERE itemsite_id = getitemsiteid($1, $2);",
+      var sql = "SELECT itemsite_qtyonhand, itemsite_id" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id = getitemsiteid($1, $2);",
         options = _.extend({}, adminCred, { parameters: [ params.whCode, params.itemNumber ]});
 
       datasource.query(sql, options, function (err, res) {
@@ -107,7 +109,9 @@ var _      = require("underscore"),
     });
 
     it("should have updated qoh", function (done) {
-      var sql = "SELECT itemsite_qtyonhand AS result FROM itemsite WHERE itemsite_id=$1::integer;",
+      var sql = "SELECT itemsite_qtyonhand AS result" + 
+                "  FROM itemsite" +
+                " WHERE itemsite_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
         
       datasource.query(sql, options, function (err, res) {
@@ -123,7 +127,9 @@ var _      = require("underscore"),
     });
 
     it("should have updated the poitem", function (done) {
-      var sql = "SELECT poitem_qty_returned AS result FROM poitem where poitem_id = $1;",
+      var sql = "SELECT poitem_qty_returned AS result" +
+                "  FROM poitem" + 
+                " WHERE poitem_id = $1;",
          cred = _.extend({}, adminCred, { parameters: [ params.poitemId ]});
       datasource.query(sql, cred, function (err, res) {
         assert.isNull(err);
@@ -132,7 +138,5 @@ var _      = require("underscore"),
         done();
       });
     });
-
   });
-
 }());

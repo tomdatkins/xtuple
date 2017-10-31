@@ -20,7 +20,9 @@
     };
 
     it("should get the itemsite_id and qoh",function (done) {
-      var sql = "SELECT itemsite_qtyonhand, itemsite_id FROM itemsite WHERE itemsite_id = getitemsiteid($1, $2);",
+      var sql = "SELECT itemsite_qtyonhand, itemsite_id" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id = getitemsiteid($1, $2);",
         options = _.extend({}, adminCred, { parameters: [ params.whCode, params.itemNumber ]});
 
       datasource.query(sql, options, function (err, res) {
@@ -28,7 +30,6 @@
         assert.equal(res.rowCount, 1);
         params.itemsiteId = res.rows[0].itemsite_id;
         params.qohBefore = res.rows[0].itemsite_qtyonhand;
-
         done();
       });
     });
@@ -40,19 +41,28 @@
           console.log("dblib.createWorkOrder callback result: ", result);
 
         params.woId = result;
-        done();
+
+        var sql = "UPDATE wo SET wo_status = 'O' WHERE wo_id = $1::integer;",
+          options = _.extend({}, adminCred, { parameters: [ params.woId ]});
+
+        datasource.query(sql, options, function (err, res) {
+          assert.isNull(err);
+          assert.equal(res.rowCount, 1);
+          done();
+        });
       };
 
       dblib.createWorkOrder(params, callback);
     });
 
-    it.skip("explodeWo() should succeed", function (done) {
+    it("explodeWo() should succeed", function (done) {
       var sql = "SELECT explodeWo($1::integer, false) AS result;",
         options = _.extend({}, adminCred, { parameters: [ params.woId ]});
 
       datasource.query(sql, options, function (err, res) {
         if (DEBUG)
           console.log("explodeWo() result: ", res.rows[0].result);
+        
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.operator(res.rows[0].result, ">", 0);
@@ -67,6 +77,7 @@
       datasource.query(sql, options, function (err, res) {
         if (DEBUG)
           console.log("postProduction() result: ", res.rows[0].result);
+        
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.operator(res.rows[0].result, ">", 0);
@@ -75,7 +86,9 @@
     });
 
     it("should have updated wo_qtyrcv", function (done) {
-      var sql = "SELECT wo_qtyrcv AS result FROM wo WHERE wo_id=$1::integer;",
+      var sql = "SELECT wo_qtyrcv AS result" +
+                "  FROM wo" +
+                " WHERE wo_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ params.woId ]});
 
       datasource.query(sql, options, function (err, res) {
@@ -108,13 +121,14 @@
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.operator(res.rows[0].result, ">", 0);
-
         done();
       });
     });
 
     it("should have updated wo_qtyrcv", function (done) {
-      var sql = "SELECT wo_qtyrcv AS result FROM wo WHERE wo_id=$1::integer;",
+      var sql = "SELECT wo_qtyrcv AS result" +
+                "  FROM wo" +
+                " WHERE wo_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ params.woId ]});
 
       datasource.query(sql, options, function (err, res) {
@@ -133,13 +147,14 @@
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.operator(res.rows[0].result, ">", 0);
-
         done();
       });
     });
 
     it("should have updated wo_qtyrcv", function (done) {
-      var sql = "SELECT wo_qtyrcv AS result FROM wo WHERE wo_id=$1::integer;",
+      var sql = "SELECT wo_qtyrcv AS result" +
+                "  FROM wo" +
+                " WHERE wo_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ params.woId ]});
 
       datasource.query(sql, options, function (err, res) {

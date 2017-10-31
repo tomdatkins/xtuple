@@ -18,7 +18,9 @@
     };
 
     it("should get the itemsite_id and qoh",function (done) {
-      var sql = "SELECT itemsite_qtyonhand, itemsite_id FROM itemsite WHERE itemsite_id = getitemsiteid($1, $2);",
+      var sql = "SELECT itemsite_qtyonhand, itemsite_id" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id = getitemsiteid($1, $2);",
         options = _.extend({}, adminCred, { parameters: [ params.whCode, params.itemNumber ]});
 
       datasource.query(sql, options, function (err, res) {
@@ -34,12 +36,11 @@
     // Create a Credit Memo
     it("should create a credit memo", function (done) {
      var callback = function (result) {
-        assert.isNotNull(result);
-        params.cmheadId = result;
-
         if (DEBUG)
           console.log("createCreditMemo callback result: ", result);
 
+        assert.isNotNull(result);
+        params.cmheadId = result;
         done();
       };
 
@@ -76,16 +77,16 @@
     // Note: Don't handle distribution detail here, that will be done in private-extensions/test/manufacturing
 
     it("should have updated qoh", function (done) {
-      var sql = "SELECT itemsite_qtyonhand AS result FROM itemsite WHERE itemsite_id=$1::integer;",
+      var sql = "SELECT itemsite_qtyonhand AS result" + 
+                "  FROM itemsite" + 
+                " WHERE itemsite_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
 
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.equal(res.rows[0].result, (+params.qohBefore + +params.qty));
-
         params.qohBefore = res.rows[0].result;
-
         done();
       });
     });

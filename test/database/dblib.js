@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var DEBUG = true,
+  var DEBUG = false,
     _        = require('underscore'),
     async      = require('async'),
     assert     = require('chai').assert,

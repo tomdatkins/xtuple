@@ -18,7 +18,9 @@
     };
 
     it("should get the itemsite_id and qoh",function (done) {
-      var sql = "SELECT itemsite_qtyonhand, itemsite_id, itemsite_warehous_id FROM itemsite WHERE itemsite_id = getitemsiteid($1, $2);",
+      var sql = "SELECT itemsite_qtyonhand, itemsite_id, itemsite_warehous_id" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id = getitemsiteid($1, $2);",
         options = _.extend({}, adminCred, { parameters: [ params.whCode, params.itemNumber ]});
 
       datasource.query(sql, options, function (err, res) {
@@ -69,7 +71,9 @@
     });
 
     it.skip("should have updated qoh", function (done) {
-      var sql = "SELECT itemsite_qtyonhand AS result FROM itemsite WHERE itemsite_id=$1::integer;",
+      var sql = "SELECT itemsite_qtyonhand AS result" + 
+                "  FROM itemsite" +
+                " WHERE itemsite_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
         
       datasource.query(sql, options, function (err, res) {
@@ -127,8 +131,9 @@
     });
 
     it("returnShipmentTransaction() should succeed", function (done) {
-      var sql = "SELECT returnShipmentTransaction(shipitem_id) AS result " +
-                "FROM shipitem WHERE shipitem_shiphead_id = $1;",
+      var sql = "SELECT returnShipmentTransaction(shipitem_id) AS result" +
+                "  FROM shipitem" +
+                " WHERE shipitem_shiphead_id = $1;",
         options = _.extend({}, adminCred, { parameters: [ params.shipheadId ]});
         
       datasource.query(sql, options, function (err, res) {
@@ -145,7 +150,9 @@
 
     // todo - failing
     it.skip("shipitem_shipped should be false", function (done) {
-      var sql = "SELECT shipitem_shipped AS result FROM shipitem WHERE shipitem_shiphead_id = $1;",
+      var sql = "SELECT shipitem_shipped AS result" +
+                "  FROM shipitem" +
+                " WHERE shipitem_shiphead_id = $1;",
         options = _.extend({}, adminCred, { parameters: [ params.shipheadId ]});
         
       datasource.query(sql, options, function (err, res) {

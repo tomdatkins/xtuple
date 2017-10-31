@@ -18,18 +18,17 @@
     };
 
     it("should get the itemsite_id and qoh",function (done) {
-      var sql = "SELECT itemsite_qtyonhand, itemsite_id FROM itemsite WHERE itemsite_id = getitemsiteid($1, $2);",
+      var sql = "SELECT itemsite_qtyonhand, itemsite_id" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id = getitemsiteid($1, $2);",
         options = _.extend({}, adminCred, { parameters: [ params.whCode, params.itemNumber ]});
 
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.operator(res.rows[0].itemsite_id, ">", 0);
-        //assert.operator((+res.rows[0].itemsite_qtyonhand + +params.qty), ">", 0);
-        
         params.itemsiteId = res.rows[0].itemsite_id;
         params.qohBefore = res.rows[0].itemsite_qtyonhand;
-
         done();
       });
     });
@@ -37,11 +36,10 @@
     // Create an Invoice
     it("needs an invoice to post", function (done) {
      var callback = function (result) {
-        params.invcheadId = result;
-        
         if (DEBUG)
           console.log("createInvoice callback result: ", result);
 
+        params.invcheadId = result;
         done();
       };
  
@@ -51,11 +49,10 @@
     // Create a Invoice Line Item
     it("the invoice needs a line item", function (done) {
      var callback = function (result) {
-        params.invcitemId = result;
-        
         if (DEBUG)
           console.log("createInvoiceLineItem callback result: ", result);
 
+        params.invcitemId = result;        
         done();
       };
 
@@ -78,16 +75,16 @@
     // Note: Don't handle distribution detail here, that will be done in private-extensions/test/manufacturing
 
     it.skip("should have updated qoh", function (done) {
-      var sql = "SELECT itemsite_qtyonhand AS result FROM itemsite WHERE itemsite_id=$1::integer;",
+      var sql = "SELECT itemsite_qtyonhand AS result" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
         
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.equal((+params.qohBefore + +params.qty), res.rows[0].result);
-
         params.qohBefore = res.rows[0].result;
-
         done();
       });
     });

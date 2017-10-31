@@ -20,7 +20,9 @@
     };
 
     it("should get the itemsite_id and qoh",function (done) {
-      var sql = "SELECT itemsite_qtyonhand, itemsite_id FROM itemsite WHERE itemsite_id = getitemsiteid($1, $2);",
+      var sql = "SELECT itemsite_qtyonhand, itemsite_id" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id = getitemsiteid($1, $2);",
         options = _.extend({}, adminCred, { parameters: [ params.whCode, params.itemNumber ]});
 
       datasource.query(sql, options, function (err, res) {
@@ -36,7 +38,9 @@
     });
 
     it("should get the wo itemsite_id and qoh",function (done) {
-      var sql = "SELECT itemsite_qtyonhand, itemsite_id FROM itemsite WHERE itemsite_id = getitemsiteid($1, $2);",
+      var sql = "SELECT itemsite_qtyonhand, itemsite_id" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id = getitemsiteid($1, $2);",
         options = _.extend({}, adminCred, { parameters: [ params.whCode, params.itemNumber ]});
 
       datasource.query(sql, options, function (err, res) {
@@ -53,11 +57,20 @@
 
     // Create a Work Order
     it("should create a work order", function (done) {
-      var callback = function (result) {
+     var callback = function (result) {
         if (DEBUG)
-          console.log("createWorkOrder callback result: ", result);
+          console.log("dblib.createWorkOrder callback result: ", result);
+
         params.woId = result;
-        done();
+
+        var sql = "UPDATE wo SET wo_status = 'O' WHERE wo_id = $1::integer;",
+          options = _.extend({}, adminCred, { parameters: [ params.woId ]});
+
+        datasource.query(sql, options, function (err, res) {
+          assert.isNull(err);
+          assert.equal(res.rowCount, 1);
+          done();
+        });
       };
 
       dblib.createWorkOrder(params, callback);
@@ -70,6 +83,7 @@
       datasource.query(sql, options, function (err, res) {
         if (DEBUG)
           console.log("postProduction explodeWo result: ", res.rows[0].result);
+
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.operator(res.rows[0].result, ">", 0);
@@ -105,7 +119,9 @@
     });
 
     it("should have updated wo_qtyrcv", function (done) {
-      var sql = "SELECT wo_qtyrcv AS result FROM wo WHERE wo_id=$1::integer;",
+      var sql = "SELECT wo_qtyrcv AS result" +
+                "  FROM wo" +
+                " WHERE wo_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ params.woId ]});
 
       datasource.query(sql, options, function (err, res) {

@@ -20,14 +20,15 @@
     };
 
     it("should get the itemsite_id and qoh",function (done) {
-      var sql = "SELECT itemsite_qtyonhand, itemsite_id FROM itemsite WHERE itemsite_id = getitemsiteid($1, $2);",
+      var sql = "SELECT itemsite_qtyonhand, itemsite_id" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id = getitemsiteid($1, $2);",
         options = _.extend({}, adminCred, { parameters: [ params.whCode, params.itemNumber ]});
 
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.operator(res.rows[0].itemsite_id, ">", 0);
-
         params.itemsiteId = res.rows[0].itemsite_id;
         params.qohBefore = res.rows[0].itemsite_qtyonhand;
         done();
@@ -39,6 +40,7 @@
      var callback = function (result) {
         if (DEBUG)
           console.log("createPurchaseOrder callback result: ", result);
+        
         params.poheadId = result;
         done();
       };
@@ -51,6 +53,7 @@
      var callback = function (result) {
         if (DEBUG)
           console.log("createPurchaseOrderLineItem callback result: ", result);
+        
         params.poitemId = result;
         done();
       };
@@ -66,7 +69,6 @@
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.isNotNull(res.rows[0].result);
-
         params.recvId = res.rows[0].result;
         done();
       });
@@ -80,7 +82,6 @@
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.isNotNull(res.rows[0].result);
-
         params.itemlocSeries = res.rows[0].result;
         done();
       });
@@ -117,14 +118,15 @@
     });
 
     it.skip("should have updated qoh", function (done) {
-      var sql = "SELECT itemsite_qtyonhand AS result FROM itemsite WHERE itemsite_id=$1::integer;",
+      var sql = "SELECT itemsite_qtyonhand AS result" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
 
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.equal((+params.qohBefore - 1), res.rows[0].result);
-
         params.qohBefore = res.rows[0].result;
         done();
       });
@@ -135,7 +137,9 @@
     });
 
     it("should have updated the poitem", function (done) {
-      var sql = "SELECT poitem_qty_received AS result FROM poitem where poitem_id = $1;",
+      var sql = "SELECT poitem_qty_received AS result" +
+                "  FROM poitem" +
+                " WHERE poitem_id = $1;",
          cred = _.extend({}, adminCred, { parameters: [ params.poitemId ]});
       datasource.query(sql, cred, function (err, res) {
         assert.isNull(err);
@@ -146,7 +150,9 @@
     });
 
     it("should have updated the recv", function (done) {
-      var sql = "SELECT recv_posted AS result FROM recv WHERE recv_id = $1;",
+      var sql = "SELECT recv_posted AS result" +
+                "  FROM recv" + 
+                " WHERE recv_id = $1;",
          cred = _.extend({}, adminCred, { parameters: [ params.recvId ]});
       datasource.query(sql, cred, function (err, res) {
         assert.isNull(err);
