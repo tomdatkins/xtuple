@@ -105,7 +105,7 @@
       });
     });
 
-    it.skip("should have updated qoh", function (done) {
+    it("should have updated qoh", function (done) {
       var sql = "SELECT itemsite_qtyonhand AS result" +
                 "  FROM itemsite" +
                 " WHERE itemsite_id=$1::integer;",
@@ -114,13 +114,9 @@
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
-        assert.equal((+womatlParams.qohBefore - +womatlParams.qty), res.rows[0].result);
+        assert.equal(res.rows[0].result, (womatlParams.qohBefore - womatlParams.qty));
         done();
       });
-    });
-
-    it.skip("should check that the inventory posted correctly", function (done) {
-      // TODO
     });
 
     it.skip("returnWoMaterial(integer, qty, integer, tiemstamp with time zone, boolean, boolean, boolean) should fail if pPreDistributed and no pItemlocSeries", function (done) {

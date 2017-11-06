@@ -94,10 +94,6 @@
       });
     });
 
-    it.skip("should check that the inventory posted correctly", function (done) {
-      // TODO
-    });
-
     it.skip("should fail if pPreDistributed and pItemlocSeries is null", function (done) {
       // TODO
     });
@@ -115,14 +111,6 @@
     });
 
     it.skip("should fail if salesaccnt is not found", function (done) {
-      // TODO
-    });
-
-    it.skip("should fail if pPreDistributed and pItemlocSeries is null", function (done) {
-      // TODO
-    });
-
-    it.skip("should fail if pPreDistributed and pItemlocSeries is null", function (done) {
       // TODO
     });
 

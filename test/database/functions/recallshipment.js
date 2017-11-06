@@ -68,25 +68,6 @@
       });
     });
 
-    it.skip("should have updated qoh", function (done) {
-      var sql = "SELECT itemsite_qtyonhand AS result" +
-                "  FROM itemsite" +
-                " WHERE itemsite_id=$1::integer;",
-        options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
-        
-      datasource.query(sql, options, function (err, res) {
-        assert.isNull(err);
-        assert.equal(res.rowCount, 1);
-        //assert.operator(res.rows[0].result, "=", qohBefore - qty);
-
-        done();
-      });
-    });
-
-    it.skip("should check that the inventory posted correctly", function (done) {
-      // TODO
-    });
-
     it("should have a shiphead_id", function (done) {
       var sql = "SELECT getOpenShipmentId('SO', $1, $2) AS result;",
         options = _.extend({}, adminCred, { parameters: [ params.coheadId, params.whId ]});
@@ -139,6 +120,20 @@
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.equal(res.rows[0].result, false);
+        done();
+      });
+    });
+
+    it("qoh is not updated through recallShipment", function (done) {
+      var sql = "SELECT itemsite_qtyonhand AS result" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id=$1::integer;",
+        options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
+        
+      datasource.query(sql, options, function (err, res) {
+        assert.isNull(err);
+        assert.equal(res.rowCount, 1);
+        assert.equal(res.rows[0].result, params.qohBefore - params.qty);
         done();
       });
     });

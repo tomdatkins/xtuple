@@ -71,19 +71,18 @@
       });
     });
 
-    it.skip("should have updated qoh", function (done) {
-      var sql = "SELECT itemsite_qtyonhand AS result FROM itemsite WHERE itemsite_id=$1::integer;",
+    it("check that qoh was updated", function (done) {
+      var sql = "SELECT itemsite_qtyonhand AS result" +
+                "  FROM itemsite" +
+                " WHERE itemsite_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
         
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
+        assert.equal(res.rows[0].result, params.qohBefore - params.qty);
         done();
       });
-    });
-
-    it.skip("should check that the inventory posted correctly", function (done) {
-      // TODO
     });
 
     it("should have a shiphead_id", function (done) {
@@ -140,10 +139,6 @@
         assert.equal(res.rows[0].result, true);
         done();
       });
-    });
-
-    it.skip("shipShipment() should have made coitem_status = 'C'", function (done) {
-      // TODO
     });
 
     it("there should be no unposted invhist records", function (done) {

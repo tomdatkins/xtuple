@@ -8,7 +8,7 @@
     datasource = dblib.datasource,
     adminCred = dblib.generateCreds();
 
-  describe("Issue to Shipping RTRUCK1", function () {
+  describe("returnShipmentTransaction(integer)", function () {
     this.timeout(10 * 1000);
 
     var params = {
@@ -70,7 +70,7 @@
       });
     });
 
-    it.skip("should have updated qoh", function (done) {
+    it("should have updated qoh", function (done) {
       var sql = "SELECT itemsite_qtyonhand AS result" + 
                 "  FROM itemsite" +
                 " WHERE itemsite_id=$1::integer;",
@@ -79,14 +79,9 @@
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
-        //assert.operator(res.rows[0].result, "=", qohBefore - qty);
-
+        assert.equal(res.rows[0].result, params.qohBefore - params.qty);
         done();
       });
-    });
-
-    it.skip("should check that the inventory posted correctly", function (done) {
-      // TODO
     });
 
     it("should have a shiphead_id", function (done) {
@@ -137,13 +132,12 @@
         options = _.extend({}, adminCred, { parameters: [ params.shipheadId ]});
         
       datasource.query(sql, options, function (err, res) {
-        assert.isNull(err);
-        assert.equal(res.rowCount, 1);
-
-        
-        //assert.operator(res.rows[0].result, ">", 0);
         if (DEBUG)
           console.log("returnShipmentTransaction result: ", res.rows[0].result);
+        
+        assert.isNull(err);
+        assert.equal(res.rowCount, 1);        
+        assert.operator(res.rows[0].result, ">", 0);
         done();
       });
     });

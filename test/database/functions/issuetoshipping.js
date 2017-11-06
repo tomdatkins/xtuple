@@ -115,7 +115,7 @@
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
-        assert.equal(res.rows[0].result, (+params.qohBefore - +params.qty));
+        assert.equal(res.rows[0].result, (params.qohBefore - params.qty));
         done();
       });
     });

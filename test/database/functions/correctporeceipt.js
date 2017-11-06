@@ -63,7 +63,7 @@
 
     it("should enter a receipt", function (done) {
       var sql = "SELECT enterPoReceipt($1, $2) AS result;",
-        options = _.extend({}, adminCred, { parameters: [ params.poitemId, params.qty ]});
+        options = _.extend({}, adminCred, { parameters: [ params.poitemId, 1 ]});
 
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
@@ -117,25 +117,6 @@
       });
     });
 
-    it.skip("should have updated qoh", function (done) {
-      var sql = "SELECT itemsite_qtyonhand AS result" +
-                "  FROM itemsite" +
-                " WHERE itemsite_id=$1::integer;",
-        options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
-
-      datasource.query(sql, options, function (err, res) {
-        assert.isNull(err);
-        assert.equal(res.rowCount, 1);
-        assert.equal((+params.qohBefore - 1), res.rows[0].result);
-        params.qohBefore = res.rows[0].result;
-        done();
-      });
-    });
-
-    it.skip("should check that the inventory posted correctly", function (done) {
-      // TODO
-    });
-
     it("should have updated the poitem", function (done) {
       var sql = "SELECT poitem_qty_received AS result" +
                 "  FROM poitem" +
@@ -158,6 +139,20 @@
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.isTrue(res.rows[0].result);
+        done();
+      });
+    });
+
+    it("should have updated qoh", function (done) {
+      var sql = "SELECT itemsite_qtyonhand AS result" + 
+                "  FROM itemsite" +
+                " WHERE itemsite_id=$1::integer;",
+        options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
+        
+      datasource.query(sql, options, function (err, res) {
+        assert.isNull(err);
+        assert.equal(res.rowCount, 1);
+        assert.equal(res.rows[0].result, params.qohBefore + params.qty);
         done();
       });
     });

@@ -106,11 +106,11 @@
     // Note: Don't handle distribution detail here, that will be done in private-extensions/test/manufacturing
 
     it("issueWoMaterial() should succeed", function (done) {
-      var sql = "SELECT issueWoMaterial(womatl_id, womatl_qtyreq, NULL, NOW(), NULL, NULL, false, true) AS result " +
+      var sql = "SELECT issueWoMaterial(womatl_id, $1::numeric, NULL, NOW(), NULL, NULL, false, true) AS result " +
                 "  FROM womatl " +
-                " WHERE womatl_wo_id = $1::integer " +
-                "   AND womatl_itemsite_id = $2::integer;",
-        options = _.extend({}, adminCred, { parameters: [ woParams.woId, womatlParams.itemsiteId ]});
+                " WHERE womatl_wo_id = $2::integer " +
+                "   AND womatl_itemsite_id = $3::integer;",
+        options = _.extend({}, adminCred, { parameters: [ womatlParams.qty, woParams.woId, womatlParams.itemsiteId ]});
         
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
@@ -121,7 +121,7 @@
       });
     });
  
-    it.skip("should have updated qoh", function (done) {
+    it("should have updated qoh", function (done) {
       var sql = "SELECT itemsite_qtyonhand AS result" +
                 "  FROM itemsite" +
                 " WHERE itemsite_id=$1::integer;",
@@ -130,7 +130,7 @@
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
-        assert.equal((+womatlParams.qohBefore - 1), res.rows[0].result);
+        assert.equal(res.rows[0].result, (womatlParams.qohBefore - womatlParams.qty));
         done();
       }); 
     });

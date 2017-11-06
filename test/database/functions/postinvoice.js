@@ -74,7 +74,7 @@
 
     // Note: Don't handle distribution detail here, that will be done in private-extensions/test/manufacturing
 
-    it.skip("should have updated qoh", function (done) {
+    it("should have updated qoh", function (done) {
       var sql = "SELECT itemsite_qtyonhand AS result" +
                 "  FROM itemsite" +
                 " WHERE itemsite_id=$1::integer;",
@@ -83,7 +83,7 @@
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
-        assert.equal((+params.qohBefore + +params.qty), res.rows[0].result);
+        assert.equal(res.rows[0].result, (params.qohBefore - params.qty));
         params.qohBefore = res.rows[0].result;
         done();
       });

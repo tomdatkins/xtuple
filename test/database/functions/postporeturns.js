@@ -1,7 +1,3 @@
-var _      = require("underscore"),
-    assert = require('chai').assert,
-    dblib  = require('../dblib');
-
 (function () {
   "use strict";
 
@@ -122,10 +118,6 @@ var _      = require("underscore"),
       });
     });
 
-    it.skip("should check that the inventory posted correctly", function (done) {
-      // TODO
-    });
-
     it("should have updated the poitem", function (done) {
       var sql = "SELECT poitem_qty_returned AS result" +
                 "  FROM poitem" + 
@@ -138,5 +130,18 @@ var _      = require("underscore"),
         done();
       });
     });
+
+    it("there should be no unposted invhist records", function (done) {
+      var sql = "SELECT true AS result" +
+                "  FROM invhist" +
+                " WHERE invhist_posted = false;";
+
+      datasource.query(sql, adminCred, function (err, res) {
+        assert.isNull(err);
+        assert.equal(res.rowCount, 0);
+        done();
+      });
+    });
+
   });
 }());
