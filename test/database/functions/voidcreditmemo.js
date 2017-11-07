@@ -8,7 +8,7 @@
     datasource = dblib.datasource,
     adminCred = dblib.generateCreds();
 
-  describe("postInvoice(integer)", function () {
+  describe("voidCreditMemo(integer, integer, boolean)", function () {
     this.timeout(10 * 1000);
 
     var params = {
@@ -33,41 +33,46 @@
       });
     });
 
-    // Create an Invoice
-    it("needs an invoice to post", function (done) {
+    // Create a Credit Memo
+    it("should create a credit memo", function (done) {
      var callback = function (result) {
         if (DEBUG)
-          console.log("createInvoice callback result: ", result);
+          console.log("createCreditMemo callback result: ", result);
 
-        params.invcheadId = result;
+        assert.isNotNull(result);
+        params.cmheadId = result;
         done();
       };
  
-      dblib.createInvoice(callback);
+      dblib.createCreditMemo(callback);
     });
 
-    // Create a Invoice Line Item
-    it("the invoice needs a line item", function (done) {
+    // Create a Credit Memo Line Item
+    it("should create a credit memo line item", function (done) {
      var callback = function (result) {
         if (DEBUG)
-          console.log("createInvoiceLineItem callback result: ", result);
+          console.log("createCreditMemoLineItem callback result: ", result);
 
-        params.invcitemId = result;        
+        assert.isNotNull(result);
+        params.cmitemId = result;
         done();
       };
 
-      dblib.createInvoiceLineItem(params, callback);
+      dblib.createCreditMemoLineItem(params, callback);
     });
 
-    it("postInvoice() should succeed", function (done) {
-      var sql = "SELECT postInvoice($1) AS result; ",
-        options = _.extend({}, adminCred, { parameters: [ params.invcheadId ]});
+    it("should post a credit memo", function (done) {
+      var sql = "SELECT postCreditMemo($1, NULL) AS result;",
+        options = _.extend({}, adminCred, { parameters: [ params.cmheadId ]});
         
       datasource.query(sql, options, function (err, res) {
+        if (DEBUG)
+          console.log("postCreditMemo() result: ", result);
+
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
         assert.isNotNull(res.rows[0].result);
-        assert.operator(res.rows[0].result, ">", 0);
+        params.recvId = res.rows[0].result;
         done();
       });
     });
@@ -83,8 +88,41 @@
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
-        assert.equal(res.rows[0].result, (params.qohBefore - params.qty));
+        assert.equal((+params.qohBefore + +params.qty), res.rows[0].result);
         params.qohBefore = res.rows[0].result;
+        done();
+      });
+    });
+
+    it.skip("should fail if pPreDistributed and pItemlocSeries is null", function (done) {
+      // TODO
+    });
+
+    it.skip("should fail if cmhead is not found", function (done) {
+      // TODO
+    });
+
+    it.skip("should fail if aropen is not found", function (done) {
+      // TODO
+    });
+
+    it.skip("should fail if arapply is not found", function (done) {
+      // TODO
+    });
+
+    it.skip("should fail if salesaccnt is not found", function (done) {
+      // TODO
+    });
+
+    it("voidCreditMemo() should succeed", function (done) {
+      var sql = "SELECT voidCreditMemo($1, NULL, false) AS result;",
+        options = _.extend({}, adminCred, { parameters: [ params.cmheadId ]});
+        
+      datasource.query(sql, options, function (err, res) {
+        assert.isNull(err);
+        assert.equal(res.rowCount, 1);
+        assert.isNotNull(res.rows[0].result);
+        assert.operator(res.rows[0].result, ">", 0);
         done();
       });
     });

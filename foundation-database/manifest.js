@@ -1036,6 +1036,7 @@
     "public/tables/invbal.sql",
     "public/tables/invchead.sql",
     "public/tables/invcitem.sql",
+    "public/tables/invhist.sql",
     "public/tables/ipshead.sql",
     "public/tables/ipsass.sql",
     "public/tables/item.sql",

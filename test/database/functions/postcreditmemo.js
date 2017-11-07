@@ -8,7 +8,7 @@
     datasource = dblib.datasource,
     adminCred = dblib.generateCreds();
 
-  describe("postInvoice(integer)", function () {
+  describe("postCreditMemo(integer, integer)", function () {
     this.timeout(10 * 1000);
 
     var params = {
@@ -33,36 +33,38 @@
       });
     });
 
-    // Create an Invoice
-    it("needs an invoice to post", function (done) {
+    // Create a Credit Memo
+    it("should create a credit memo", function (done) {
      var callback = function (result) {
         if (DEBUG)
-          console.log("createInvoice callback result: ", result);
+          console.log("createCreditMemo callback result: ", result);
 
-        params.invcheadId = result;
-        done();
-      };
- 
-      dblib.createInvoice(callback);
-    });
-
-    // Create a Invoice Line Item
-    it("the invoice needs a line item", function (done) {
-     var callback = function (result) {
-        if (DEBUG)
-          console.log("createInvoiceLineItem callback result: ", result);
-
-        params.invcitemId = result;        
+        assert.isNotNull(result);
+        params.cmheadId = result;
         done();
       };
 
-      dblib.createInvoiceLineItem(params, callback);
+      dblib.createCreditMemo(callback);
     });
 
-    it("postInvoice() should succeed", function (done) {
-      var sql = "SELECT postInvoice($1) AS result; ",
-        options = _.extend({}, adminCred, { parameters: [ params.invcheadId ]});
-        
+    // Create a Credit Memo Line Item
+    it("should create a credit memo line item", function (done) {
+     var callback = function (result) {
+        if (DEBUG)
+          console.log("createCreditMemoLineItem callback result: ", result);
+
+        assert.isNotNull(result);
+        params.cmitemId = result;
+        done();
+      };
+
+      dblib.createCreditMemoLineItem(params, callback);
+    });
+
+    it("should post a credit memo", function (done) {
+      var sql = "SELECT postCreditMemo($1, NULL) AS result;",
+        options = _.extend({}, adminCred, { parameters: [ params.cmheadId ]});
+
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
@@ -75,15 +77,15 @@
     // Note: Don't handle distribution detail here, that will be done in private-extensions/test/manufacturing
 
     it("should have updated qoh", function (done) {
-      var sql = "SELECT itemsite_qtyonhand AS result" +
-                "  FROM itemsite" +
+      var sql = "SELECT itemsite_qtyonhand AS result" + 
+                "  FROM itemsite" + 
                 " WHERE itemsite_id=$1::integer;",
         options = _.extend({}, adminCred, { parameters: [ params.itemsiteId ]});
-        
+
       datasource.query(sql, options, function (err, res) {
         assert.isNull(err);
         assert.equal(res.rowCount, 1);
-        assert.equal(res.rows[0].result, (params.qohBefore - params.qty));
+        assert.equal(res.rows[0].result, (+params.qohBefore + +params.qty));
         params.qohBefore = res.rows[0].result;
         done();
       });
@@ -100,6 +102,6 @@
         done();
       });
     });
-  }); 
+  });
 }());
 
