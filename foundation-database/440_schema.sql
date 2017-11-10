@@ -82367,23 +82367,6 @@ CREATE TABLE docass (
 
 ALTER TABLE public.docass OWNER TO admin;
 
-
---
--- TOC entry 243 (class 1259 OID 146567296)
--- Dependencies: 8
--- Name: file; Type: TABLE; Schema: public; Owner: admin; Tablespace:
---
-
-CREATE TABLE file (
-    file_id integer NOT NULL,
-    file_title text NOT NULL,
-    file_stream bytea,
-    file_descrip text NOT NULL
-);
-
-
-ALTER TABLE public.file OWNER TO admin;
-
 --
 -- TOC entry 244 (class 1259 OID 146567302)
 -- Dependencies: 8
@@ -90519,31 +90502,6 @@ ALTER SEQUENCE expcat_expcat_id_seq OWNED BY expcat.expcat_id;
 
 
 --
--- TOC entry 574 (class 1259 OID 146569009)
--- Dependencies: 243 8
--- Name: file_file_id_seq; Type: SEQUENCE; Schema: public; Owner: admin
---
-
-CREATE SEQUENCE file_file_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.file_file_id_seq OWNER TO admin;
-
---
--- TOC entry 9778 (class 0 OID 0)
--- Dependencies: 574
--- Name: file_file_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: admin
---
-
-ALTER SEQUENCE file_file_id_seq OWNED BY file.file_id;
-
-
---
 -- TOC entry 575 (class 1259 OID 146569011)
 -- Dependencies: 6457 8
 -- Name: filter; Type: TABLE; Schema: public; Owner: admin; Tablespace:
@@ -98005,15 +97963,6 @@ ALTER TABLE ONLY expcat ALTER COLUMN expcat_id SET DEFAULT nextval('expcat_expca
 
 
 --
--- TOC entry 6084 (class 2604 OID 146570369)
--- Dependencies: 574 243
--- Name: file_id; Type: DEFAULT; Schema: public; Owner: admin
---
-
-ALTER TABLE ONLY file ALTER COLUMN file_id SET DEFAULT nextval('file_file_id_seq'::regclass);
-
-
---
 -- TOC entry 6456 (class 2604 OID 146570370)
 -- Dependencies: 576 575
 -- Name: filter_id; Type: DEFAULT; Schema: public; Owner: admin
@@ -99768,16 +99717,6 @@ ALTER TABLE ONLY expcat
 
 ALTER TABLE ONLY expcat
     ADD CONSTRAINT expcat_pkey PRIMARY KEY (expcat_id);
-
-
---
--- TOC entry 6939 (class 2606 OID 146571087)
--- Dependencies: 243 243 8894
--- Name: file_pkey; Type: CONSTRAINT; Schema: public; Owner: admin; Tablespace:
---
-
-ALTER TABLE ONLY file
-    ADD CONSTRAINT file_pkey PRIMARY KEY (file_id);
 
 
 --
