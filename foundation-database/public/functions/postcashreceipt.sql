@@ -101,7 +101,7 @@ BEGIN
     SELECT ccpay_id, ccpay_type INTO _ccpayid, _cctype
       FROM ccpay
      WHERE ccpay_id=_p.cashrcpt_ccpay_id
-       AND ccpay_status IN ('C', 'A')
+       AND ccpay_status IN ('C', 'A');
 
     IF (NOT FOUND) THEN
       RETURN -8;
