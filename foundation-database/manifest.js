@@ -1538,6 +1538,7 @@
     "public/tables/metasql/saletype-table.mql",
     "public/tables/metasql/schedule-plannedorders.mql",
     "public/tables/metasql/scripts-detail.mql",
+    "public/tables/metasql/scripts-fetch.mql",
     "public/tables/metasql/selectPayments-applyallcredits.mql",
     "public/tables/metasql/selectPayments-clearall.mql",
     "public/tables/metasql/selectPayments-discountitems.mql",
