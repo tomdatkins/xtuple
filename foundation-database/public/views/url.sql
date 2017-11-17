@@ -87,7 +87,7 @@ create or replace rule "_UPDATE_FILE" as on update to url
 update file set
   file_title = new.url_title,
   file_stream = new.url_stream,
-  file_mime_type = new.url_mime_type
+  file_mime_type = COALESCE(new.url_mime_type, 'application/octet-stream')
 from docass
 where ( docass_id = old.url_id )
  and ( docass_target_id = file_id )
