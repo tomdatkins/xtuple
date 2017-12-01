@@ -1,7 +1,7 @@
 <!DOCTYPE openRPTDef>
 <report>
- <title>Item Sources</title>
- <name>ItemSources</name>
+ <title>Item Source Prices</title>
+ <name>ItemSourcePrices</name>
  <description></description>
  <grid>
   <snap/>
@@ -20,6 +20,12 @@
   <sql>SELECT item_number, vend_name,
        item_descrip1, item_descrip2,
        uom_name,
+       itemsrcp_qtybreak,
+       currConcat(itemsrcp_curr_id) AS item_curr,
+       formatQty(noNeg(CASE WHEN (itemsrcp_type='N') THEN itemsrcp_price
+                  WHEN (itemsrcp_type='D') THEN (item_listcost - (item_listcost * COALESCE(itemsrcp_discntprcnt, 0.0)) - COALESCE(itemsrcp_fixedamtdiscount, 0.0))
+                  ELSE 0.0
+             END)) AS price_local,
        itemsrc_vend_item_number as f_venditem,
        itemsrc_vend_uom as f_venduom,
        formatQty(itemsrc_invvendoruomratio) as f_uomratio
@@ -27,6 +33,7 @@ FROM itemsrc
 JOIN vendinfo ON itemsrc_vend_id=vend_id
 JOIN item ON itemsrc_item_id=item_id
 JOIN uom ON item_inv_uom_id=uom_id
+LEFT OUTER JOIN itemsrcp ON itemsrc_id=itemsrcp_itemsrc_id
 LEFT OUTER JOIN contrct ON itemsrc_contrct_id=contrct_id
 WHERE (TRUE
 &lt;? if not exists("showInactive") ?>
@@ -37,6 +44,12 @@ WHERE (TRUE
 &lt;? endif ?>
 &lt;? if exists("vend_id") ?>
   AND (itemsrc_vend_id=&lt;? value("vend_id") ?>)
+&lt;? endif ?>
+&lt;? if exists("warehous_id") ?>
+  AND (itemsrcp_warehous_id=&lt;? value("warehous_id") ?>)
+&lt;? endif ?>
+&lt;? if exists("showDropShip") ?>
+   AND (itemsrcp_dropship)
 &lt;? endif ?>
 &lt;? if exists("item_number_pattern") ?>
   AND (item_number ~* &lt;? value("item_number_pattern") ?>)
@@ -62,14 +75,20 @@ WHERE (TRUE
 &lt;? if exists("manuf_item_number_pattern") ?>
   AND (itemsrc_manuf_item_number ~* &lt;? value("manuf_item_number_pattern") ?>)
 &lt;? endif ?>
-&lt;? if not exists("showExpired") ?>
-   AND (itemsrc_expires > CURRENT_DATE)
+&lt;? if exists("effectiveStartDate") ?>
+  AND (COALESCE(contrct_effective, itemsrc_effective) >= &lt;? value("effectiveStartDate") ?>)
 &lt;? endif ?>
-&lt;? if not exists("showFuture") ?>
-   AND (itemsrc_effective &lt;= CURRENT_DATE)
+&lt;? if exists("effectiveEndDate") ?>
+  AND (COALESCE(contrct_effective, itemsrc_effective) = &lt;? value("effectiveEndDate") ?>)
+&lt;? endif ?>
+&lt;? if exists("expireStartDate") ?>
+  AND (COALESCE(contrct_expires, itemsrc_expires) >= &lt;? value("expireStartDate") ?>)
+&lt;? endif ?>
+&lt;? if exists("expireEndDate") ?>
+  AND (COALESCE(contrct_expires, itemsrc_expires) &lt;= &lt;? value("expireEndDate") ?>)
 &lt;? endif ?>
 )
-ORDER BY item_number, vend_name;</sql>
+ORDER BY item_number, vend_name, itemsrcp_qtybreak;</sql>
  </querysource>
  <rpthead>
   <height>221</height>
@@ -94,12 +113,12 @@ ORDER BY item_number, vend_name;</sql>
    </font>
    <right/>
    <vcenter/>
-   <string>Item Sources</string>
+   <string>Item Source Prices</string>
   </label>
   <label>
    <rect>
-    <x>230</x>
-    <y>183</y>
+    <x>160</x>
+    <y>185</y>
     <width>106</width>
     <height>15</height>
    </rect>
@@ -114,8 +133,8 @@ ORDER BY item_number, vend_name;</sql>
   </label>
   <label>
    <rect>
-    <x>695</x>
-    <y>183</y>
+    <x>365</x>
+    <y>205</y>
     <width>50</width>
     <height>15</height>
    </rect>
@@ -130,8 +149,8 @@ ORDER BY item_number, vend_name;</sql>
   </label>
   <label>
    <rect>
-    <x>640</x>
-    <y>183</y>
+    <x>365</x>
+    <y>195</y>
     <width>50</width>
     <height>15</height>
    </rect>
@@ -146,8 +165,8 @@ ORDER BY item_number, vend_name;</sql>
   </label>
   <label>
    <rect>
-    <x>490</x>
-    <y>183</y>
+    <x>420</x>
+    <y>185</y>
     <width>150</width>
     <height>15</height>
    </rect>
@@ -162,8 +181,8 @@ ORDER BY item_number, vend_name;</sql>
   </label>
   <label>
    <rect>
-    <x>230</x>
-    <y>198</y>
+    <x>160</x>
+    <y>200</y>
     <width>106</width>
     <height>15</height>
    </rect>
@@ -178,10 +197,10 @@ ORDER BY item_number, vend_name;</sql>
   </label>
   <label>
    <rect>
-    <x>435</x>
-    <y>183</y>
+    <x>365</x>
+    <y>185</y>
     <width>50</width>
-    <height>15</height>
+    <height>10</height>
    </rect>
    <font>
     <face>Arial</face>
@@ -195,7 +214,7 @@ ORDER BY item_number, vend_name;</sql>
   <text>
    <rect>
     <x>15</x>
-    <y>38</y>
+    <y>40</y>
     <width>725</width>
     <height>15</height>
    </rect>
@@ -215,7 +234,7 @@ ORDER BY item_number, vend_name;</sql>
   <label>
    <rect>
     <x>5</x>
-    <y>183</y>
+    <y>185</y>
     <width>106</width>
     <height>15</height>
    </rect>
@@ -228,49 +247,10 @@ ORDER BY item_number, vend_name;</sql>
    <vcenter/>
    <string>Vendor</string>
   </label>
- </rpthead>
- <pghead>
-  <firstpage/>
-  <height>6</height>
- </pghead>
- <pghead>
-  <height>36</height>
   <label>
    <rect>
-    <x>640</x>
-    <y>-1</y>
-    <width>50</width>
-    <height>15</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>8</size>
-    <weight>normal</weight>
-   </font>
-   <hcenter/>
-   <vcenter/>
-   <string>Vendor UOM</string>
-  </label>
-  <label>
-   <rect>
-    <x>435</x>
-    <y>-1</y>
-    <width>50</width>
-    <height>15</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>8</size>
-    <weight>normal</weight>
-   </font>
-   <hcenter/>
-   <vcenter/>
-   <string>UOM</string>
-  </label>
-  <label>
-   <rect>
-    <x>230</x>
-    <y>14</y>
+    <x>545</x>
+    <y>185</y>
     <width>106</width>
     <height>15</height>
    </rect>
@@ -281,8 +261,47 @@ ORDER BY item_number, vend_name;</sql>
    </font>
    <left/>
    <vcenter/>
-   <string>Description</string>
+   <string>Qty. Break</string>
   </label>
+  <label>
+   <rect>
+    <x>625</x>
+    <y>185</y>
+    <width>106</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Currency</string>
+  </label>
+  <label>
+   <rect>
+    <x>685</x>
+    <y>185</y>
+    <width>106</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Price</string>
+  </label>
+ </rpthead>
+ <pghead>
+  <firstpage/>
+  <height>6</height>
+ </pghead>
+ <pghead>
+  <height>36</height>
   <line>
    <xstart>5</xstart>
    <ystart>30</ystart>
@@ -292,23 +311,7 @@ ORDER BY item_number, vend_name;</sql>
   </line>
   <label>
    <rect>
-    <x>695</x>
-    <y>-1</y>
-    <width>50</width>
-    <height>15</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>8</size>
-    <weight>normal</weight>
-   </font>
-   <hcenter/>
-   <vcenter/>
-   <string>UOM Ratio</string>
-  </label>
-  <label>
-   <rect>
-    <x>485</x>
+    <x>420</x>
     <y>-1</y>
     <width>150</width>
     <height>15</height>
@@ -340,7 +343,103 @@ ORDER BY item_number, vend_name;</sql>
   </label>
   <label>
    <rect>
-    <x>230</x>
+    <x>545</x>
+    <y>-1</y>
+    <width>106</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Qty. Break</string>
+  </label>
+  <label>
+   <rect>
+    <x>685</x>
+    <y>-1</y>
+    <width>106</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Price</string>
+  </label>
+  <label>
+   <rect>
+    <x>365</x>
+    <y>19</y>
+    <width>50</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>UOM Ratio</string>
+  </label>
+  <label>
+   <rect>
+    <x>365</x>
+    <y>9</y>
+    <width>50</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Vendor UOM</string>
+  </label>
+  <label>
+   <rect>
+    <x>160</x>
+    <y>14</y>
+    <width>106</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Description</string>
+  </label>
+  <label>
+   <rect>
+    <x>625</x>
+    <y>-1</y>
+    <width>106</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Currency</string>
+  </label>
+  <label>
+   <rect>
+    <x>160</x>
     <y>-1</y>
     <width>106</width>
     <height>15</height>
@@ -354,6 +453,22 @@ ORDER BY item_number, vend_name;</sql>
    <vcenter/>
    <string>Item Number</string>
   </label>
+  <label>
+   <rect>
+    <x>365</x>
+    <y>-1</y>
+    <width>50</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>UOM</string>
+  </label>
  </pghead>
  <section>
   <name>detail</name>
@@ -364,8 +479,8 @@ ORDER BY item_number, vend_name;</sql>
    <height>56</height>
    <field>
     <rect>
-     <x>435</x>
-     <y>2</y>
+     <x>365</x>
+     <y>0</y>
      <width>50</width>
      <height>15</height>
     </rect>
@@ -383,8 +498,8 @@ ORDER BY item_number, vend_name;</sql>
    </field>
    <field>
     <rect>
-     <x>695</x>
-     <y>2</y>
+     <x>365</x>
+     <y>30</y>
      <width>50</width>
      <height>15</height>
     </rect>
@@ -402,8 +517,8 @@ ORDER BY item_number, vend_name;</sql>
    </field>
    <field>
     <rect>
-     <x>230</x>
-     <y>2</y>
+     <x>160</x>
+     <y>0</y>
      <width>200</width>
      <height>15</height>
     </rect>
@@ -421,8 +536,8 @@ ORDER BY item_number, vend_name;</sql>
    </field>
    <field>
     <rect>
-     <x>640</x>
-     <y>2</y>
+     <x>365</x>
+     <y>15</y>
      <width>50</width>
      <height>15</height>
     </rect>
@@ -440,8 +555,8 @@ ORDER BY item_number, vend_name;</sql>
    </field>
    <field>
     <rect>
-     <x>230</x>
-     <y>32</y>
+     <x>160</x>
+     <y>30</y>
      <width>400</width>
      <height>15</height>
     </rect>
@@ -459,8 +574,8 @@ ORDER BY item_number, vend_name;</sql>
    </field>
    <field>
     <rect>
-     <x>230</x>
-     <y>17</y>
+     <x>160</x>
+     <y>15</y>
      <width>400</width>
      <height>15</height>
     </rect>
@@ -485,8 +600,8 @@ ORDER BY item_number, vend_name;</sql>
    </line>
    <field>
     <rect>
-     <x>485</x>
-     <y>2</y>
+     <x>415</x>
+     <y>0</y>
      <width>150</width>
      <height>15</height>
     </rect>
@@ -505,7 +620,7 @@ ORDER BY item_number, vend_name;</sql>
    <field>
     <rect>
      <x>5</x>
-     <y>2</y>
+     <y>0</y>
      <width>215</width>
      <height>15</height>
     </rect>
@@ -521,6 +636,63 @@ ORDER BY item_number, vend_name;</sql>
      <column>vend_name</column>
     </data>
    </field>
+   <field>
+    <rect>
+     <x>555</x>
+     <y>0</y>
+     <width>150</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>itemsrcp_qtybreak</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>625</x>
+     <y>0</y>
+     <width>150</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>item_curr</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>685</x>
+     <y>0</y>
+     <width>150</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>price_local</column>
+    </data>
+   </field>
   </detail>
  </section>
  <pgfoot>
@@ -528,7 +700,7 @@ ORDER BY item_number, vend_name;</sql>
   <label>
    <rect>
     <x>5</x>
-    <y>0</y>
+    <y>1</y>
     <width>75</width>
     <height>15</height>
    </rect>
@@ -544,7 +716,7 @@ ORDER BY item_number, vend_name;</sql>
   <field>
    <rect>
     <x>705</x>
-    <y>0</y>
+    <y>1</y>
     <width>40</width>
     <height>15</height>
    </rect>
@@ -563,7 +735,7 @@ ORDER BY item_number, vend_name;</sql>
   <field>
    <rect>
     <x>85</x>
-    <y>0</y>
+    <y>1</y>
     <width>100</width>
     <height>15</height>
    </rect>
@@ -582,7 +754,7 @@ ORDER BY item_number, vend_name;</sql>
   <label>
    <rect>
     <x>625</x>
-    <y>0</y>
+    <y>1</y>
     <width>75</width>
     <height>15</height>
    </rect>

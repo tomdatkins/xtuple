@@ -1728,6 +1728,7 @@
     "public/tables/report/ItemMaster.xml",
     "public/tables/report/ItemSites.xml",
     "public/tables/report/ItemSources.xml",
+    "public/tables/report/ItemSourcePrices.xml",
     "public/tables/report/JobCosting.xml",
     "public/tables/report/Journals.xml",
     "public/tables/report/ListOpenSalesOrders.xml",
