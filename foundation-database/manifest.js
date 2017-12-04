@@ -1417,6 +1417,7 @@
     "public/tables/metasql/customer-ytdSales.mql",
     "public/tables/metasql/customers-detail.mql",
     "public/tables/metasql/customers-statement.mql",
+    "public/tables/metasql/documents-list.mql",
     "public/tables/metasql/depositesRegister-detail.mql",
     "public/tables/metasql/detailedInventoryHistory-detail.mql",
     "public/tables/metasql/distributeInventory-locations.mql",
