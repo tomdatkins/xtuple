@@ -10,6 +10,7 @@ SELECT itemsrcp_id, itemsrc_id,
        vend_number, vend_name,
        currConcat(vend_curr_id) AS vend_curr,
        item_number,
+       item_descrip1, item_descrip2,
        (item_descrip1 || ' ' || item_descrip2) AS item_descrip,
        warehous_code, uom_name,
        contrct_number,
@@ -19,6 +20,7 @@ SELECT itemsrcp_id, itemsrc_id,
        (itemsrc_vend_item_number || '/' || itemsrc_manuf_item_number) AS itemsrc_descrip,
        itemsrcp_qtybreak, itemsrcp_price, itemsrcp_dropship, itemsrcp_discntprcnt,
        itemsrcp_fixedamtdiscount,
+       formatQty(itemsrc_invvendoruomratio) AS f_uomratio,
        currConcat(itemsrcp_curr_id) AS item_curr,
        noNeg(CASE WHEN (itemsrcp_type='N') THEN currToBase(itemsrcp_curr_id, itemsrcp_price, itemsrcp_updated)
                   WHEN (itemsrcp_type='D') THEN (item_listcost - (item_listcost * COALESCE(itemsrcp_discntprcnt, 0.0)) - COALESCE(itemsrcp_fixedamtdiscount, 0.0))
@@ -28,6 +30,10 @@ SELECT itemsrcp_id, itemsrc_id,
                   WHEN (itemsrcp_type='D') THEN (item_listcost - (item_listcost * COALESCE(itemsrcp_discntprcnt, 0.0)) - COALESCE(itemsrcp_fixedamtdiscount, 0.0))
                   ELSE 0.0
              END) AS price_local,
+       formatQty(noNeg(CASE WHEN (itemsrcp_type='N') THEN itemsrcp_price
+                            WHEN (itemsrcp_type='D') THEN (item_listcost - (item_listcost * COALESCE(itemsrcp_discntprcnt, 0.0)) - COALESCE(itemsrcp_fixedamtdiscount, 0.0))
+                            ELSE 0.0
+                       END)) AS f_price_local,
        CASE WHEN (itemsrcp_type='N') THEN <? value("nominal") ?>
             WHEN (itemsrcp_type='D') THEN <? value("discount") ?>
             ELSE 'N/A'
@@ -137,15 +143,17 @@ WHERE ((true)
 <? endif ?>
 )
 )
+<? if not exists("isReport") ?>
 <? if exists("indented") ?>
 SELECT NULL AS itemsrcp_id, itemsrc_id, vend_number, vend_name, vend_curr, item_number,
-       item_descrip, NULL AS warehous_code, uom_name, contrct_number, itemsrc_vend_item_number,
-       itemsrc_vend_uom, itemsrc_invvendoruomratio, itemsrc_minordqty, itemsrc_multordqty,
-       itemsrc_leadtime, itemsrc_ranking, itemsrc_active, itemsrc_manuf_name,
+       item_descrip1, item_descrip2, item_descrip, NULL AS warehous_code, uom_name, contrct_number,
+       itemsrc_vend_item_number, itemsrc_vend_uom, itemsrc_invvendoruomratio, itemsrc_minordqty,
+       itemsrc_multordqty, itemsrc_leadtime, itemsrc_ranking, itemsrc_active, itemsrc_manuf_name,
        itemsrc_manuf_item_number, itemsrc_default, itemsrc_effective, itemsrc_expires,
        itemsrc_descrip, NULL AS itemsrcp_qtybreak, NULL AS itemsrcp_price,
        NULL AS itemsrcp_dropship, NULL AS itemsrcp_discntprcnt, NULL AS itemsrcp_fixedamtdiscount,
-       NULL AS item_curr, NULL AS price_base, NULL AS price_local, NULL AS type, NULL AS method,
+       f_uomratio, NULL AS item_curr, NULL AS price_base, NULL AS price_local,
+       NULL AS f_price_local, NULL AS type, NULL AS method, 
        itemsrc_invvendoruomratio_xtnumericrole, itemsrc_minordqty_xtnumericrole,
        itemsrc_multordqty_xtnumericrole, NULL AS itemsrcp_qtybreak_xtnumericrole,
        NULL AS itemsrcp_qtybreak_xtnullrole, NULL AS price_local_xtnumericrole,
@@ -156,13 +164,14 @@ SELECT NULL AS itemsrcp_id, itemsrc_id, vend_number, vend_name, vend_curr, item_
   FROM qry
 UNION
 SELECT itemsrcp_id, itemsrc_id, NULL, NULL, NULL, NULL,
-       NULL, warehous_code, NULL, NULL, NULL,
+       NULL, NULL, NULL, warehous_code, NULL, NULL,
        NULL, NULL, NULL, NULL,
-       NULL, NULL, NULL, NULL,
+       NULL, NULL, NULL, NULL, NULL,
        NULL, NULL, NULL, NULL,
        NULL, itemsrcp_qtybreak, itemsrcp_price,
        itemsrcp_dropship, itemsrcp_discntprcnt, itemsrcp_fixedamtdiscount,
-       item_curr, price_base, price_local, type, method,
+       NULL, item_curr, price_base, price_local,
+       f_price_local, type, method,
        NULL, NULL,
        NULL, itemsrcp_qtybreak_xtnumericrole,
        itemsrcp_qtybreak_xtnullrole, price_local_xtnumericrole,
@@ -175,13 +184,31 @@ SELECT itemsrcp_id, itemsrc_id, NULL, NULL, NULL, NULL,
  ORDER BY itemsort, vendsort, itemsrc_id, xtindentrole, itemsrcp_qtybreak
 <? else ?>
 SELECT itemsrcp_id, itemsrc_id, vend_number, vend_name, vend_curr, item_number,
-       item_descrip, warehous_code, uom_name, contrct_number, itemsrc_vend_item_number,
-       itemsrc_vend_uom, itemsrc_invvendoruomratio, itemsrc_minordqty, itemsrc_multordqty,
-       itemsrc_leadtime, itemsrc_ranking, itemsrc_active, itemsrc_manuf_name,
+       item_descrip1, item_descrip2, item_descrip, warehous_code, uom_name, contrct_number,
+       itemsrc_vend_item_number, itemsrc_vend_uom, itemsrc_invvendoruomratio, itemsrc_minordqty,
+       itemsrc_multordqty, itemsrc_leadtime, itemsrc_ranking, itemsrc_active, itemsrc_manuf_name,
        itemsrc_manuf_item_number, itemsrc_default, itemsrc_effective, itemsrc_expires,
        itemsrc_descrip, itemsrcp_qtybreak, itemsrcp_price,
        itemsrcp_dropship, itemsrcp_discntprcnt, itemsrcp_fixedamtdiscount,
-       item_curr, price_base, price_local, type, method,
+       f_uomratio, item_curr, price_base, price_local, f_price_local, type, method,
+       itemsrc_invvendoruomratio_xtnumericrole, itemsrc_minordqty_xtnumericrole,
+       itemsrc_multordqty_xtnumericrole, itemsrcp_qtybreak_xtnumericrole,
+       itemsrcp_qtybreak_xtnullrole, price_local_xtnumericrole,
+       price_base_xtnumericrole, itemsrcp_discntprcnt_xtnumericrole,
+       warehous_code_qtdisplayrole, itemsrcp_dropship_qtdisplayrole,
+       itemsrc_effective_qtdisplayrole, itemsrc_expires_qtdisplayrole, qtforegroundrole
+  FROM qry
+ ORDER BY item_number, vend_name, itemsrcp_qtybreak
+<? endif ?>
+<? else ?>
+SELECT itemsrcp_id, itemsrc_id, vend_number, vend_name, vend_curr, item_number,
+       item_descrip1, item_descrip2, item_descrip, warehous_code, uom_name, contrct_number, 
+       itemsrc_vend_item_number, itemsrc_vend_uom, itemsrc_invvendoruomratio, itemsrc_minordqty, 
+       itemsrc_multordqty, itemsrc_leadtime, itemsrc_ranking, itemsrc_active, itemsrc_manuf_name,
+       itemsrc_manuf_item_number, itemsrc_default, itemsrc_effective, itemsrc_expires,
+       itemsrc_descrip, itemsrcp_qtybreak, itemsrcp_price,
+       itemsrcp_dropship, itemsrcp_discntprcnt, itemsrcp_fixedamtdiscount,
+       f_uomratio, item_curr, price_base, price_local, f_price_local, type, method,
        itemsrc_invvendoruomratio_xtnumericrole, itemsrc_minordqty_xtnumericrole,
        itemsrc_multordqty_xtnumericrole, itemsrcp_qtybreak_xtnumericrole,
        itemsrcp_qtybreak_xtnullrole, price_local_xtnumericrole,

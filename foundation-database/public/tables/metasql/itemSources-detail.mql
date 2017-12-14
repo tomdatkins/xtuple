@@ -7,7 +7,8 @@
   SELECT itemsrc_id, 
        vend_number, vend_name, 
        currConcat(vend_curr_id) AS vend_curr,
-       item_number, uom_name,
+       item_number, item_id AS item_number_xtidrole, uom_name,
+       item_descrip1, item_descrip2,
        (item_descrip1 || ' ' || item_descrip2) AS item_descrip,
        contrct_number,
        COALESCE( (SELECT SUM(poitem_qty_ordered)
@@ -17,6 +18,7 @@
        itemsrc_multordqty, itemsrc_leadtime, itemsrc_ranking, itemsrc_active, itemsrc_manuf_name,
        itemsrc_manuf_item_number, itemsrc_default, itemsrc_effective, itemsrc_expires,
        itemsrc_contrct_min,
+       formatQty(itemsrc_invvendoruomratio) AS f_uomratio,
        'qty' AS itemsrc_invvendoruomratio_xtnumericrole,
        CASE WHEN COALESCE(itemsrc_effective, startOfTime()) <=
                  startOfTime() THEN <? value("always") ?>
