@@ -1,5 +1,4 @@
 update source set source_charass = '', source_docass = '';
-delete from source where source_name='WO';
 
 -- TATC for Time Attendance?
 
