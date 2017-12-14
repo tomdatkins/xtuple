@@ -1,7 +1,7 @@
 <!DOCTYPE openRPTDef>
 <report>
- <title>Item Sources</title>
- <name>ItemSources</name>
+ <title>Item Source Prices</title>
+ <name>ItemSourcePrices</name>
  <description></description>
  <grid>
   <snap/>
@@ -18,7 +18,7 @@
  <querysource loadFromDb="true">
   <name>detail</name>
   <mqlgroup>itemSources</mqlgroup>
-  <mqlname>detail</mqlname>
+  <mqlname>prices</mqlname>
  </querysource>
  <rpthead>
   <height>221</height>
@@ -43,12 +43,12 @@
    </font>
    <right/>
    <vcenter/>
-   <string>Item Sources</string>
+   <string>Item Source Prices</string>
   </label>
   <label>
    <rect>
-    <x>230</x>
-    <y>183</y>
+    <x>160</x>
+    <y>185</y>
     <width>106</width>
     <height>15</height>
    </rect>
@@ -63,8 +63,8 @@
   </label>
   <label>
    <rect>
-    <x>695</x>
-    <y>183</y>
+    <x>365</x>
+    <y>205</y>
     <width>50</width>
     <height>15</height>
    </rect>
@@ -79,8 +79,8 @@
   </label>
   <label>
    <rect>
-    <x>640</x>
-    <y>183</y>
+    <x>365</x>
+    <y>195</y>
     <width>50</width>
     <height>15</height>
    </rect>
@@ -95,8 +95,8 @@
   </label>
   <label>
    <rect>
-    <x>490</x>
-    <y>183</y>
+    <x>420</x>
+    <y>185</y>
     <width>150</width>
     <height>15</height>
    </rect>
@@ -111,8 +111,8 @@
   </label>
   <label>
    <rect>
-    <x>230</x>
-    <y>198</y>
+    <x>160</x>
+    <y>200</y>
     <width>106</width>
     <height>15</height>
    </rect>
@@ -127,10 +127,10 @@
   </label>
   <label>
    <rect>
-    <x>435</x>
-    <y>183</y>
+    <x>365</x>
+    <y>185</y>
     <width>50</width>
-    <height>15</height>
+    <height>10</height>
    </rect>
    <font>
     <face>Arial</face>
@@ -144,7 +144,7 @@
   <text>
    <rect>
     <x>15</x>
-    <y>38</y>
+    <y>40</y>
     <width>725</width>
     <height>15</height>
    </rect>
@@ -164,7 +164,7 @@
   <label>
    <rect>
     <x>5</x>
-    <y>183</y>
+    <y>185</y>
     <width>106</width>
     <height>15</height>
    </rect>
@@ -177,49 +177,10 @@
    <vcenter/>
    <string>Vendor</string>
   </label>
- </rpthead>
- <pghead>
-  <firstpage/>
-  <height>6</height>
- </pghead>
- <pghead>
-  <height>36</height>
   <label>
    <rect>
-    <x>640</x>
-    <y>-1</y>
-    <width>50</width>
-    <height>15</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>8</size>
-    <weight>normal</weight>
-   </font>
-   <hcenter/>
-   <vcenter/>
-   <string>Vendor UOM</string>
-  </label>
-  <label>
-   <rect>
-    <x>435</x>
-    <y>-1</y>
-    <width>50</width>
-    <height>15</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>8</size>
-    <weight>normal</weight>
-   </font>
-   <hcenter/>
-   <vcenter/>
-   <string>UOM</string>
-  </label>
-  <label>
-   <rect>
-    <x>230</x>
-    <y>14</y>
+    <x>545</x>
+    <y>185</y>
     <width>106</width>
     <height>15</height>
    </rect>
@@ -230,8 +191,47 @@
    </font>
    <left/>
    <vcenter/>
-   <string>Description</string>
+   <string>Qty. Break</string>
   </label>
+  <label>
+   <rect>
+    <x>625</x>
+    <y>185</y>
+    <width>106</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Currency</string>
+  </label>
+  <label>
+   <rect>
+    <x>685</x>
+    <y>185</y>
+    <width>106</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Price</string>
+  </label>
+ </rpthead>
+ <pghead>
+  <firstpage/>
+  <height>6</height>
+ </pghead>
+ <pghead>
+  <height>36</height>
   <line>
    <xstart>5</xstart>
    <ystart>30</ystart>
@@ -241,23 +241,7 @@
   </line>
   <label>
    <rect>
-    <x>695</x>
-    <y>-1</y>
-    <width>50</width>
-    <height>15</height>
-   </rect>
-   <font>
-    <face>Arial</face>
-    <size>8</size>
-    <weight>normal</weight>
-   </font>
-   <hcenter/>
-   <vcenter/>
-   <string>UOM Ratio</string>
-  </label>
-  <label>
-   <rect>
-    <x>485</x>
+    <x>420</x>
     <y>-1</y>
     <width>150</width>
     <height>15</height>
@@ -289,7 +273,103 @@
   </label>
   <label>
    <rect>
-    <x>230</x>
+    <x>545</x>
+    <y>-1</y>
+    <width>106</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Qty. Break</string>
+  </label>
+  <label>
+   <rect>
+    <x>685</x>
+    <y>-1</y>
+    <width>106</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Price</string>
+  </label>
+  <label>
+   <rect>
+    <x>365</x>
+    <y>19</y>
+    <width>50</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>UOM Ratio</string>
+  </label>
+  <label>
+   <rect>
+    <x>365</x>
+    <y>9</y>
+    <width>50</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>Vendor UOM</string>
+  </label>
+  <label>
+   <rect>
+    <x>160</x>
+    <y>14</y>
+    <width>106</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Description</string>
+  </label>
+  <label>
+   <rect>
+    <x>625</x>
+    <y>-1</y>
+    <width>106</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <left/>
+   <vcenter/>
+   <string>Currency</string>
+  </label>
+  <label>
+   <rect>
+    <x>160</x>
     <y>-1</y>
     <width>106</width>
     <height>15</height>
@@ -303,6 +383,22 @@
    <vcenter/>
    <string>Item Number</string>
   </label>
+  <label>
+   <rect>
+    <x>365</x>
+    <y>-1</y>
+    <width>50</width>
+    <height>15</height>
+   </rect>
+   <font>
+    <face>Arial</face>
+    <size>8</size>
+    <weight>normal</weight>
+   </font>
+   <hcenter/>
+   <vcenter/>
+   <string>UOM</string>
+  </label>
  </pghead>
  <section>
   <name>detail</name>
@@ -313,8 +409,8 @@
    <height>56</height>
    <field>
     <rect>
-     <x>435</x>
-     <y>2</y>
+     <x>365</x>
+     <y>0</y>
      <width>50</width>
      <height>15</height>
     </rect>
@@ -332,8 +428,8 @@
    </field>
    <field>
     <rect>
-     <x>695</x>
-     <y>2</y>
+     <x>365</x>
+     <y>30</y>
      <width>50</width>
      <height>15</height>
     </rect>
@@ -351,8 +447,8 @@
    </field>
    <field>
     <rect>
-     <x>230</x>
-     <y>2</y>
+     <x>160</x>
+     <y>0</y>
      <width>200</width>
      <height>15</height>
     </rect>
@@ -370,8 +466,8 @@
    </field>
    <field>
     <rect>
-     <x>640</x>
-     <y>2</y>
+     <x>365</x>
+     <y>15</y>
      <width>50</width>
      <height>15</height>
     </rect>
@@ -389,8 +485,8 @@
    </field>
    <field>
     <rect>
-     <x>230</x>
-     <y>32</y>
+     <x>160</x>
+     <y>30</y>
      <width>400</width>
      <height>15</height>
     </rect>
@@ -408,8 +504,8 @@
    </field>
    <field>
     <rect>
-     <x>230</x>
-     <y>17</y>
+     <x>160</x>
+     <y>15</y>
      <width>400</width>
      <height>15</height>
     </rect>
@@ -434,8 +530,8 @@
    </line>
    <field>
     <rect>
-     <x>485</x>
-     <y>2</y>
+     <x>415</x>
+     <y>0</y>
      <width>150</width>
      <height>15</height>
     </rect>
@@ -454,7 +550,7 @@
    <field>
     <rect>
      <x>5</x>
-     <y>2</y>
+     <y>0</y>
      <width>215</width>
      <height>15</height>
     </rect>
@@ -470,6 +566,63 @@
      <column>vend_name</column>
     </data>
    </field>
+   <field>
+    <rect>
+     <x>555</x>
+     <y>0</y>
+     <width>150</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>itemsrcp_qtybreak</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>625</x>
+     <y>0</y>
+     <width>150</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>item_curr</column>
+    </data>
+   </field>
+   <field>
+    <rect>
+     <x>685</x>
+     <y>0</y>
+     <width>150</width>
+     <height>15</height>
+    </rect>
+    <font>
+     <face>Arial</face>
+     <size>8</size>
+     <weight>bold</weight>
+    </font>
+    <left/>
+    <vcenter/>
+    <data>
+     <query>detail</query>
+     <column>f_price_local</column>
+    </data>
+   </field>
   </detail>
  </section>
  <pgfoot>
@@ -477,7 +630,7 @@
   <label>
    <rect>
     <x>5</x>
-    <y>0</y>
+    <y>1</y>
     <width>75</width>
     <height>15</height>
    </rect>
@@ -493,7 +646,7 @@
   <field>
    <rect>
     <x>705</x>
-    <y>0</y>
+    <y>1</y>
     <width>40</width>
     <height>15</height>
    </rect>
@@ -512,7 +665,7 @@
   <field>
    <rect>
     <x>85</x>
-    <y>0</y>
+    <y>1</y>
     <width>100</width>
     <height>15</height>
    </rect>
@@ -531,7 +684,7 @@
   <label>
    <rect>
     <x>625</x>
-    <y>0</y>
+    <y>1</y>
     <width>75</width>
     <height>15</height>
    </rect>
