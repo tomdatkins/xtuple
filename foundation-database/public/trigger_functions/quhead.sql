@@ -103,7 +103,18 @@ BEGIN
       -- Only check PO number for imports because UI checks when whole quote is saved
       IF (TG_OP = 'INSERT') THEN
           -- Set to defaults if values not provided
-          NEW.quhead_shipto_id		:= COALESCE(NEW.quhead_shipto_id,_p.shipto_id);
+          IF (NEW.quhead_shipto_id IS NULL) THEN
+            NEW.quhead_shipto_id := _p.shipto_id;
+            NEW.quhead_shiptoname := _p.shipto_name;
+            NEW.quhead_shiptoaddress1 := _p.addr_line1;
+            NEW.quhead_shiptoaddress2 := _p.addr_line2;
+            NEW.quhead_shiptoaddress3 := _p.addr_line3;
+            NEW.quhead_shiptocity := _p.addr_city;
+            NEW.quhead_shiptostate := _p.addr_state;
+            NEW.quhead_shiptozipcode := _p.addr_postalcode;
+            NEW.quhead_shiptocountry := _p.addr_country;
+          END IF;
+
 	  NEW.quhead_salesrep_id 	:= COALESCE(NEW.quhead_salesrep_id,_p.shipto_salesrep_id,_p.cust_salesrep_id);
           NEW.quhead_terms_id		:= COALESCE(NEW.quhead_terms_id,_p.cust_terms_id);
           NEW.quhead_shipvia		:= COALESCE(NEW.quhead_shipvia,_p.shipto_shipvia,_p.cust_shipvia);
@@ -238,9 +249,19 @@ BEGIN
             NEW.quhead_shiptocountry,
             'CHANGEONE') INTO _addrId;
           SELECT shipto_addr_id INTO _shiptoid FROM shiptoinfo WHERE (shipto_id=NEW.quhead_shipto_id);
-           -- If the address passed doesn't match shipto address, then it's something else
-           IF (_shiptoid <> _addrId) THEN
-             NEW.quhead_shipto_id := NULL;
+           -- If the address passed doesn't match shipto address, then something is wrong
+           IF (SELECT NOT
+                      (UPPER(addr1.addr_line1)      = UPPER(COALESCE(addr2.addr_line1, ''))      AND
+                       UPPER(addr1.addr_line2)      = UPPER(COALESCE(addr2.addr_line2, ''))      AND
+                       UPPER(addr1.addr_line3)      = UPPER(COALESCE(addr2.addr_line3, ''))      AND
+                       UPPER(addr1.addr_city)       = UPPER(COALESCE(addr2.addr_city, ''))       AND
+                       UPPER(addr1.addr_state)      = UPPER(COALESCE(addr2.addr_state, ''))      AND
+                       UPPER(addr1.addr_postalcode) = UPPER(COALESCE(addr2.addr_postalcode, '')) AND
+                       UPPER(addr1.addr_country)    = UPPER(COALESCE(addr2.addr_country, '')))
+                 FROM addr addr1, addr addr2
+                WHERE addr1.addr_id=_addrId
+                  AND addr2.addr_id=_shiptoid) THEN
+             RAISE EXCEPTION 'Shipto does not match Shipto address information';
            END IF;
         ELSE
           SELECT quhead_shipto_id INTO _shiptoid FROM quhead WHERE (quhead_id=NEW.quhead_id);
