@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION FetchDefaultShipVia() RETURNS TEXT AS '
 DECLARE
   _returnVal TEXT;
 BEGIN
-  SELECT shipvia_code INTO _returnVal
+  SELECT shipvia_code || '-' || shipvia_descrip INTO _returnVal
   FROM shipvia
   WHERE shipvia_id=
 	(SELECT CAST(metric_value AS integer)
