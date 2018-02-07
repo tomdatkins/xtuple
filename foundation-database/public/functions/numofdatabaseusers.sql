@@ -9,7 +9,7 @@ BEGIN
   SELECT count(DISTINCT pg_locks.pid)
     INTO _count
     FROM pg_locks    
-    LEFT JOIN pg_stat_activity ON pg_stat_activity.procpid = pg_locks.pid
+    LEFT JOIN pg_stat_activity ON pg_stat_activity.pid = pg_locks.pid
    WHERE pg_locks.objsubid = 2
      AND pg_stat_activity.datname = current_database()
      AND CASE WHEN (trim(coalesce(pAppName, '')) = '') THEN true ELSE application_name = pAppName END;
