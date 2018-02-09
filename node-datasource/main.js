@@ -426,8 +426,8 @@ app.configure(function () {
 
   app.use(express.cookieParser());
   if (X.options.datasource.useBodyParser) {
-    X.warn('Starting inscure Express.js app() server using bodyParser().');
-    X.warn('This should be avoided.');
+    X.warn('Starting insecure Express.js app() server using bodyParser().');
+    X.warn('This should be avoided. Set "useBodyParser: false" in config.js');
     X.warn('See: https://groups.google.com/forum/#!msg/express-js/iP2VyhkypHo/5AXQiYN3RPcJ');
 
     app.use(express.bodyParser());
