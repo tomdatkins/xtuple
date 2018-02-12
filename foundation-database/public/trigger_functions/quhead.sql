@@ -78,7 +78,7 @@ BEGIN
         LEFT OUTER JOIN cntct ON (cust_cntct_id=cntct_id)
         LEFT OUTER JOIN addr ON (cntct_addr_id=addr_id)
         LEFT OUTER JOIN shiptoinfo ON ((cust_id=shipto_cust_id) AND shipto_default)
-        LEFT OUTER JOIN addr shiptoaddr ON shipto_addr_id=addr.addr_id
+        LEFT OUTER JOIN addr shiptoaddr ON shipto_addr_id=shiptoaddr.addr_id
       WHERE (cust_id=NEW.quhead_cust_id)
       UNION
       SELECT prospect_number,false,false,true,
@@ -110,12 +110,12 @@ BEGIN
              shiptoaddr.addr_state AS shiptoaddr_state, 
              shiptoaddr.addr_postalcode AS shiptoaddr_postalcode, 
              shiptoaddr.addr_country AS shiptoaddr_country INTO _p
-      FROM custinfo
+      FROM custinfo, shiptoinfo
         LEFT OUTER JOIN cntct ON (cust_cntct_id=cntct_id)
         LEFT OUTER JOIN addr ON (cntct_addr_id=addr_id)
-        JOIN shiptoinfo ON ((cust_id=shipto_cust_id) AND shipto_default)
-        JOIN addr shiptoaddr ON shipto_addr_id=addr.addr_id
-      WHERE (cust_id=NEW.quhead_cust_id);
+        JOIN addr shiptoaddr ON shipto_addr_id=shiptoaddr.addr_id
+      WHERE ((cust_id=NEW.quhead_cust_id)
+      AND (shipto_id=NEW.quhead_shipto_id));
     END IF;
 
     -- If there is customer data, then we can get to work
