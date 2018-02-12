@@ -395,11 +395,14 @@
   };
 
   exports.createSalesOrder = function (params, callback) {
+    var qryParams = {
+      custNumber: 'TTOYS'
+    };
+
     if (typeof params === 'function') {
       callback = params;
-      params = {
-        custNumber: 'TTOYS'
-      };
+    } else {
+      qryParams = params;
     }
 
     var sql = "INSERT INTO cohead (cohead_number, cohead_cust_id, cohead_status)" +
@@ -408,7 +411,7 @@
               " WHERE cust_number = $1" +
               " RETURNING *;";
     var options = _.extend({}, adminCred,
-        { parameters: [ params.custNumber ] });
+        { parameters: [ qryParams.custNumber ] });
 
     datasource.query(sql, options, function (err, res) {
       assert.isNull(err);
