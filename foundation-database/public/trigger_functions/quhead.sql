@@ -65,21 +65,34 @@ BEGIN
       SELECT cust_number,cust_usespos,cust_blanketpos,cust_ffbillto,
 	     cust_ffshipto,cust_name,cust_salesrep_id,cust_terms_id,cust_shipvia,
 	     cust_commprcnt,cust_curr_id,cust_taxzone_id,
-  	     addr_line1,addr_line2,addr_line3,addr_city,addr_state,addr_postalcode,addr_country,
+  	     addr.addr_line1,addr.addr_line2,addr.addr_line3,addr.addr_city,addr.addr_state,
+             addr.addr_postalcode,addr.addr_country,
 	     shipto_id,shipto_addr_id,shipto_name,shipto_salesrep_id,shipto_shipvia,
-	     shipto_shipchrg_id,shipto_shipform_id,shipto_commission,shipto_taxzone_id
+	     shipto_shipchrg_id,shipto_shipform_id,shipto_commission,shipto_taxzone_id,
+             shiptoaddr.addr_line1 AS shiptoaddr_line1,shiptoaddr.addr_line2 AS shiptoaddr_line2,
+             shiptoaddr.addr_line3 AS shiptoaddr_line3,shiptoaddr.addr_city AS shiptoaddr_city,
+             shiptoaddr.addr_state AS shiptoaddr_state,
+             shiptoaddr.addr_postalcode AS shiptoaddr_postalcode,
+             shiptoaddr.addr_country AS shiptoaddr_country
       FROM custinfo
         LEFT OUTER JOIN cntct ON (cust_cntct_id=cntct_id)
         LEFT OUTER JOIN addr ON (cntct_addr_id=addr_id)
         LEFT OUTER JOIN shiptoinfo ON ((cust_id=shipto_cust_id) AND shipto_default)
+        LEFT OUTER JOIN addr shiptoaddr ON shipto_addr_id=addr.addr_id
       WHERE (cust_id=NEW.quhead_cust_id)
       UNION
       SELECT prospect_number,false,false,true,
 	     true,prospect_name,prospect_salesrep_id,null,null,
 	     null,null,prospect_taxzone_id,
-  	     addr_line1,addr_line2,addr_line3,addr_city,addr_state,addr_postalcode,addr_country,
+  	     addr_line1,addr_line2,addr_line3,addr_city,addr_state,
+             addr_postalcode,addr_country,
 	     null,null,null,null,null,
-	     null,null,null,null
+	     null,null,null,null,
+             null, null,
+             null, null,
+             null,
+             null,
+             null
       FROM prospect
         LEFT OUTER JOIN cntct ON (prospect_cntct_id=cntct_id)
         LEFT OUTER JOIN addr ON (cntct_addr_id=addr_id)
@@ -88,14 +101,21 @@ BEGIN
       SELECT cust_creditstatus,cust_number,cust_usespos,cust_blanketpos,cust_ffbillto,
 	     cust_ffshipto,cust_name,cust_salesrep_id,cust_terms_id,cust_shipvia,
 	     cust_shipchrg_id,cust_shipform_id,cust_commprcnt,cust_curr_id,cust_taxzone_id,
-  	     addr_line1,addr_line2,addr_line3,addr_city,addr_state,addr_postalcode,addr_country,
+  	     addr.addr_line1,addr.addr_line2,addr.addr_line3,addr.addr_city,addr.addr_state,
+             addr.addr_postalcode,addr.addr_country,
 	     shipto_id,shipto_addr_id,shipto_name,shipto_salesrep_id,shipto_shipvia,
-	     shipto_shipchrg_id,shipto_shipform_id,shipto_commission,shipto_taxzone_id INTO _p
-      FROM shiptoinfo,custinfo
+	     shipto_shipchrg_id,shipto_shipform_id,shipto_commission,shipto_taxzone_id,
+             shiptoaddr.addr_line1 AS shiptoaddr_line1, shiptoaddr.addr_line2 AS shiptoaddr_line2, 
+             shiptoaddr.addr_line3 AS shiptoaddr_line3, shiptoaddr.addr_city AS shiptoaddr_city, 
+             shiptoaddr.addr_state AS shiptoaddr_state, 
+             shiptoaddr.addr_postalcode AS shiptoaddr_postalcode, 
+             shiptoaddr.addr_country AS shiptoaddr_country INTO _p
+      FROM custinfo
         LEFT OUTER JOIN cntct ON (cust_cntct_id=cntct_id)
         LEFT OUTER JOIN addr ON (cntct_addr_id=addr_id)
-      WHERE ((cust_id=NEW.quhead_cust_id)
-      AND (shipto_id=shipto_id));
+        JOIN shiptoinfo ON ((cust_id=shipto_cust_id) AND shipto_default)
+        JOIN addr shiptoaddr ON shipto_addr_id=addr.addr_id
+      WHERE (cust_id=NEW.quhead_cust_id);
     END IF;
 
     -- If there is customer data, then we can get to work
@@ -106,13 +126,13 @@ BEGIN
           IF (NEW.quhead_shipto_id IS NULL) THEN
             NEW.quhead_shipto_id := _p.shipto_id;
             NEW.quhead_shiptoname := _p.shipto_name;
-            NEW.quhead_shiptoaddress1 := _p.addr_line1;
-            NEW.quhead_shiptoaddress2 := _p.addr_line2;
-            NEW.quhead_shiptoaddress3 := _p.addr_line3;
-            NEW.quhead_shiptocity := _p.addr_city;
-            NEW.quhead_shiptostate := _p.addr_state;
-            NEW.quhead_shiptozipcode := _p.addr_postalcode;
-            NEW.quhead_shiptocountry := _p.addr_country;
+            NEW.quhead_shiptoaddress1 := _p.shiptoaddr_line1;
+            NEW.quhead_shiptoaddress2 := _p.shiptoaddr_line2;
+            NEW.quhead_shiptoaddress3 := _p.shiptoaddr_line3;
+            NEW.quhead_shiptocity := _p.shiptoaddr_city;
+            NEW.quhead_shiptostate := _p.shiptoaddr_state;
+            NEW.quhead_shiptozipcode := _p.shiptoaddr_postalcode;
+            NEW.quhead_shiptocountry := _p.shiptoaddr_country;
           END IF;
 
 	  NEW.quhead_salesrep_id 	:= COALESCE(NEW.quhead_salesrep_id,_p.shipto_salesrep_id,_p.cust_salesrep_id);
