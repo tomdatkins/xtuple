@@ -110,7 +110,8 @@ BEGIN
              shiptoaddr.addr_state AS shiptoaddr_state, 
              shiptoaddr.addr_postalcode AS shiptoaddr_postalcode, 
              shiptoaddr.addr_country AS shiptoaddr_country INTO _p
-      FROM custinfo, shiptoinfo
+      FROM custinfo
+        CROSS JOIN shiptoinfo
         LEFT OUTER JOIN cntct ON (cust_cntct_id=cntct_id)
         LEFT OUTER JOIN addr ON (cntct_addr_id=addr_id)
         JOIN addr shiptoaddr ON shipto_addr_id=shiptoaddr.addr_id
