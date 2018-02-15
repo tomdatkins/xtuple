@@ -17,7 +17,7 @@ BEGIN
 
   IF EXISTS(SELECT 1 FROM custinfo WHERE cust_id = pProspectId) THEN
     RAISE EXCEPTION 'Cannot convert prospect % as there is already a customer with the same id [xtuple: convertProspectToCustomer, -10, %]',
-                    _p.prospect_number, pProspectId;
+                    _p.prospect_number, _p.prospect_number;
   END IF;
 
   INSERT INTO custinfo (
