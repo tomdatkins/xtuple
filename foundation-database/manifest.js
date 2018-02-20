@@ -285,6 +285,7 @@
     "public/functions/deletecharacteristic.sql",
     "public/functions/deletecheck.sql",
     "public/functions/deleteclasscode.sql",
+    "public/functions/deletecntct.sql",
     "public/functions/deletecompany.sql",
     "public/functions/deletecreditmemo.sql",
     "public/functions/deletecustomer.sql",
