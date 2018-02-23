@@ -92,7 +92,7 @@ BEGIN
                   JOIN crmacct ON (crmacct_cust_id=cohead_cust_id)
       WHERE (coitem_id=pitemid);
       IF (_cntctid = -1) THEN
-        RETURN -15;
+        RETURN -16;
       END IF;
     END IF; 
   
@@ -107,6 +107,8 @@ BEGIN
       RETURN -13;
     ELSIF (_coholdtype = 'R') THEN
       RETURN -14;
+    ELSIF (_coholdtype = 'T') THEN
+      RETURN -15;
     END IF;
 
     SELECT shiphead_id INTO _shipheadid
