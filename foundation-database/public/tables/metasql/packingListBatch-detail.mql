@@ -30,17 +30,17 @@ WHERE ( (pack_head_type='SO')
 <? if exists("warehous_id") ?>
   AND   (itemsite_warehous_id = <? value("warehous_id") ?>)
 <? endif ?>
-  AND (cohead_holdtype = 'N' OR cohead_holdtype = 'R' OR cohead_holdtype = 'T'
+  AND (cohead_holdtype IN ('N', 'R', 'T'
 <? if exists("showCredit") ?>
-   OR cohead_holdtype = 'C' 
+   , 'C'
 <? endif ?>
 <? if exists("showShip") ?>
-   OR cohead_holdtype = 'S' 
+   , 'S'
 <? endif ?>
 <? if exists("showPack") ?>
-   OR cohead_holdtype = 'P' 
+   , 'P'
 <? endif ?>
-   )
+   ))
       )
 
 <? if exists("MultiWhs") ?>
