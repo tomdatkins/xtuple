@@ -781,7 +781,7 @@ SELECT invchead_id AS id,
     JOIN invcitem ON (invcitem_invchead_id = invchead_id)
  WHERE (invchead_prj_id = <? value("prj_id") ?>)
 <? if not exists('showCompleted') ?>
-   AND invchead_posted
+   AND NOT invchead_posted
 <? endif ?>
 GROUP BY invchead_id, invchead_invcnumber, shipto_num, shipto_name, invchead_freight, invchead_misc_amount, invchead_posted, cust_name
 
@@ -829,7 +829,7 @@ SELECT invcitem_id AS id,
     LEFT OUTER JOIN uom ON (invcitem_qty_uom_id = uom_id)
  WHERE (invchead_prj_id = <? value("prj_id") ?>)
 <? if not exists('showCompleted') ?>
-   AND invchead_posted
+   AND NOT invchead_posted
 <? endif ?>
 
 UNION ALL
@@ -871,7 +871,7 @@ SELECT invchead_id AS id,
     JOIN invcitem ON (invcitem_invchead_id = invchead_id)
  WHERE (invchead_prj_id = <? value("prj_id") ?>)
 <? if not exists('showCompleted') ?>
-   AND invchead_posted
+   AND NOT invchead_posted
 <? endif ?>
 GROUP BY invchead_id, invchead_invcnumber
 
@@ -914,7 +914,7 @@ SELECT -1 AS id,
     JOIN invcitem ON (invcitem_invchead_id = invchead_id)
  WHERE (invchead_prj_id = <? value("prj_id") ?>)
 <? if not exists('showCompleted') ?>
-   AND invchead_posted
+   AND NOT invchead_posted
 <? endif ?>
 
 <? endif ?>
