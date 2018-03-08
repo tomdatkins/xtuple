@@ -1033,6 +1033,7 @@
     "public/tables/file.sql",
     "public/tables/fundstype.sql",
     "public/tables/grp.sql",
+    "public/tables/grppriv.sql",
     "public/tables/imageass.sql",
     "public/tables/incdt.sql",
     "public/tables/invbal.sql",
