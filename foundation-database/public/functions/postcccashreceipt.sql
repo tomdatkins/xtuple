@@ -49,19 +49,33 @@ BEGIN
   _journal := fetchJournalNumber('C/R');
 
   IF (pdoctype = 'cashrcpt') THEN
-    UPDATE cashrcpt SET
-      cashrcpt_cust_id = _c.ccpay_cust_id,
-      cashrcpt_amount = _c.ccpay_amount,
-      cashrcpt_curr_id = _c.ccpay_curr_id,
-      cashrcpt_fundstype = _c.ccpay_card_type,
-      cashrcpt_docnumber = _c.ccpay_r_ordernum,
-      cashrcpt_notes = _ccOrderDesc,
-      cashrcpt_distdate = CURRENT_DATE,
-      cashrcpt_bankaccnt_id = _bankaccnt_id,
-      cashrcpt_ccpay_id = pCCpay
-     WHERE cashrcpt_id = pdocid;
+    IF (COALESCE(pdocid, -1) < 0) THEN
+      INSERT INTO cashrcpt (
+        cashrcpt_cust_id,   cashrcpt_amount,       cashrcpt_curr_id,
+        cashrcpt_fundstype, cashrcpt_docnumber,    cashrcpt_notes,
+        cashrcpt_distdate,  cashrcpt_bankaccnt_id, cashrcpt_number,
+        cashrcpt_usecustdeposit, cashrcpt_ccpay_id
+      ) VALUES (
+        _c.ccpay_cust_id,   _c.ccpay_amount,     _c.ccpay_curr_id,
+        _c.ccpay_card_type, _c.ccpay_r_ordernum, _ccOrderDesc,
+        CURRENT_DATE,       _bankaccnt_id,       fetchCashRcptNumber(),
+        fetchMetricBool('EnableCustomerDeposits'), pCCpay)
+      RETURNING cashrcpt_id INTO _return;
+    ELSE
+      UPDATE cashrcpt
+      SET cashrcpt_cust_id=_c.ccpay_cust_id,
+          cashrcpt_amount=_c.ccpay_amount,
+          cashrcpt_curr_id=_c.ccpay_curr_id,
+          cashrcpt_fundstype=_c.ccpay_card_type,
+          cashrcpt_docnumber=_c.ccpay_r_ordernum,
+          cashrcpt_notes=_ccOrderDesc,
+          cashrcpt_distdate=CURRENT_DATE,
+          cashrcpt_bankaccnt_id=_bankaccnt_id,
+          cashrcpt_ccpay_id=pCCpay
+      WHERE (cashrcpt_id=pdocid);
+      _return := pdocid;
+    END IF;
 
-    _return := pdocid;
   ELSIF (pdoctype = 'cohead') THEN
     IF (fetchMetricBool('EnableCustomerDeposits')) THEN
       SELECT createARCashDeposit(_c.ccpay_cust_id, fetchArMemoNumber(), cohead_number,
