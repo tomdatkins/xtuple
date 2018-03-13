@@ -293,7 +293,7 @@ select createDoctype(17, --pDocAssNum
                      '', --pWidget
                      'join invchead on invcitem_invchead_id = invchead_id ' ||
                         'join custinfo on invchead_cust_id = cust_id join item on invcitem_item_id=item_id', --pJoin
-                     '', --pParam
+                     'invcitem_id', --pParam
                      '', --pUi
                      '', --pPriv
                      'Sales' --pModule
