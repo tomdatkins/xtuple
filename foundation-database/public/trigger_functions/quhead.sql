@@ -282,7 +282,7 @@ BEGIN
                  FROM addr addr1, addr addr2
                 WHERE addr1.addr_id=_addrId
                   AND addr2.addr_id=_shiptoid) THEN
-             RAISE EXCEPTION 'Shipto does not match Shipto address information';
+             RAISE WARNING 'Shipto does not match Shipto address information';
            END IF;
         ELSE
           SELECT quhead_shipto_id INTO _shiptoid FROM quhead WHERE (quhead_id=NEW.quhead_id);
