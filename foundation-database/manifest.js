@@ -1075,6 +1075,7 @@
     "public/tables/taxhist.sql",
     "public/tables/taxpay.sql",
     "public/tables/uiform.sql",
+    "public/tables/updaterhist.sql",
     "public/tables/vendinfo.sql",
     "public/tables/vohead.sql",
     "public/tables/vodist.sql",
