@@ -278,7 +278,7 @@ SELECT quhead_id AS id,
        NULL::text AS project_type,
        NULL::text AS item,
        NULL::text AS descrip,
-       cust_name AS customer,
+       COALESCE(cust_name, prospect_name) AS customer,
        NULL::text AS contact,
        NULL::text AS city,
        NULL::text AS state,
@@ -298,7 +298,8 @@ SELECT quhead_id AS id,
        NULL::text AS due_qtforegroundrole,
        2 AS xtindentrole
   FROM quhead
-  JOIN custinfo ON (quhead_cust_id=cust_id)
+  LEFT OUTER JOIN custinfo ON (quhead_cust_id=cust_id)
+  LEFT OUTER JOIN prospect ON (quhead_cust_id=prospect_id)
 <? if exists("owner_username") ?>
     JOIN prj ON (prj_id=quhead_prj_id
             AND ((prj_owner_username=<? value("owner_username") ?>) OR (prj_username=<? value("owner_username") ?>)))
