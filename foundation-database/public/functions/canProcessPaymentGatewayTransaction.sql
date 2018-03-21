@@ -1,5 +1,4 @@
 CREATE OR REPLACE FUNCTION canProcessPaymentGatewayTransaction(
-  pCustId integer,
   pCcardId integer,
   pCurrId integer
 ) RETURNS boolean AS
@@ -21,8 +20,15 @@ BEGIN
 
   SELECT
     cust_id,
+    cust_number,
     cust_taxzone_id,
     ccard_id,
+    ccard_type,
+    bankaccnt_name,
+    bankaccnt_accnt.accnt_descrip AS bankaccnt_accnt_descrip,
+    ar_accnt.accnt_descrip AS ar_accnt_descrip,
+    prepaid_accnt.accnt_descrip AS prepaid_accnt_descrip,
+    deferred_accnt.accnt_descrip AS deferred_accnt_descrip,
     ccbank_ccard_type IS NOT NULL AS card_has_ccbank,
     bankaccnt_id IS NOT NULL AS ccbank_has_bankaccnt,
     bankaccnt_ar AS bankaccnt_is_revenue,
@@ -64,8 +70,8 @@ BEGIN
             AND comp_unassigned_accnt.accnt_active)
     END AS unassigned_accnt_is_valid
     INTO _custCardAccnt
-    FROM custinfo
-    JOIN ccard ON cust_id = ccard_cust_id
+    FROM ccard
+    JOIN custinfo ON ccard_cust_id = cust_id
     LEFT JOIN ccbank ON ccard_type = ccbank_ccard_type
     LEFT JOIN bankaccnt ON ccbank_bankaccnt_id = bankaccnt_id
     LEFT JOIN accnt AS bankaccnt_accnt ON bankaccnt_accnt_id = bankaccnt_accnt.accnt_id
@@ -75,86 +81,104 @@ BEGIN
     LEFT JOIN company ON bankaccnt_accnt.accnt_company = company_number
     LEFT JOIN accnt AS comp_dscrp_accnt ON company_dscrp_accnt_id = comp_dscrp_accnt.accnt_id
     LEFT JOIN accnt AS comp_unassigned_accnt ON company_unassigned_accnt_id = comp_unassigned_accnt.accnt_id
-   WHERE ccard_id = pCcardId
-     AND cust_id = pCustId;
+   WHERE ccard_id = pCcardId;
 
   IF (_custCardAccnt IS NULL) THEN
-    RAISE EXCEPTION 'Invaid Customer or Payment Method. [xdruple: canProcessPaymentGatewayTransaction, -1]';
+    RAISE EXCEPTION 'Invaid Customer or Payment Method. [xtuple: canProcessPaymentGatewayTransaction, -1]';
   END IF;
   IF (NOT _custCardAccnt.card_has_ccbank) THEN
-    RAISE EXCEPTION 'Payment Method Bank Account is not mapped. [xdruple: canProcessPaymentGatewayTransaction, -2]';
+    RAISE EXCEPTION 'Payment Method Bank Account is not mapped for ccard_type "%". [xtuple: canProcessPaymentGatewayTransaction, -2]',
+                    _custCardAccnt.ccard_type;
   END IF;
   IF (NOT _custCardAccnt.ccbank_has_bankaccnt) THEN
-    RAISE EXCEPTION 'Payment Method Bank Account is not setup. [xdruple: canProcessPaymentGatewayTransaction, -3]';
+    RAISE EXCEPTION 'Payment Method Bank Account is not setup for ccard_type "%". [xtuple: canProcessPaymentGatewayTransaction, -3]',
+                    _custCardAccnt.ccard_type;
   END IF;
   IF (NOT _custCardAccnt.bankaccnt_is_revenue) THEN
-    RAISE EXCEPTION 'Payment Method Bank Account is not used for accounts receivable. [xdruple: canProcessPaymentGatewayTransaction, -4]';
+    RAISE EXCEPTION 'Payment Method Bank Account "%" is not used for accounts receivable. [xtuple: canProcessPaymentGatewayTransaction, -4]',
+                    _custCardAccnt.bankaccnt_name;
   END IF;
   IF (NOT _custCardAccnt.bankaccnt_has_glaccnt) THEN
-    RAISE EXCEPTION 'Payment Method Bank Account does not have a G/L Account assigned. [xdruple: canProcessPaymentGatewayTransaction, -5]';
+    RAISE EXCEPTION 'Payment Method Bank Account "%" does not have a G/L Account assigned. [xtuple: canProcessPaymentGatewayTransaction, -5]',
+                    _custCardAccnt.bankaccnt_name;
   END IF;
   IF (NOT _custCardAccnt.bankaccnt_glaccnt_is_asset) THEN
-    RAISE EXCEPTION 'Payment Method Bank Account G/L Account is not an Asset account. [xdruple: canProcessPaymentGatewayTransaction, -6]';
+    RAISE EXCEPTION 'Payment Method Bank Account "%" G/L Account "%" is not an Asset account. [xtuple: canProcessPaymentGatewayTransaction, -6]',
+                    _custCardAccnt.bankaccnt_name, _custCardAccnt.bankaccnt_accnt_descrip;
   END IF;
   IF (NOT _custCardAccnt.bankaccnt_glaccnt_is_active) THEN
-    RAISE EXCEPTION 'Payment Method Bank Account G/L Account is not Active. [xdruple: canProcessPaymentGatewayTransaction, -7]';
+    RAISE EXCEPTION 'Payment Method Bank Account "%" G/L Account "%" is not Active. [xtuple: canProcessPaymentGatewayTransaction, -7]',
+                    _custCardAccnt.bankaccnt_name, _custCardAccnt.bankaccnt_accnt_descrip;
   END IF;
   IF (NOT _custCardAccnt.cust_has_ar_glaccnt) THEN
-    RAISE EXCEPTION 'Customer does not have a A/R G/L Account assigned. [xdruple: canProcessPaymentGatewayTransaction, -8]';
+    RAISE EXCEPTION 'Customer "%" does not have a A/R G/L Account assigned. [xtuple: canProcessPaymentGatewayTransaction, -8]',
+                    _custCardAccnt.cust_number;
   END IF;
   IF (NOT _custCardAccnt.ar_glaccnt_is_asset) THEN
-    RAISE EXCEPTION 'Customer A/R Account is not an Asset account. [xdruple: canProcessPaymentGatewayTransaction, -9]';
+    RAISE EXCEPTION 'Customer "%" A/R Account "%" is not an Asset account. [xtuple: canProcessPaymentGatewayTransaction, -9]',
+                    _custCardAccnt.cust_number, ar_accnt_descrip;
   END IF;
   IF (NOT _custCardAccnt.ar_glaccnt_is_active) THEN
-    RAISE EXCEPTION 'Customer A/R Account is not Active. [xdruple: canProcessPaymentGatewayTransaction, -10]';
+    RAISE EXCEPTION 'Customer "%" A/R Account "%" is not Active. [xtuple: canProcessPaymentGatewayTransaction, -10]',
+                    _custCardAccnt.cust_number, ar_accnt_descrip;
   END IF;
   IF (NOT _custCardAccnt.cust_has_prepaid_glaccnt) THEN
-    RAISE EXCEPTION 'Customer does not have a Prepaid G/L Account assigned. [xdruple: canProcessPaymentGatewayTransaction, -11]';
+    RAISE EXCEPTION 'Customer "%" does not have a Prepaid G/L Account assigned. [xtuple: canProcessPaymentGatewayTransaction, -11]',
+                    _custCardAccnt.cust_number;
   END IF;
   IF (NOT _custCardAccnt.prepaid_glaccnt_is_revenue) THEN
-    RAISE EXCEPTION 'Customer Prepaid Account is not a Revenue account. [xdruple: canProcessPaymentGatewayTransaction, -12]';
+    RAISE EXCEPTION 'Customer "%" Prepaid Account "%" is not a Revenue account. [xtuple: canProcessPaymentGatewayTransaction, -12]',
+                    _custCardAccnt.cust_number, _custCardAccnt.prepaid_accnt_descrip;
   END IF;
   IF (NOT _custCardAccnt.prepaid_glaccnt_is_active) THEN
-    RAISE EXCEPTION 'Customer Prepaid Account is not Active. [xdruple: canProcessPaymentGatewayTransaction, -13]';
+    RAISE EXCEPTION 'Customer "%" Prepaid Account "%" is not Active. [xtuple: canProcessPaymentGatewayTransaction, -13]',
+                    _custCardAccnt.cust_number, _custCardAccnt.prepaid_accnt_descrip;
   END IF;
   IF (NOT _custCardAccnt.cust_has_deferred_glaccnt) THEN
-    RAISE EXCEPTION 'Customer does not have a Deferred Revenue G/L Account assigned. [xdruple: canProcessPaymentGatewayTransaction, -14]';
+    RAISE EXCEPTION 'Customer "%" does not have a Deferred Revenue G/L Account assigned. [xtuple: canProcessPaymentGatewayTransaction, -14]',
+                    _custCardAccnt.cust_number;
   END IF;
   IF (NOT _custCardAccnt.deferred_glaccnt_is_liability) THEN
-    RAISE EXCEPTION 'Customer Deferred Revenue Account is not a Liability account. [xdruple: canProcessPaymentGatewayTransaction, -15]';
+    RAISE EXCEPTION 'Customer "%" Deferred Revenue Account "%" is not a Liability account. [xtuple: canProcessPaymentGatewayTransaction, -15]',
+                    _custCardAccnt.cust_number, _custCardAccnt.deferred_accnt_descrip;
   END IF;
   IF (NOT _custCardAccnt.deferred_glaccnt_is_active) THEN
-    RAISE EXCEPTION 'Customer Deferred Revenue is not Active. [xdruple: canProcessPaymentGatewayTransaction, -16]';
+    RAISE EXCEPTION 'Customer "%" Deferred Revenue Account "%" is not Active. [xtuple: canProcessPaymentGatewayTransaction, -16]',
+                    _custCardAccnt.cust_number, _custCardAccnt.deferred_accnt_descrip;
   END IF;
   IF (NOT _custCardAccnt.glaccnt_same_company) THEN
-    RAISE EXCEPTION 'G/L Accounts are not for the same Company. [xdruple: canProcessPaymentGatewayTransaction, -17]';
+    RAISE EXCEPTION 'G/L Accounts are not for the same Company. [xtuple: canProcessPaymentGatewayTransaction, -17]';
   END IF;
   IF (NOT _custCardAccnt.discrep_accnt_is_valid) THEN
-    RAISE EXCEPTION 'G/L Series Discrepancy is not setup. [xdruple: canProcessPaymentGatewayTransaction, -18]';
+    RAISE EXCEPTION 'G/L Series Discrepancy Account is not setup. [xtuple: canProcessPaymentGatewayTransaction, -18]';
   END IF;
   IF (NOT _custCardAccnt.unassigned_accnt_is_valid) THEN
-    RAISE EXCEPTION 'Unassigned G/L Account is not setup. [xdruple: canProcessPaymentGatewayTransaction, -19]';
+    RAISE EXCEPTION 'Unassigned G/L Account is not setup. [xtuple: canProcessPaymentGatewayTransaction, -19]';
   END IF;
 
   FOR _taxCodeAccnt IN
     SELECT
       tax_code,
+      accnt_descrip,
       accnt_id IS NOT NULL AS tax_has_glaccnt,
       accnt_type = 'L' AS tax_glaccnt_is_liability,
       accnt_active AS tax_glaccnt_is_active
       FROM taxass
       JOIN tax ON taxass_tax_id = tax_id
       JOIN accnt ON tax_sales_accnt_id = accnt_id
-     WHERE taxass_taxzone_id = cust_taxzone_id
+     WHERE taxass_taxzone_id = _custCardAccnt.cust_taxzone_id
   LOOP
     IF (NOT _taxCodeAccnt.tax_has_glaccnt) THEN
-      RAISE EXCEPTION 'Tax Code % does not have a G/L Account assigned. [xdruple: canProcessPaymentGatewayTransaction, -20]', _taxCodeAccnt.tax_code;
+      RAISE EXCEPTION 'Tax Code "%" does not have a G/L Account assigned. [xtuple: canProcessPaymentGatewayTransaction, -20]',
+                      _taxCodeAccnt.tax_code;
     END IF;
     IF (NOT _taxCodeAccnt.tax_glaccnt_is_liability) THEN
-      RAISE EXCEPTION 'Tax Code % G/L Account is not a Liability account. [xdruple: canProcessPaymentGatewayTransaction, -21]', _taxCodeAccnt.tax_code;
+      RAISE EXCEPTION 'Tax Code "%" G/L Account "%" is not a Liability account. [xtuple: canProcessPaymentGatewayTransaction, -21]',
+                      _taxCodeAccnt.tax_code, _taxCodeAccnt.accnt_descrip;
     END IF;
     IF (NOT _taxCodeAccnt.tax_glaccnt_is_active) THEN
-      RAISE EXCEPTION 'Tax Code % G/L Account is not Active. [xdruple: canProcessPaymentGatewayTransaction, -22]', _taxCodeAccnt.tax_code;
+      RAISE EXCEPTION 'Tax Code "%" G/L Account "%" is not Active. [xtuple: canProcessPaymentGatewayTransaction, -22]',
+                      _taxCodeAccnt.tax_code, _taxCodeAccnt.accnt_descrip;
     END IF;
   END LOOP;
 
@@ -166,15 +190,18 @@ BEGIN
    WHERE CURRENT_DATE BETWEEN period_start AND period_end;
 
   IF (_currentAccntPeriod IS NULL) THEN
-    RAISE EXCEPTION 'Cannot post to nonexistent Accounting Period (%). [xdruple: canProcessPaymentGatewayTransaction, -23]', CURRENT_DATE;
+    RAISE EXCEPTION 'Cannot post to nonexistent Accounting Period for "%". [xtuple: canProcessPaymentGatewayTransaction, -23]',
+                    CURRENT_DATE;
   END IF;
 
   IF (_currentAccntPeriod.period_closed) THEN
-    RAISE EXCEPTION 'Cannot post to a closed Accounting Period (%). [xdruple: canProcessPaymentGatewayTransaction, -24]', CURRENT_DATE;
+    RAISE EXCEPTION 'Cannot post to a closed Accounting Period for "%". [xtuple: canProcessPaymentGatewayTransaction, -24]',
+                    CURRENT_DATE;
   END IF;
 
   IF (_currentAccntPeriod.period_freeze) THEN
-    RAISE EXCEPTION 'Cannot post to a frozen Accounting Period (%). [xdruple: canProcessPaymentGatewayTransaction, -25]', CURRENT_DATE;
+    RAISE EXCEPTION 'Cannot post to a frozen Accounting Period for "%". [xtuple: canProcessPaymentGatewayTransaction, -25]',
+                    CURRENT_DATE;
   END IF;
 
   IF (_isMmltiCurrency) THEN
@@ -182,9 +209,11 @@ BEGIN
     _exchangeRate := currRate(pCurrId, baseCurrID(), CURRENT_DATE);
   END IF;
 
+  RETURN true;
+
 END;
 $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-ALTER FUNCTION canProcessPaymentGatewayTransaction(text, text)
+ALTER FUNCTION canProcessPaymentGatewayTransaction(integer, integer)
   OWNER TO admin;
