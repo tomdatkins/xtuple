@@ -1628,6 +1628,7 @@
     "public/tables/report/ARApplications.xml",
     "public/tables/report/AROpenItem.xml",
     "public/tables/report/AROpenItems.xml",
+    "public/tables/report/Artina800L.xml",
     "public/tables/report/AccountNumberMasterList.xml",
     "public/tables/report/AccountingPeriodsMasterList.xml",
     "public/tables/report/AccountingYearPeriodsMasterList.xml",
