@@ -72,6 +72,7 @@
     "public/functions/_gettargetdocument.sql",
     "public/functions/_normalizeversion.sql",
     "public/functions/_setpackageisenabled.sql",
+    "public/functions/accntIsValid.sql",
     "public/functions/acknowledgemessage.sql",
     "public/functions/actcost.sql",
     "public/functions/addrusecount.sql",

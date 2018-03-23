@@ -107992,4 +107992,4 @@ $$ LANGUAGE plpgsql;
 -- populated by demo_data.sql. Data is populated on this 440 schema before it is
 -- upgraded to the latest version.
 ALTER TABLE company
-  ADD CCOLUMN company_unassigned_accnt_id integer;
+  ADD COLUMN company_unassigned_accnt_id integer;
