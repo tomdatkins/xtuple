@@ -42,11 +42,11 @@ BEGIN
       ELSE TRUE
     END AS deferred_glaccnt_same_company,
     CASE WHEN COALESCE(fetchMetricValue('GLCompanySize'), 0) = 0
-      THEN accntIsValid(fetchMetricValue('GLSeriesDiscrepancyAccount'))
+      THEN accntIsValid(fetchMetricValue('GLSeriesDiscrepancyAccount')::integer)
       ELSE accntIsValid(company_dscrp_accnt_id)
     END AS discrep_accnt_is_valid,
     CASE WHEN COALESCE(fetchMetricValue('GLCompanySize'), 0) = 0
-      THEN accntIsValid(fetchMetricValue('UnassignedAccount'))
+      THEN accntIsValid(fetchMetricValue('UnassignedAccount')::integer)
       ELSE accntIsValid(company_unassigned_accnt_id)
     END AS unassigned_accnt_is_valid
     INTO _custCardAccnt
