@@ -27,7 +27,7 @@ BEGIN
     accntIsValid(findARAccount(cust_id)) AS ar_glaccnt_is_valid,
     findPrepaidAccount(cust_id) > 0 AS cust_has_prepaid_glaccnt,
     accntIsValid(findPrepaidAccount(cust_id)) AS prepaid_glaccnt_is_valid,
-    dfindDeferredAccount(cust_id) > 0 AS cust_has_deferred_glaccnt,
+    findDeferredAccount(cust_id) > 0 AS cust_has_deferred_glaccnt,
     accntIsValid(findDeferredAccount(cust_id)) AS deferred_glaccnt_is_valid,
     CASE WHEN NOT fetchmetricbool('IgnoreCompany')
       THEN (bankaccnt_accnt.accnt_company IS NOT DISTINCT FROM ar_accnt.accnt_company)
