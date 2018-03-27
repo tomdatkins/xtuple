@@ -313,7 +313,7 @@ SELECT quhead_id AS id,
    AND COALESCE(quhead_expire, current_date + 1) > current_date
    AND quhead_status NOT IN ('C', 'X')
 <? endif ?>
-GROUP BY quhead_id, quhead_number, quhead_status, quhead_expire, quhead_freight, quhead_misc, custinfo.cust_name
+GROUP BY quhead_id, quhead_number, quhead_status, quhead_expire, quhead_freight, quhead_misc, custinfo.cust_name, prospect_name
 
 UNION ALL
 
