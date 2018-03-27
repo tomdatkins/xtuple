@@ -322,7 +322,7 @@ SELECT quhead_id AS id,
   LEFT OUTER JOIN prospect ON (quhead_cust_id=prospect_id)
     JOIN quitem ON (quitem_quhead_id = quhead_id)
  WHERE (1=1)
-GROUP BY prj_id, quhead_id, quhead_number, quhead_status, quhead_expire, quhead_freight, quhead_misc, custinfo.cust_name
+GROUP BY prj_id, quhead_id, quhead_number, quhead_status, quhead_expire, quhead_freight, quhead_misc, custinfo.cust_name, prospect_name
 
 UNION ALL
 
