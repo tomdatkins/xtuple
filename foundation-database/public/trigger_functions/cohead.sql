@@ -95,7 +95,7 @@ BEGIN
         CROSS JOIN shiptoinfo
         LEFT OUTER JOIN cntct ON (cust_cntct_id=cntct_id)
         LEFT OUTER JOIN addr ON (cntct_addr_id=addr_id)
-        JOIN addr shiptoaddr ON shipto_addr_id=shiptoaddr.addr_id
+        LEFT OUTER JOIN addr shiptoaddr ON shipto_addr_id=shiptoaddr.addr_id
       WHERE ((cust_id=NEW.cohead_cust_id)
         AND  (shipto_id=NEW.cohead_shipto_id));
     END IF;
